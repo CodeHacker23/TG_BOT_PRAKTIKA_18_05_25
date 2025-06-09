@@ -5,6 +5,7 @@ import org.telegram.telegrambots.meta.api.methods.polls.SendPoll;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -37,8 +38,8 @@ public class Bot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
 
-        if (!(update.hasMessage() && update.getMessage().hasText())) return;
 
+        if (!(update.hasMessage() && update.getMessage().hasText())) return;
 
         //get info request
         String text = update.getMessage().getText();
@@ -51,47 +52,79 @@ public class Bot extends TelegramLongPollingBot {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setText(result);
         sendMessage.setChatId(chatId);
+        sendMessage.setParseMode("Markdown");
 
         if (update.hasMessage() && update.getMessage().hasText()) {
-            handleMessage(update.getMessage());
+            try {
+                handleMessage(update.getMessage());
+            } catch (TelegramApiException e) {
+                throw new RuntimeException(e);
+            }
         }
 
     }
 
 
-    private void handleMessage(Message message) {
+    private void handleMessage(Message message) throws TelegramApiException {
         String text = message.getText();
         Long chatId = message.getChatId();
 
+        switch (text){
+            case "Да" -> { //отправляется теория с фотографиее о том как работает ArrayList
+                sendTheory(chatId);
+            }
+            case "Нет" -> { // тут должна запуститься викторина по теме, раз пользователь уверен в своих силах, нужно проверить его по максимум, задать такой эдакий вопрос что бы у него закрались сомнения
+
+            }
+            case "Я изучаю пайтон" -> { //отправить фотку
+
+
+            }
+            default -> {
+                processCommand(text, chatId);
+            }
+        }
+
         if (text.equals("Да")) {
-            sendTheory(chatId);
-        } else processCommand(text, chatId);
+
+        } else if(text.equals("Нет")){
+            //
+        }
+
+
+
     }
 
 
     private void processCommand(String text, Long chatId) {
-        String result = service.getWay(text);
-        SendMessage sendMessage = new SendMessage(chatId.toString(), result);
-
-        theorySent.compute(chatId, (k, v) -> true);
         try {
+            String result = service.getWay(text);
+            SendMessage sendMessage = new SendMessage(chatId.toString(), result);
+            sendMessage.setParseMode("Markdown"); // Активируем Markdown
+            theorySent.compute(chatId, (k, v) -> true);
             Message response = execute(sendMessage);
             if (result.equals(service.getArrayListInfo())) {
                 scheduleMessageDeletion(chatId, response.getMessageId());
             }
         } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
+            System.err.println("Ошибка отправки сообщения: " + e.getMessage());
         }
+
+
     }
 
 
     private void sendTheory(Long chatId) {
         SendMessage theory = new SendMessage();
+        theory.setParseMode("Markdown");// устанавливаем что бы в сообщении код выделялся
         theory.setText(service.getArrayListInfo());
         theory.setChatId(chatId);
+        SendPhoto sendPhoto = service.getPhotoTheory(chatId);
         try {
+            execute(sendPhoto);
             execute(theory);
         } catch (TelegramApiException e) {
+            System.out.println("Улетел в ексепшен проблема с фото ");
             e.printStackTrace();
         }
     }
@@ -109,6 +142,7 @@ public class Bot extends TelegramLongPollingBot {
                     execute(sendPhoto);
                     pool(chatId);
                 } catch (TelegramApiException e) {
+                    System.err.println("Метод встал и не работает ");
                     e.printStackTrace();
                 }
             } catch (TelegramApiException e) {
@@ -119,7 +153,7 @@ public class Bot extends TelegramLongPollingBot {
     }
 
 
-    private void pool(Long chatId) throws TelegramApiException {
+    private void pool(Long chatId) throws TelegramApiException { //1 викторина которая проверяет пользователя на знание сразу с отвтетным уведомлением
         SendPoll poll = new SendPoll();
         int correctOption = 2;
 
@@ -161,6 +195,7 @@ public class Bot extends TelegramLongPollingBot {
 
         return keyboard;
     }
+
 
     @Override
     public String getBotUsername() {
