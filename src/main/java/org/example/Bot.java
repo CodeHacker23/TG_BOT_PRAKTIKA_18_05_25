@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import org.telegram.telegrambots.meta.api.objects.polls.PollAnswer;
+
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
@@ -37,8 +37,6 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-
-
         if (!(update.hasMessage() && update.getMessage().hasText())) return;
 
         //get info request
@@ -60,23 +58,28 @@ public class Bot extends TelegramLongPollingBot {
             } catch (TelegramApiException e) {
                 throw new RuntimeException(e);
             }
+
         }
 
     }
+
+
 
 
     private void handleMessage(Message message) throws TelegramApiException {
         String text = message.getText();
         Long chatId = message.getChatId();
 
-        switch (text){
-            case "Да" -> { //отправляется теория с фотографиее о том как работает ArrayList
+        switch (text) {
+            case "Да" -> {  //отправляется теория с фотографиее о том как работает ArrayList
                 sendTheory(chatId);
             }
             case "Нет" -> { // тут должна запуститься викторина по теме, раз пользователь уверен в своих силах, нужно проверить его по максимум, задать такой эдакий вопрос что бы у него закрались сомнения
-
+                System.out.println("Вызов superPool для chatId: " + chatId); // Логируем вызов
+                superPool(chatId);
             }
-            case "Я изучаю пайтон" -> { //отправить фотку
+            case "Я изучаю пайтон" -> {
+                photoTeory(chatId);
 
 
             }
@@ -84,15 +87,6 @@ public class Bot extends TelegramLongPollingBot {
                 processCommand(text, chatId);
             }
         }
-
-        if (text.equals("Да")) {
-
-        } else if(text.equals("Нет")){
-            //
-        }
-
-
-
     }
 
 
@@ -114,6 +108,8 @@ public class Bot extends TelegramLongPollingBot {
     }
 
 
+
+
     private void sendTheory(Long chatId) {
         SendMessage theory = new SendMessage();
         theory.setParseMode("Markdown");// устанавливаем что бы в сообщении код выделялся
@@ -128,6 +124,19 @@ public class Bot extends TelegramLongPollingBot {
             e.printStackTrace();
         }
     }
+
+    private SendPhoto photoTeory(Long chatId) throws TelegramApiException { //крч жто фотка на 3 кнопку - ДЛЯ ПИТОНЩИКОВ!
+        SendPhoto sendPhoto = SendPhoto
+                .builder()
+                .chatId(chatId)
+                .photo(new InputFile("https://ltdfoto.ru/images/2025/06/11/IMG_2314.jpg"))
+                .build();
+        execute(sendPhoto);
+        sendWithKeyboard(chatId,"Согласен?!");
+        return sendPhoto;
+    }
+
+
 
     private void scheduleMessageDeletion(Long chatId, Integer messageId) {//метод по удалению сообщения
         scheduler.schedule(() -> {
@@ -155,20 +164,43 @@ public class Bot extends TelegramLongPollingBot {
 
     private void pool(Long chatId) throws TelegramApiException { //1 викторина которая проверяет пользователя на знание сразу с отвтетным уведомлением
         SendPoll poll = new SendPoll();
-        int correctOption = 2;
+        int result = 2; //сохранаем сюда наш правильный ответ на викторину
 
         poll.setChatId(chatId);
         poll.setQuestion("Какой метод добавляет элемент в ArrayList?");
         poll.setOptions(Arrays.asList("abb()", "insert()", "add()", "push()"));// Варианты ответов
-        poll.setCorrectOptionId(correctOption);// индекс правильного варианта
+        poll.setCorrectOptionId(result);// индекс правильного варианта
         poll.setType("quiz"); //тип викторины выбираем
         poll.setExplanation("БЛЯДЬ"); // ответ если пользователь ответил не правильно
 
-        correctAnswers.put(chatId, correctOption);
+        correctAnswers.put(chatId, result); //узнать почему?!
         execute(poll);
+        sendWithKeyboard(chatId, "Хотите прочитать теорию о Arraylist?"); // Вызываем следующий метод по кнопкам (да, нет, я изучаю пайтон)
+    }
 
 
-        sendWithKeyboard(chatId, "Хотите прочитать теорию о Arraylist?");
+    private void superPool(Long chatId) throws TelegramApiException {
+        SendPoll superPool = new SendPoll();
+        int correctOption = 3; // Индекс правильного ответа
+        correctAnswers.put(chatId, correctOption); // Сохраняем правильный ответ
+        superPool.setChatId(chatId);
+        superPool.setQuestion("Какое из следующих утверждений о ArrayList является верным?");
+        superPool .setOptions(Arrays.asList(
+                        "Размер увеличивается в 2 раза при добавлении.",
+                        "Хранение в виде узлов обеспечивает быстрые вставки/удаления.",
+                        "Только объекты одного типа<> иначе ошибка компиляции",
+                        "Доступ по индексу O(1), поиск по значению O(n)."));
+        superPool .setCorrectOptionId(correctOption);
+        superPool.setType("quiz");
+        superPool.setExplanation("Неправильно! Ответ: 4\n" +
+                        "1.Увеличение на 50% (не в 2 раза)\n" +
+                        "2.Узлы — это LinkedList\n" +
+                        "3.\n\nБез дженериков — любые объекты\n");
+
+
+
+        execute(superPool);
+        sendWithKeyboard(chatId, "Уверен, что не хочешь перечитать теорию?");
     }
 
     private void sendWithKeyboard(Long chatId, String text) {
@@ -177,7 +209,7 @@ public class Bot extends TelegramLongPollingBot {
         try {
             execute(message);
         } catch (TelegramApiException e) {
-            System.err.println("Сообщение не отправлено, кнопки не запустились ");
+            System.err.println("Сообщение с клавиатурой не отправлено: " + e.getMessage());
             e.printStackTrace();
         }
     }

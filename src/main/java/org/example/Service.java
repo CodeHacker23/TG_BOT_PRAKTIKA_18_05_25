@@ -1,11 +1,20 @@
 package org.example;
 
 
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.File;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import java.io.InputStream;
+import java.net.URL;
 
 public class Service {
 
@@ -112,7 +121,7 @@ public class Service {
 
 
 
-    public SendPhoto getPhoto(Long chatId) {
+    public SendPhoto getPhoto(Long chatId) { //
         SendPhoto sendPhoto = SendPhoto
                 .builder()
                 .chatId(chatId)
@@ -122,14 +131,28 @@ public class Service {
     }
 
 
-    public SendPhoto getPhotoTheory(Long chadId) { // должно быть фото к посту об ArrayList
+    public SendPhoto getPhotoTheory(Long chatId) { // должно быть фото к посту об ArrayList
         SendPhoto sendPhotoTheory = SendPhoto
                 .builder()
-                .chatId(chadId)
+                .chatId(chatId)
                 .photo(new InputFile("https://thepresentation.ru/img/tmb/4/355544/cfe8189200c24b3ef3cec4bbae5c92b1-800x.jpg"))
                 .build();
         return sendPhotoTheory;
     }
+
+//    public SendPhoto photoPiton(Long chatId) {
+//        // Проверяем наличие файла в классовой области
+//        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("C:\\Users\\ilari\\IdeaProjects\\TG_BOT_PRAKTIKA_18_05_25\\src\\main\\resources\\IMG_2314.JPG");
+//
+//        if (inputStream == null) {
+//            System.err.println("Фото не найдено ");
+//            throw new RuntimeException("Файл не найден в ресурсах!");
+//        }
+   // }
+
+
+
+
 
 
     private String startCommand() {
