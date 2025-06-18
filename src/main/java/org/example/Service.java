@@ -1,6 +1,7 @@
 package org.example;
 
 
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.File;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
@@ -11,10 +12,15 @@ import java.io.InputStream;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Service {
 
@@ -22,20 +28,20 @@ public class Service {
 
         String answer = "";
 
-        switch (request) {
-            case "/start" -> {
-                answer = startCommand();
-            }
-            case "/list" -> {
-                answer = listCommand();
-            }
-            case "/ArrayList" -> {
-                answer = formatArrayListInfo();
+//        switch (request) {
+//            case "/start" -> {
+//                answer = startCommand();
+//            }
+//            case "/list" -> {
+//                answer = listCommand();
+//            }
+//            case "/ArrayList" -> {
+//                answer = formatArrayListInfo();
+//           case " " -> {answer=}
 //            case " " -> {answer=}
-//            case " " -> {answer=}
-//            case " " -> {answer=}
-            }
-        }
+//           case " " -> {answer=}
+//            }
+//        }
         return answer;
     }
 
@@ -53,7 +59,7 @@ public class Service {
 
         // Пример экранирования
         sb.append("ArrayList - это динамический массив, реализующий интерфейс List.\n");
-        sb.append("Он автоматически меняет размер при добавлении/удалении элементов,\n");
+        sb.append("Он автоматически меняет размер на 50% при добавлении/удалении элементов,\n");
         sb.append("но операции вставки/удаления в середине списка могут быть медленными\n");
         sb.append("из-за необходимости копирования элементов.\n\n");
 
@@ -109,7 +115,7 @@ public class Service {
         sb.append("```\n\n");
         sb.append("Однако вставка в середину списка требует сдвига всех последующих элементов, что может быть медленным для больших списков!! \n");
 
-        System.out.println("Формируемая теория: " + sb.toString());
+        //  System.out.println("Формируемая теория: " + sb.toString());
 
         return sb.toString();
     }
@@ -117,8 +123,6 @@ public class Service {
     public static String getArrayListInfo() {// Сделали что бы все было по людски, по ООП, метод об Array должен быть приватным
         return Service.formatArrayListInfo();
     }
-
-
 
 
     public SendPhoto getPhoto(Long chatId) { //
@@ -140,43 +144,75 @@ public class Service {
         return sendPhotoTheory;
     }
 
-//    public SendPhoto photoPiton(Long chatId) {
-//        // Проверяем наличие файла в классовой области
-//        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("C:\\Users\\ilari\\IdeaProjects\\TG_BOT_PRAKTIKA_18_05_25\\src\\main\\resources\\IMG_2314.JPG");
-//
-//        if (inputStream == null) {
-//            System.err.println("Фото не найдено ");
-//            throw new RuntimeException("Файл не найден в ресурсах!");
-//        }
-   // }
-
-
-
-
-
-
-    private String startCommand() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("bot for lesson collection\n");
-        stringBuilder.append("/list\n"); // я
-        stringBuilder.append("/ArrayList\n");
-        stringBuilder.append("/LinkedList\n");
-        stringBuilder.append("************\n");
-        stringBuilder.append("/Set\n");
-        stringBuilder.append("/HashSet\n");
-        stringBuilder.append("/linkedHashSet\n");
-        stringBuilder.append("/TreeSet\n");
-        stringBuilder.append("************\n");
-        stringBuilder.append("/Map\n");
-        stringBuilder.append("/HashMap\n");
-        stringBuilder.append("/LinkedHashMap\n");
-        stringBuilder.append("/TreeMap\n");
-        stringBuilder.append("************\n");
-        stringBuilder.append("Comparator\n");
-        stringBuilder.append("Iterable");
-
-        return stringBuilder.toString();
+    public SendPhoto photoStart(Long chatId){
+        SendPhoto sendPhotoStart = SendPhoto
+                .builder()
+                .chatId(chatId)
+                .photo(new InputFile("https://imgfoto.host/i/IMG-6301.cWiDQ5"))
+                .caption("Приветствую, тебя воин! \n" +
+                        "Я потомок JVM! \n" +
+                        "Moй StackOverflow переполнен, но я все равно стою, как Римская империя!!")
+                .build();
+        return sendPhotoStart;
     }
+
+
+     public SendMessage startCommand(Long chatId) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append(
+                "Ты попал в мир Java-коллекций — Увлекательного приключения!\n" +
+                "Где ты узнаешь, как работают ArrayList, LinkedList, и др структуры данных. \n" +
+                "В этом мире тебе предстоит  сражаться за уровни, решать задачи, собирать знания, искать пасхалки и получать боевые награды! \uD83C\uDFC6 \n" +
+                "\n\uD83D\uDD39 Начни с теории — если ты новичок! \n" + "\uD83D\uDD39 Пройти тест — если чувствуешь себя уверенно.\n" + "\uD83D\uDD39Испытать квест — если любишь головоломки и приключения.\n" +
+                "Готов начать? Тогда выбери свой первый путь воин! ");
+
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+        keyboardMarkup.setResizeKeyboard(true);
+        keyboardMarkup.setOneTimeKeyboard(true);
+
+        KeyboardRow row = new KeyboardRow();
+        row.add(new KeyboardButton("\uD83D\uDE80 Начать с теории"));
+        row.add(new KeyboardButton("\uD83D\uDCA1 Пройти тест на знания"));
+        row.add(new KeyboardButton("\uD83C\uDFAE Испытать квест"));
+
+        List<KeyboardRow> rows = new ArrayList<>();
+        rows.add(row);
+        keyboardMarkup.setKeyboard(rows);
+
+        SendMessage message = new SendMessage();
+        message.setText(stringBuilder.toString());
+        message.setChatId(chatId.toString());
+        message.setReplyMarkup(keyboardMarkup);
+
+
+        return message;
+    }
+}
+
+
+
+//        stringBuilder.append("bot for lesson collection\n");
+//        stringBuilder.append("/list\n"); // я
+//        stringBuilder.append("/ArrayList\n");
+//        stringBuilder.append("/LinkedList\n");
+//        stringBuilder.append("************\n");
+//        stringBuilder.append("/Set\n");
+//        stringBuilder.append("/HashSet\n");
+//        stringBuilder.append("/linkedHashSet\n");
+//        stringBuilder.append("/TreeSet\n");
+//        stringBuilder.append("************\n"); // C
+//        stringBuilder.append("/Map\n");
+//        stringBuilder.append("/HashMap\n");
+//        stringBuilder.append("/LinkedHashMap\n");
+//        stringBuilder.append("/TreeMap\n");
+//        stringBuilder.append("************\n");
+//        stringBuilder.append("Comparator\n");
+//        stringBuilder.append("Iterable");
+
+//        return stringBuilder.toString();
+
+
 
 //    public static String escapeMarkdown(String text) {
 //        return text.replace("_", "\\_")
@@ -197,8 +233,7 @@ public class Service {
 //                .replace("}", "\\}")
 //                .replace(".", "\\.")
 //                .replace("!", "\\!");
-//    }
-}
+
 
 
 

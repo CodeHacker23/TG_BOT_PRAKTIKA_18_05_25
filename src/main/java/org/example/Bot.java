@@ -60,6 +60,24 @@ public class Bot extends TelegramLongPollingBot {
             }
 
         }
+        switch (text) {
+            case "/start" -> {
+                try {
+                    execute(service.photoStart(chatId));
+                } catch (TelegramApiException e) {
+                    System.out.println("Ошибка отправки фото на функции старт ");
+                    throw new RuntimeException(e);
+                }
+
+                try {
+                    execute(service.startCommand(chatId));
+                } catch (TelegramApiException e) {
+                    System.err.println("Сообщение после команды Start не отправлено");
+                    throw new RuntimeException(e);
+                }
+            }
+
+        }
 
     }
 
@@ -69,7 +87,6 @@ public class Bot extends TelegramLongPollingBot {
     private void handleMessage(Message message) throws TelegramApiException {
         String text = message.getText();
         Long chatId = message.getChatId();
-
         switch (text) {
             case "Да" -> {  //отправляется теория с фотографиее о том как работает ArrayList
                 sendTheory(chatId);
@@ -80,8 +97,6 @@ public class Bot extends TelegramLongPollingBot {
             }
             case "Я изучаю пайтон" -> {
                 photoTeory(chatId);
-
-
             }
             default -> {
                 processCommand(text, chatId);

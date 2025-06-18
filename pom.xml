@@ -25,11 +25,13 @@
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.telegram/telegrambots -->
 
+    {
     <dependency>
       <groupId>org.telegram</groupId>
       <artifactId>telegrambots</artifactId>
       <version>6.9.7.1</version> <!-- Проверьте последнюю версию на GitHub -->
     </dependency>
+    }
 
 
 
