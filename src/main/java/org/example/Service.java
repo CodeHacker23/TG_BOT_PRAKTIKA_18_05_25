@@ -1,28 +1,21 @@
 package org.example;
 
 
+import lombok.RequiredArgsConstructor;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.objects.File;
-import org.telegram.telegrambots.meta.api.objects.InputFile;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Service {
+@RequiredArgsConstructor
+@org.springframework.stereotype.Service
+public class Service{
+
+    private final UserService userService;
 
     public String getWay(String request) {
 
@@ -46,7 +39,7 @@ public class Service {
     }
 
 
-    private String listCommand() {
+    private String listCommand(){
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("List - это коллекция которая сохраняет порядок добавленных элементов\n");
         stringBuilder.append("Пример создания : List<String> namesList;\n");
@@ -158,6 +151,12 @@ public class Service {
 
 
      public SendMessage startCommand(Long chatId) {
+        UserEntity user = new UserEntity();
+        user.setTgId(chatId);
+        user.setUsername("test"); // подумать
+
+        userService.saveUser(user);
+
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append(

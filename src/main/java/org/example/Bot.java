@@ -1,5 +1,7 @@
 package org.example;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.polls.SendPoll;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -24,20 +26,18 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 
+@Component
+@RequiredArgsConstructor
 public class Bot extends TelegramLongPollingBot {
-    private Service service;
+    private final Service service;
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);  // добаввил метод который удаляет в тг смс
     private final Map<Long, Integer> correctAnswers = new ConcurrentHashMap<>();
     private final Map<Long, Boolean> theorySent = new ConcurrentHashMap<>();
 
-    public Bot(String botToken) {
-        super(botToken);
-        this.service = new Service();
-    }
-
     @Override
     public void onUpdateReceived(Update update) {
         if (!(update.hasMessage() && update.getMessage().hasText())) return;
+     //  update.getMessage().  //пользователь отправляет мне сообщение, и получить от юзера имя пользователя, так-же подумать над разбитием разных классов что бы сократить код
 
         //get info request
         String text = update.getMessage().getText();
@@ -121,8 +121,6 @@ public class Bot extends TelegramLongPollingBot {
 
 
     }
-
-
 
 
     private void sendTheory(Long chatId) {
@@ -247,6 +245,11 @@ public class Bot extends TelegramLongPollingBot {
     @Override
     public String getBotUsername() {
         return "Collection_bot";
+    }
+
+    @Override
+    public String getBotToken() {
+        return "";
     }
 }
 
