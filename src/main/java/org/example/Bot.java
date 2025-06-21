@@ -26,6 +26,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 
+//
 @Component
 @RequiredArgsConstructor
 public class Bot extends TelegramLongPollingBot {
