@@ -8,4 +8,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {// чт
 
     UserEntity findByUsername(String username);
 
+    String findUrlByName(String photoName);
+
 }
