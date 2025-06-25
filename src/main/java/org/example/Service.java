@@ -21,20 +21,21 @@ public class Service{
 
         String answer = "";
 
-//        switch (request) {
-//            case "/start" -> {
-//                answer = startCommand();
-//            }
-//            case "/list" -> {
-//                answer = listCommand();
-//            }
-//            case "/ArrayList" -> {
-//                answer = formatArrayListInfo();
-//           case " " -> {answer=}
-//            case " " -> {answer=}
-//           case " " -> {answer=}
-//            }
-//        }
+        switch (request) {
+            case "/start" -> {
+                // startCommand обрабатывается отдельно в StartCommandService
+                answer = "";
+            }
+            case "/list" -> {
+                answer = listCommand();
+            }
+            case "/ArrayList" -> {
+                answer = formatArrayListInfo();
+            }
+            default -> {
+                answer = "";
+            }
+        }
         return answer;
     }
 
