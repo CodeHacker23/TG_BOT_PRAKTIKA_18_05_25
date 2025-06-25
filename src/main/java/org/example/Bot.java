@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
 @RequiredArgsConstructor
-public class Bot extends TelegramLongPollingBot {
+public class Bot extends TelegramLongPollingBot { // класс бота
     private final org.example.Service service;
     private final ArrayListStoryService arrayListStoryService;
     private final MessageHandlerService messageHandlerService;
