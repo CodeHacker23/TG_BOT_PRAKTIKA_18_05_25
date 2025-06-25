@@ -1,88 +1,77 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.example</groupId>
-  <artifactId>TG_BOT_PRAKTIKA_18_05_25</artifactId>
-  <version>1.0-SNAPSHOT</version>
-  <packaging>jar</packaging>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.0</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
 
-  <name>TG_BOT_PRAKTIKA_18_05_25</name>
-  <url>http://maven.apache.org</url>
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+    <groupId>org.example</groupId>
+    <artifactId>TG_BOT_PRAKTIKA_18_05_25</artifactId>
+    <version>1.0-SNAPSHOT</version>
 
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <telegram.version>6.9.7.1</telegram.version>
+    </properties>
 
+    <dependencies>
+        <!-- Spring Boot Starter -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
 
+        <!-- Telegram Bots Spring Boot Starter -->
+        <dependency>
+            <groupId>org.telegram</groupId>
+            <artifactId>telegrambots-spring-boot-starter</artifactId>
+            <version>${telegram.version}</version>
+        </dependency>
 
-  <dependencies>
-    <dependency>  
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/org.telegram/telegrambots -->
-    <dependency>
-      <groupId>org.telegram</groupId>
-      <artifactId>telegrambots</artifactId>
-      <version>6.9.7.1</version> <!-- Проверьте последнюю версию на GitHub -->
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter</artifactId>
-      <version>3.5.0</version>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api -->
-    <dependency>
-      <groupId>jakarta.xml.bind</groupId>
-      <artifactId>jakarta.xml.bind-api</artifactId>
-      <version>4.0.2</version>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
-    <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
-      <version>2.4.0-b180830.0359</version>
-    </dependency>
+        <!-- PostgreSQL Driver -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
 
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
 
-    <dependency>
-      <groupId>org.example</groupId>
-      <artifactId>TG_BOT_PRAKTIKA_18_05_25</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <scope>runtime</scope>
-      <version>42.7.4</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-jpa</artifactId>
-      <version>3.5.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <scope>annotationProcessor</scope>
-      <version>1.18.38</version>
-    </dependency>
+        <!-- JAXB API - ЭТИ ДВЕ ЗАВИСИМОСТИ РЕШАЮТ ОШИБКУ -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.4.0-b180830.0359</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
-  </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>24</source>
-          <target>24</target>
-          <compilerArgs>--enable-preview</compilerArgs>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>

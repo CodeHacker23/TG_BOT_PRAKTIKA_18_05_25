@@ -11,4 +11,4 @@ spring:
   jpa: ## Важная вещь - она и Хабиренйт\а и настройки нашего  благодаря этому работает наш репозиторий
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
