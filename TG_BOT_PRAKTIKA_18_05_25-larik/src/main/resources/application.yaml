@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: TG_BOT_PRAKTIKA_18_05_25
+
+  datasource: ## Настройка и подключение к БД
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/Collection_bot
+    username: postgres
+    password: postgres
+
+  jpa: ## Важная вещь - она и Хабиренйт\а и настройки нашего  благодаря этому работает наш репозиторий
+    show-sql: true
+    hibernate:
+      ddl-auto: update
