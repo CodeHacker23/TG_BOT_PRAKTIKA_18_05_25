@@ -3,6 +3,7 @@ package org.example;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -14,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MessageHandlerService {
     private final org.example.Service service;
     private final ArrayListStoryService arrayListStoryService;
+    public final UserService userService;
     private final Map<Long, Boolean> theorySent = new ConcurrentHashMap<>();
 
     public void handleMessage(TelegramLongPollingBot bot, Message message) throws TelegramApiException {
@@ -37,6 +39,11 @@ public class MessageHandlerService {
                 case "/ArrayList" -> {
                     processCommand(bot, text, chatId);
                 }
+
+                case  ""  -> {
+
+                }
+
                 default -> {
                     processCommand(bot, text, chatId);
                 }
@@ -68,7 +75,4 @@ public class MessageHandlerService {
         }
     }
 
-    public Map<Long, Boolean> getTheorySent() {
-        return theorySent;
-    }
 } 

@@ -8,7 +8,6 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 @Configuration
 public class Config {
-
     @Bean
     TelegramBotsApi telegramBotsApi(Bot bot) {
         TelegramBotsApi telegramBotsApi;
