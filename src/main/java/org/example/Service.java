@@ -5,7 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @org.springframework.stereotype.Service
-public class Service{
+public class Service {
 
     private final UserService userService;
 
@@ -40,7 +42,7 @@ public class Service{
     }
 
 
-    private String listCommand(){
+    private String listCommand() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("List - это коллекция которая сохраняет порядок добавленных элементов\n");
         stringBuilder.append("Пример создания : List<String> namesList;\n");
@@ -138,20 +140,25 @@ public class Service{
         return sendPhotoTheory;
     }
 
-    public SendPhoto photoStart(Long chatId){
+    public SendPhoto photoStart(Long chatId) {
         SendPhoto sendPhotoStart = SendPhoto
                 .builder()
                 .chatId(chatId)
-                .photo(new InputFile("https://imgfoto.host/i/IMG-6301.cWiDQ5"))
-                .caption("Приветствую, тебя воин! \n" +
-                        "Я потомок JVM! \n" +
-                        "Moй StackOverflow переполнен, но я все равно стою, как Римская империя!!")
+                .photo(new InputFile("https://ltdfoto.ru/image/soXapU"))//https://imgfoto.host/i/IMG-6301.cWiDQ5
+                .caption("Вот и ты здесь, новичок. \n" +
+                        "Я — *Доктор БайтФордж* , архитектор программных миров и кузнец идей. \n"
+                        + "Ты в мультивселенной по Java...\n" +
+                        "Где каждая строка — это шаг,а баг — это урок.")
+                .parseMode("Markdown")
                 .build();
         return sendPhotoStart;
     }
+//    caption("Приветствую, тебя воин! \n" +
+//                    "Я потомок JVM! \n" +
+//                    "Moй StackOverflow переполнен, но я все равно стою, как Римская империя!!")
 
 
-     public SendMessage startCommand(Long chatId) {
+    public SendMessage startCommand(Long chatId) {
         UserEntity user = new UserEntity();
         user.setTgId(chatId);
         user.setUsername("test"); // подумать
@@ -160,12 +167,8 @@ public class Service{
 
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append(
-                "Ты попал в мир Java-коллекций — Увлекательного приключения!\n" +
-                "Где ты узнаешь, как работают ArrayList, LinkedList, и др структуры данных. \n" +
-                "В этом мире тебе предстоит  сражаться за уровни, решать задачи, собирать знания, искать пасхалки и получать боевые награды! \uD83C\uDFC6 \n" +
-                "\n\uD83D\uDD39 Начни с теории — если ты новичок! \n" + "\uD83D\uDD39 Пройти тест — если чувствуешь себя уверенно.\n" + "\uD83D\uDD39Испытать квест — если любишь головоломки и приключения.\n" +
-                "Готов начать? Тогда выбери свой первый путь воин! ");
+        stringBuilder.append("Помогу создать свой путь, разобраться в логике и встретить вызовы. Готов начать?");
+
 
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
         keyboardMarkup.setResizeKeyboard(true);
@@ -188,6 +191,7 @@ public class Service{
 
         return message;
     }
+
 }
 
 
