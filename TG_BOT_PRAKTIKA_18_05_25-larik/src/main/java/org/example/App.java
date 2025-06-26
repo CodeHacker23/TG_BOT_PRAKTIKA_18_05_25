@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 @SpringBootApplication
-public class App {
+public class App { //git add
     public static void main(String[] args ) {
         SpringApplication.run(App.class, args);
     }
