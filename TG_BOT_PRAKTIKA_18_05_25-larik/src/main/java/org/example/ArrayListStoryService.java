@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
-public class ArrayListStoryService { // тест
     private final org.example.Service service;
     private final KeyboardService keyboardService;
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);

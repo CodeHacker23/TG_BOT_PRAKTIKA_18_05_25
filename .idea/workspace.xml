@@ -1,36 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="AutoImportSettings">
-    <option name="autoReloadType" value="SELECTIVE" />
-  </component>
   <component name="ChangeListManager">
-    <list default="true" id="f82c883f-61b4-47b6-8b09-d66869ebc091" name="Changes" comment="3" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$" value="master" />
-      </map>
-    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "CodeHacker23"
-  }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/CodeHacker23/TG_BOT_PRAKTIKA_18_05_25.git",
-    "accountId": "76936210-ab74-466a-ab52-f7f87bfde8e3"
-  }
-}]]></component>
   <component name="ProjectColorInfo"><![CDATA[{
   "associatedIndex": 3
 }]]></component>
@@ -43,7 +21,6 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "Larik",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/ilari/IdeaProjects/TG_BOT_PRAKTIKA_18_05_25-larik",
     "node.js.detected.package.eslint": "true",
@@ -70,58 +47,10 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1750918794956</updated>
-      <workItem from="1750918796543" duration="2894000" />
     </task>
-    <task id="LOCAL-00001" summary="1">
-      <option name="closed" value="true" />
-      <created>1750919275367</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1750919275367</updated>
-    </task>
-    <task id="LOCAL-00002" summary="2">
-      <option name="closed" value="true" />
-      <created>1750919655954</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1750919655954</updated>
-    </task>
-    <task id="LOCAL-00003" summary="2">
-      <option name="closed" value="true" />
-      <created>1750920791124</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1750920791124</updated>
-    </task>
-    <task id="LOCAL-00004" summary="3">
-      <option name="closed" value="true" />
-      <created>1750921080489</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1750921080489</updated>
-    </task>
-    <task id="LOCAL-00005" summary="3">
-      <option name="closed" value="true" />
-      <created>1750921766432</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1750921766432</updated>
-    </task>
-    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="1" />
-    <MESSAGE value="2" />
-    <MESSAGE value="3" />
-    <option name="LAST_COMMIT_MESSAGE" value="3" />
   </component>
 </project>
