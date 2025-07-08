@@ -11,7 +11,7 @@ public class Personage2 extends PersonageBase{
 
 
     public Personage2() {
-        this.name = "*Флоу*";
+        this.name = "";
         this.level = 0;
         this.energy = 8;
         this.achievementPoints = 0;
@@ -25,14 +25,14 @@ public class Personage2 extends PersonageBase{
         return SendPhoto.builder()
                 .chatId(chatId.toString())
                 .photo(new InputFile("https://ltdfoto.ru/image/soo913"))
-                .caption(name + "\n\n" +
+                .caption("*" + name + "*" + "\n\n" +
                         "_Статус_: " + status + "\n" +
                         "\uD83C\uDFC6Level: " + level + "\n" +
                         "⚡Энергия: " + energy + "\n" +
                         "⭐Очки достижения: " + achievementPoints + "\n" +
                         "\uD83D\uDCB2Деньги: " + currency + "\n" +
-                        "\uD83D\uDE01Юмор: " + humor  + " —   \n" +
-                        "\uD83D\uDDE3\uFE0FНавыки коммуникации: " + communication + " — Умение находить скрытые связи в коде")
+                        "\uD83D\uDE01Юмор: " + humor  + " — Его мемы так же опасны, как баги в пятницу.  \n" +
+                        "\uD83D\uDDE3\uFE0FНавыки коммуникации: " + communication + " — Объяснит баг так, что ты начнешь сомневаться в себе...")
                 .parseMode("Markdown")
                 .build();
     }

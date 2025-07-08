@@ -34,17 +34,24 @@ public class MessageHandlerService {
         if (user != null && "AWAITING_CHARACTER_NAME".equals(user.getState())) {
             // Пользователь должен ввести имя персонажа
             String characterName = text;
-            // Создаем персонажа с этим именем
-            Personage1 personage = new Personage1();
+            // Получаем случайного персонажа
+            PersonageBase personage = PersonageBase.getRandomPersonage();
             personage.setName(characterName);
             // Привязываем персонажа к пользователю
             user.setCharacterType(personage.getClass().getSimpleName());
-            user.setCharacterName(characterName);
+            user.setCharacterName("*" + characterName + "*");
             user.setState(null); // сбрасываем статус
             userService.saveUser(user);
-            // Отправляем фото персонажа с этим именем
-            SendPhoto photo = personage.getSendPhotoTheory(chatId);
-            bot.execute(photo);
+            // Отправляем фото соответствующего персонажа
+            SendPhoto photo = null;
+            if (personage instanceof Personage1) {
+                photo = ((Personage1) personage).getSendPhotoTheory(chatId);
+            } else if (personage instanceof Personage2) {
+                photo = ((Personage2) personage).PhotoTheoryFloy(chatId);
+            }
+            if (photo != null) {
+                bot.execute(photo);
+            }
             return;
         }
 

@@ -38,7 +38,7 @@ public abstract class PersonageBase {
     }
 
      public static PersonageBase getRandomPersonage() {
-        List<PersonageBase> personages = List.of(new Personage1() /*, new Personage2()*/);
+        List<PersonageBase> personages = List.of(new Personage1(), new Personage2());
         return personages.get(new Random().nextInt(personages.size()));
     }
 
