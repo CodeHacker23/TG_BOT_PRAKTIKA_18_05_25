@@ -33,9 +33,15 @@ public abstract class PersonageBase {
         this.currency += delta;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
      public static PersonageBase getRandomPersonage() {
         List<PersonageBase> personages = List.of(new Personage1() /*, new Personage2()*/);
         return personages.get(new Random().nextInt(personages.size()));
     }
+
+
 
 }
