@@ -15,7 +15,7 @@ public class UserService {// Тут мы уже рабоатем с нашим �
     }
 
     public UserEntity getUserById(Long id) { //вот это получить из БД
-        return userRepository.getReferenceById(id);
+        return userRepository.findById(id).orElse(null);
     }
 
     public void assignPersonageToUser(Long tgId, PersonageBase personage) {
@@ -28,12 +28,6 @@ public class UserService {// Тут мы уже рабоатем с нашим �
         user.setCharacterType(personage.getClass().getSimpleName());
         userRepository.save(user);
     }
-
-
-
-
-
-
 
 
 

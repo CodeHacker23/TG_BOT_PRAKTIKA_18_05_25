@@ -34,6 +34,10 @@ public class Service {
             case "/ArrayList" -> {
                 answer = formatArrayListInfo();
             }
+
+            case "" ->{
+
+            }
             default -> {
                 answer = "";
             }
@@ -191,6 +195,9 @@ public class Service {
 
         return message;
     }
+
+
+
 
 }
 

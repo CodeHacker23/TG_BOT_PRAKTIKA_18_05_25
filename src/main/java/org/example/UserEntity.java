@@ -20,4 +20,7 @@ public class UserEntity { //дописать поля этого класса н
     
     private String characterType; // выбранный персонаж пользователя
 
+    private String characterName; // имя персонажа
+    private String state = "AWAITING_CHARACTER_NAME"; // cтатус нашего пользователя
+
 }

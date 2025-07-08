@@ -3,6 +3,7 @@ package org.example;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -21,7 +22,32 @@ public class MessageHandlerService {
     public void handleMessage(TelegramLongPollingBot bot, Message message) throws TelegramApiException {
         String text = message.getText();
         Long chatId = message.getChatId();
-        
+        Long userId = message.getFrom().getId();
+
+        // Проверяем статус пользователя
+        UserEntity user = userService.getUserById(userId);
+        if (user == null) {
+            user = new UserEntity();
+            user.setTgId(userId);
+            userService.saveUser(user);
+        }
+        if (user != null && "AWAITING_CHARACTER_NAME".equals(user.getState())) {
+            // Пользователь должен ввести имя персонажа
+            String characterName = text;
+            // Создаем персонажа с этим именем
+            Personage1 personage = new Personage1();
+            personage.setName(characterName);
+            // Привязываем персонажа к пользователю
+            user.setCharacterType(personage.getClass().getSimpleName());
+            user.setCharacterName(characterName);
+            user.setState(null); // сбрасываем статус
+            userService.saveUser(user);
+            // Отправляем фото персонажа с этим именем
+            SendPhoto photo = personage.getSendPhotoTheory(chatId);
+            bot.execute(photo);
+            return;
+        }
+
         try {
             switch (text) {
                 case "Да" -> {  //отправляется теория с фотографиее о том как работает ArrayList
@@ -40,8 +66,12 @@ public class MessageHandlerService {
                     processCommand(bot, text, chatId);
                 }
 
-                case  ""  -> {
-
+                case "Создать персонажа" -> {
+                    // Установить состояние пользователя
+                    user.setState("AWAITING_CHARACTER_NAME");
+                    userService.saveUser(user);
+                    // Отправить сообщение с просьбой ввести имя
+                    bot.execute(new SendMessage(chatId.toString(), "Придумайте имя для персонажа:"));
                 }
 
                 default -> {
@@ -58,8 +88,8 @@ public class MessageHandlerService {
         try {
             String result = service.getWay(text);
             if (result != null && !result.trim().isEmpty()) {
-                org.telegram.telegrambots.meta.api.methods.send.SendMessage sendMessage = 
-                    new org.telegram.telegrambots.meta.api.methods.send.SendMessage(chatId.toString(), result);
+                org.telegram.telegrambots.meta.api.methods.send.SendMessage sendMessage =
+                        new org.telegram.telegrambots.meta.api.methods.send.SendMessage(chatId.toString(), result);
                 sendMessage.setParseMode("Markdown"); // Активируем Markdown
                 theorySent.compute(chatId, (k, v) -> true);
                 Message response = bot.execute(sendMessage);

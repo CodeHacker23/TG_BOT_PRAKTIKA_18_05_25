@@ -26,17 +26,21 @@ public class Bot extends TelegramLongPollingBot { // класс бота
             Long userId = update.getCallbackQuery().getFrom().getId();
 
             if ("create_personage".equals(data)) {
-                PersonageBase personage = getRandomPersonage();
-                SendPhoto photo = ((Personage1) personage).getSendPhotoTheory(chatId);
-                try {
-                    execute(photo);
-                } catch (TelegramApiException e) {
-                    System.err.println("Ошибка отправки фото персонажа: " + e.getMessage());
+                // Найти пользователя и поставить статус ожидания имени
+                UserEntity user = userService.getUserById(userId);
+                if (user == null) {
+                    user = new UserEntity();
+                    user.setTgId(userId);
                 }
+                user.setState("AWAITING_CHARACTER_NAME");
+                userService.saveUser(user);
+                org.telegram.telegrambots.meta.api.methods.send.SendMessage askName = new org.telegram.telegrambots.meta.api.methods.send.SendMessage();
+                askName.setChatId(chatId.toString());
+                askName.setText("Напишите имя для персонажа");
                 try {
-                    userService.assignPersonageToUser(userId, personage);
-                } catch (Exception e) {
-                    System.err.println("Ошибка при привязке персонажа к пользователю: " + e.getMessage());
+                    execute(askName);
+                } catch (TelegramApiException e) {
+                    System.err.println("Ошибка отправки запроса имени персонажа: " + e.getMessage());
                 }
                 return;
             }

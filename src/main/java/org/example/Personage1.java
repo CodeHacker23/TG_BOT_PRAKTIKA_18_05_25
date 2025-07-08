@@ -17,7 +17,7 @@ public class Personage1 extends PersonageBase {
      * Конструктор персонажа с предустановленными характеристиками.
      */
     public Personage1() {
-        this.name = "*Кодыч*";
+        this.name = "";
         this.level = 0;
         this.energy = 8;
         this.achievementPoints = 0;
@@ -48,7 +48,7 @@ public class Personage1 extends PersonageBase {
         return SendPhoto.builder()
                 .chatId(chatId.toString())
                 .photo(new InputFile("https://ltdfoto.ru/images/2025/07/02/KODYC.jpg"))
-                .caption(name + "\n\n" +
+                .caption( "*" + name + "*" + "\n\n" +
                         "_Статус_: " + status + "\n" +
                         "\uD83C\uDFC6Level: " + level + "\n" +
                         "⚡Энергия: " + energy + "\n" +
