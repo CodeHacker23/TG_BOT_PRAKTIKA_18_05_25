@@ -13,9 +13,10 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import java.util.ArrayList;
 import java.util.List;
 
+
 @RequiredArgsConstructor
 @org.springframework.stereotype.Service
-public class Service {
+public class  Service {
 
     private final UserService userService;
 
@@ -35,7 +36,7 @@ public class Service {
                 answer = formatArrayListInfo();
             }
 
-            case "" ->{
+            case "" -> {
 
             }
             default -> {
@@ -195,11 +196,14 @@ public class Service {
 
         return message;
     }
-
-
-
-
 }
+
+
+
+
+
+
+
 
 
 
