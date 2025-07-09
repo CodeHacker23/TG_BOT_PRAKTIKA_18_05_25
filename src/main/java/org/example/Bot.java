@@ -17,6 +17,11 @@ public class Bot extends TelegramLongPollingBot { // класс бота
     private final MessageHandlerService messageHandlerService;
     private final StartCommandService startCommandService;
     private final UserService userService;
+    private final PersonageCreationService personageCreationService;
+
+    private boolean hasCharacter(UserEntity user) {
+        return user != null && user.getCharacterType() != null && !user.getCharacterType().isEmpty();
+    }
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -26,14 +31,18 @@ public class Bot extends TelegramLongPollingBot { // класс бота
             Long userId = update.getCallbackQuery().getFrom().getId();
 
             if ("create_personage".equals(data)) {
-                // Найти пользователя и поставить статус ожидания имени
-                UserEntity user = userService.getUserById(userId);
-                if (user == null) {
-                    user = new UserEntity();
-                    user.setTgId(userId);
+                PersonageCreationService.CharacterCreationResult result = personageCreationService.handleCreatePersonageRequest(userId);
+                if (!result.canCreate) {
+                    org.telegram.telegrambots.meta.api.methods.send.SendMessage alreadyCreated = new org.telegram.telegrambots.meta.api.methods.send.SendMessage();
+                    alreadyCreated.setChatId(chatId.toString());
+                    alreadyCreated.setText("У вас уже есть персонаж: " + result.user.getCharacterName() + ". Вы не можете создать нового.");
+                    try {
+                        execute(alreadyCreated);
+                    } catch (TelegramApiException e) {
+                        System.err.println("Ошибка отправки сообщения о наличии персонажа: " + e.getMessage());
+                    }
+                    return;
                 }
-                user.setState("AWAITING_CHARACTER_NAME");
-                userService.saveUser(user);
                 org.telegram.telegrambots.meta.api.methods.send.SendMessage askName = new org.telegram.telegrambots.meta.api.methods.send.SendMessage();
                 askName.setChatId(chatId.toString());
                 askName.setText("Напишите имя для персонажа");

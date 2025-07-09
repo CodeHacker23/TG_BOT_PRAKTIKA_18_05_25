@@ -17,7 +17,12 @@ public class MessageHandlerService {
     private final org.example.Service service;
     private final ArrayListStoryService arrayListStoryService;
     public final UserService userService;
+    private final PersonageCreationService personageCreationService;
     private final Map<Long, Boolean> theorySent = new ConcurrentHashMap<>();
+
+    private boolean hasCharacter(UserEntity user) {
+        return user != null && user.getCharacterType() != null && !user.getCharacterType().isEmpty();
+    }
 
     public void handleMessage(TelegramLongPollingBot bot, Message message) throws TelegramApiException {
         String text = message.getText();
@@ -25,13 +30,23 @@ public class MessageHandlerService {
         Long userId = message.getFrom().getId();
 
         // Проверяем статус пользователя
-        UserEntity user = userService.getUserById(userId);
+        UserEntity user = userService.getUserByTgId(userId);
         if (user == null) {
             user = new UserEntity();
             user.setTgId(userId);
             userService.saveUser(user);
         }
+        //проверка персонажа на состояние пользователя
         if (user != null && "AWAITING_CHARACTER_NAME".equals(user.getState())) {
+            if (hasCharacter(user)) {
+                SendMessage alreadyCreated = new SendMessage(chatId.toString(), "Вы уже создали персонажа, изменить его нельзя.");
+                bot.execute(alreadyCreated);
+                // Сбросить состояние, если вдруг оно осталось
+                user.setState(null);
+                userService.saveUser(user);
+                System.out.println("Попытка повторного создания персонажа для пользователя: " + user.getTgId());
+                return;
+            }
             // Пользователь должен ввести имя персонажа
             String characterName = text;
             // Получаем случайного персонажа
@@ -42,12 +57,15 @@ public class MessageHandlerService {
             user.setCharacterName("*" + characterName + "*");
             user.setState(null); // сбрасываем статус
             userService.saveUser(user);
+            System.out.println("Создан персонаж: " + user.getCharacterType() + " для пользователя: " + user.getTgId());
             // Отправляем фото соответствующего персонажа
             SendPhoto photo = null;
             if (personage instanceof Personage1) {
                 photo = ((Personage1) personage).getSendPhotoTheory(chatId);
             } else if (personage instanceof Personage2) {
                 photo = ((Personage2) personage).PhotoTheoryFloy(chatId);
+            } else if (personage instanceof Personage3) {
+                photo = ((Personage3) personage).PhotoTheoryGeks(chatId);
             }
             if (photo != null) {
                 bot.execute(photo);
@@ -74,10 +92,11 @@ public class MessageHandlerService {
                 }
 
                 case "Создать персонажа" -> {
-                    // Установить состояние пользователя
-                    user.setState("AWAITING_CHARACTER_NAME");
-                    userService.saveUser(user);
-                    // Отправить сообщение с просьбой ввести имя
+                    PersonageCreationService.CharacterCreationResult result = personageCreationService.handleCreatePersonageRequest(userId);
+                    if (!result.canCreate) {
+                        bot.execute(new SendMessage(chatId.toString(), "У вас уже есть персонаж, создать нового нельзя."));
+                        return;
+                    }
                     bot.execute(new SendMessage(chatId.toString(), "Придумайте имя для персонажа:"));
                 }
 

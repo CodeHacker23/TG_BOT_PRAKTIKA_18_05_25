@@ -3,7 +3,7 @@ package org.example;
 
 import lombok.Data;
 
-import java.util.Arrays;
+
 import java.util.List;
 import java.util.Random;
 
@@ -38,7 +38,7 @@ public abstract class PersonageBase {
     }
 
      public static PersonageBase getRandomPersonage() {
-        List<PersonageBase> personages = List.of(new Personage1(), new Personage2());
+        List<PersonageBase> personages = List.of( new Personage1(),new Personage2(),new Personage3());
         return personages.get(new Random().nextInt(personages.size()));
     }
 

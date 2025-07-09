@@ -18,6 +18,10 @@ public class UserService {// Тут мы уже рабоатем с нашим �
         return userRepository.findById(id).orElse(null);
     }
 
+    public UserEntity getUserByTgId(Long tgId) {
+        return userRepository.findByTgId(tgId).orElse(null);
+    }
+
     public void assignPersonageToUser(Long tgId, PersonageBase personage) {
         Optional<UserEntity> userOpt = userRepository.findByTgId(tgId);
         UserEntity user = userOpt.orElseGet(() -> {
