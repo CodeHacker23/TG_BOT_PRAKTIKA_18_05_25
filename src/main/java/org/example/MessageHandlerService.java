@@ -11,6 +11,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static org.example.ArrayListStoryService.getArrayListInfo;
+
 @Service
 @RequiredArgsConstructor
 public class MessageHandlerService {
@@ -22,6 +24,45 @@ public class MessageHandlerService {
 
     private boolean hasCharacter(UserEntity user) {
         return user != null && user.getCharacterType() != null && !user.getCharacterType().isEmpty();
+    }
+
+    private void processCharacterNameInput(TelegramLongPollingBot bot, Long chatId, Long userId, String characterName) throws TelegramApiException {
+        UserEntity user = userService.getUserByTgId(userId);
+        if (user == null) {
+            user = new UserEntity();
+            user.setTgId(userId);
+            userService.saveUser(user);
+        }
+        if ("AWAITING_CHARACTER_NAME".equals(user.getState())) {
+            if (hasCharacter(user)) {
+                SendMessage alreadyCreated = new SendMessage(chatId.toString(), "Вы уже создали персонажа, изменить его нельзя.");
+                bot.execute(alreadyCreated);
+                user.setState(null);
+                userService.saveUser(user);
+                System.out.println("Попытка повторного создания персонажа для пользователя: " + user.getTgId());
+                return;
+            }
+            // Создание персонажа
+            PersonageBase personage = PersonageBase.getRandomPersonage();
+            personage.setName(characterName);
+            user.setCharacterType(personage.getClass().getSimpleName());
+            user.setCharacterName("*" + characterName + "*");
+            user.setState(null);
+            user.setEnergy(8);
+            userService.saveUser(user);
+            System.out.println("Создан персонаж: " + user.getCharacterType() + " для пользователя: " + user.getTgId());
+            SendPhoto photo = null;
+            if (personage instanceof Personage1) {
+                photo = ((Personage1) personage).getSendPhotoTheory(chatId);
+            } else if (personage instanceof Personage2) {
+                photo = ((Personage2) personage).PhotoTheoryFloy(chatId);
+            } else if (personage instanceof Personage3) {
+                photo = ((Personage3) personage).PhotoTheoryGeks(chatId);
+            }
+            if (photo != null) {
+                bot.execute(photo);
+            }
+        }
     }
 
     public void handleMessage(TelegramLongPollingBot bot, Message message) throws TelegramApiException {
@@ -50,26 +91,7 @@ public class MessageHandlerService {
             // Пользователь должен ввести имя персонажа
             String characterName = text;
             // Получаем случайного персонажа
-            PersonageBase personage = PersonageBase.getRandomPersonage();
-            personage.setName(characterName);
-            // Привязываем персонажа к пользователю
-            user.setCharacterType(personage.getClass().getSimpleName());
-            user.setCharacterName("*" + characterName + "*");
-            user.setState(null); // сбрасываем статус
-            userService.saveUser(user);
-            System.out.println("Создан персонаж: " + user.getCharacterType() + " для пользователя: " + user.getTgId());
-            // Отправляем фото соответствующего персонажа
-            SendPhoto photo = null;
-            if (personage instanceof Personage1) {
-                photo = ((Personage1) personage).getSendPhotoTheory(chatId);
-            } else if (personage instanceof Personage2) {
-                photo = ((Personage2) personage).PhotoTheoryFloy(chatId);
-            } else if (personage instanceof Personage3) {
-                photo = ((Personage3) personage).PhotoTheoryGeks(chatId);
-            }
-            if (photo != null) {
-                bot.execute(photo);
-            }
+            processCharacterNameInput(bot, chatId, userId, characterName);
             return;
         }
 
@@ -119,7 +141,7 @@ public class MessageHandlerService {
                 sendMessage.setParseMode("Markdown"); // Активируем Markdown
                 theorySent.compute(chatId, (k, v) -> true);
                 Message response = bot.execute(sendMessage);
-                if (result.equals(service.getArrayListInfo())) {
+                if (result.equals(getArrayListInfo())) {
                     arrayListStoryService.scheduleMessageDeletion(bot, chatId, response.getMessageId());
                 }
             } else {

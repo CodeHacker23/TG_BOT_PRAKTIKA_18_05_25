@@ -11,7 +11,7 @@ import java.util.Random;
 public abstract class PersonageBase {
     protected String name;
     protected int level;
-    protected int energy;
+    protected  int energy;
     protected int achievementPoints;
     protected double currency;
     protected String status;
@@ -21,8 +21,9 @@ public abstract class PersonageBase {
         this.level += delta;
     }
 
-    public void changeEnergy(int delta) {
+    public  void energy(int delta) {
         this.energy += delta;
+
     }
 
     public void changeAchievementPoints(int delta) {
@@ -36,6 +37,8 @@ public abstract class PersonageBase {
     public void setName(String name) {
         this.name = name;
     }
+
+
 
      public static PersonageBase getRandomPersonage() {
         List<PersonageBase> personages = List.of( new Personage1(),new Personage2(),new Personage3());

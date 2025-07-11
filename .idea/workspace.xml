@@ -4,15 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment=" Сделал так что бы пользователь когда ввел имя, ему выпадал рандомно персонаж, либо Флоу(это красный) либо синий это Кодыч, будет еще третий персонаж, и с регистриацией закончено, можно отвести душеньку чуть чуть выпить водочки стопок 10 и пойти делать сюжетную линию по Linked">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/Personage3.java" afterDir="false" />
+    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/StoryStartService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/ArrayListStoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/ArrayListStoryService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Bot.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/MessageHandlerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/MessageHandlerService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Personage2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Personage2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Personage3.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Personage3.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/PersonageBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/PersonageBase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/PersonageCreationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/PersonageCreationService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Service.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/StartCommandService.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/UserEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/UserEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,6 +48,9 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="jar://$MAVEN_REPOSITORY$/org/telegram/telegrambots-meta/6.9.7.1/telegrambots-meta-6.9.7.1-sources.jar!/org/telegram/telegrambots/meta/api/methods/send/SendPhoto.java" root0="SKIP_INSPECTION" />
     <setting file="jar://$MAVEN_REPOSITORY$/org/telegram/telegrambots-meta/6.9.7.1/telegrambots-meta-6.9.7.1.jar!/org/telegram/telegrambots/meta/api/methods/send/SendPhoto.class" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
@@ -111,7 +118,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1750918794956</updated>
-      <workItem from="1751885543093" duration="22157000" />
+      <workItem from="1751885543093" duration="32545000" />
+      <workItem from="1752166735781" duration="10488000" />
     </task>
     <task id="LOCAL-00001" summary="по идеи всеработает как нужн, на команде старт отправляется фото с текстом, затем отправялется сообщение с кнопкой (создать персонажа) кнопка кликабельна, после кнопки отправляется персонаж с характеристиками и фото. все соеденяется с БД2">
       <option name="closed" value="true" />
@@ -137,7 +145,23 @@
       <option name="project" value="LOCAL" />
       <updated>1751973470908</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Сделал так что бы кнопка создать персонажа была кликабельна только один раз, прикрутил создание персонажа к id пользователя телеграм а не к БД, Так удобней искать в таблице пользователя, теперь когда пользователь создает имя персонажу отправляется рандомный персонаж из коллекции, так-же обнуляется состояние пользователя, что бы не было проблем с обработкой на проверку персонажа у пользователя, после того если пользователь захочет нажать на кнопку создать персонажа то ему выйдет сообщение (у вас уже есть персонаж с Именем *от пользователя* Создать нового нельзя.">
+      <option name="closed" value="true" />
+      <created>1752060121712</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1752060121712</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Сделал так что бы кнопка создать персонажа была кликабельна только один раз, прикрутил создание персонажа к id пользователя телеграм а не к БД, Так удобней искать в таблице пользователя, теперь когда пользователь создает имя персонажу отправляется рандомный персонаж из коллекции, так-же обнуляется состояние пользователя, что бы не было проблем с обработкой на проверку персонажа у пользователя, после того если пользователь захочет нажать на кнопку создать персонажа то ему выйдет сообщение (у вас уже есть персонаж с Именем *от пользователя* Создать нового нельзя.">
+      <option name="closed" value="true" />
+      <created>1752060146912</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1752060146912</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -149,6 +173,7 @@
     <MESSAGE value="по идеи всеработает как нужн, на команде старт отправляется фото с текстом, затем отправялется сообщение с кнопкой (создать персонажа) кнопка кликабельна, после кнопки отправляется персонаж с характеристиками и фото. все соеденяется с БД2" />
     <MESSAGE value="Сделал, что бы пользователь задавал имя своему персонажа, так-же сохраняется  все в БД, прикручено было состояние пользователя, что бы бот понимал что он ждет имя от пользоавтеля а не абы чего" />
     <MESSAGE value=" Сделал так что бы пользователь когда ввел имя, ему выпадал рандомно персонаж, либо Флоу(это красный) либо синий это Кодыч, будет еще третий персонаж, и с регистриацией закончено, можно отвести душеньку чуть чуть выпить водочки стопок 10 и пойти делать сюжетную линию по Linked" />
-    <option name="LAST_COMMIT_MESSAGE" value=" Сделал так что бы пользователь когда ввел имя, ему выпадал рандомно персонаж, либо Флоу(это красный) либо синий это Кодыч, будет еще третий персонаж, и с регистриацией закончено, можно отвести душеньку чуть чуть выпить водочки стопок 10 и пойти делать сюжетную линию по Linked" />
+    <MESSAGE value="Сделал так что бы кнопка создать персонажа была кликабельна только один раз, прикрутил создание персонажа к id пользователя телеграм а не к БД, Так удобней искать в таблице пользователя, теперь когда пользователь создает имя персонажу отправляется рандомный персонаж из коллекции, так-же обнуляется состояние пользователя, что бы не было проблем с обработкой на проверку персонажа у пользователя, после того если пользователь захочет нажать на кнопку создать персонажа то ему выйдет сообщение (у вас уже есть персонаж с Именем *от пользователя* Создать нового нельзя." />
+    <option name="LAST_COMMIT_MESSAGE" value="Сделал так что бы кнопка создать персонажа была кликабельна только один раз, прикрутил создание персонажа к id пользователя телеграм а не к БД, Так удобней искать в таблице пользователя, теперь когда пользователь создает имя персонажу отправляется рандомный персонаж из коллекции, так-же обнуляется состояние пользователя, что бы не было проблем с обработкой на проверку персонажа у пользователя, после того если пользователь захочет нажать на кнопку создать персонажа то ему выйдет сообщение (у вас уже есть персонаж с Именем *от пользователя* Создать нового нельзя." />
   </component>
 </project>

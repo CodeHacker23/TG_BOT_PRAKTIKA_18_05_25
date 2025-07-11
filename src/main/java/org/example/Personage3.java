@@ -36,4 +36,16 @@ public class Personage3 extends PersonageBase {
                 .parseMode("Markdown")
                 .build();
     }
+
+    //изменить свойство точность кода
+    public void codeAccuracy(int delta){
+        this.codeAccuracy += delta;
+    }
+
+    //изменить свойство оптимизации
+    public void optimization(int delta){
+        this.optimization  += delta;
+    }
+
+
 }
