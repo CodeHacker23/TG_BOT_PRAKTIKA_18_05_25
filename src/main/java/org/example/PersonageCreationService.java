@@ -10,10 +10,11 @@ public class PersonageCreationService {
         this.userService = userService;
     }
 
+    //проверка есть ли у такого пользователя в тг по его id персонаж, если в Бд есть то тебе выйдет сообщение иди
     public boolean hasCharacter(UserEntity user) {
         return user != null
-            && user.getCharacterType() != null && !user.getCharacterType().isEmpty()
-            && user.getCharacterName() != null && !user.getCharacterName().isEmpty();
+                && user.getCharacterType() != null && !user.getCharacterType().isEmpty()
+                && user.getCharacterName() != null && !user.getCharacterName().isEmpty();
     }
 
     /**
@@ -46,6 +47,7 @@ public class PersonageCreationService {
     public static class CharacterCreationResult {
         public final UserEntity user;
         public final boolean canCreate;
+
         public CharacterCreationResult(UserEntity user, boolean canCreate) {
             this.user = user;
             this.canCreate = canCreate;

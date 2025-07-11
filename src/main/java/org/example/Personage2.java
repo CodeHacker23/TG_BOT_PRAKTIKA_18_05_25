@@ -3,10 +3,11 @@ package org.example;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 
-public class Personage2 extends PersonageBase{
+public class Personage2 extends PersonageBase {
 
-
+    //юмор
     private int humor;
+    //комуникации
     private int communication;
 
 
@@ -21,7 +22,7 @@ public class Personage2 extends PersonageBase{
         this.status = "Новобранец";
     }
 
-    public SendPhoto  PhotoTheoryFloy(Long chatId) {
+    public SendPhoto PhotoTheoryFloy(Long chatId) {
         return SendPhoto.builder()
                 .chatId(chatId.toString())
                 .photo(new InputFile("https://ltdfoto.ru/image/soo913"))
@@ -31,25 +32,25 @@ public class Personage2 extends PersonageBase{
                         "⚡Энергия: " + energy + "\n" +
                         "⭐Очки достижения: " + achievementPoints + "\n" +
                         "\uD83D\uDCB2Деньги: " + currency + "\n" +
-                        "\uD83D\uDE01Юмор: " + humor  + " — Его мемы так же опасны, как баги в пятницу.  \n" +
+                        "\uD83D\uDE01Юмор: " + humor + " — Его мемы так же опасны, как баги в пятницу.  \n" +
                         "\uD83D\uDDE3\uFE0FНавыки коммуникации: " + communication + " — Объяснит баг так, что ты начнешь сомневаться в себе...")
                 .parseMode("Markdown")
                 .build();
     }
+
     /**
      * Изменить сопротивление дедлайну
      */
-    public void humor (int delta) {
+    public void humor(int delta) {
         this.humor += delta;
     }
 
     /**
      * Изменить аналитику
      */
-    public void communication (int delta) {
+    public void communication(int delta) {
         this.communication += delta;
     }
-
 
 
 }

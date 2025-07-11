@@ -15,9 +15,9 @@ public class Bot extends TelegramLongPollingBot { // класс бота
     private final org.example.Service service;
     private final ArrayListStoryService arrayListStoryService;
     private final MessageHandlerService messageHandlerService;
-    private final StartCommandService startCommandService;
     private final UserService userService;
     private final PersonageCreationService personageCreationService;
+    private final StoryStartService storyStartService;
 
     private boolean hasCharacter(UserEntity user) {
         return user != null && user.getCharacterType() != null && !user.getCharacterType().isEmpty();
@@ -31,26 +31,7 @@ public class Bot extends TelegramLongPollingBot { // класс бота
             Long userId = update.getCallbackQuery().getFrom().getId();
 
             if ("create_personage".equals(data)) {
-                PersonageCreationService.CharacterCreationResult result = personageCreationService.handleCreatePersonageRequest(userId);
-                if (!result.canCreate) {
-                    org.telegram.telegrambots.meta.api.methods.send.SendMessage alreadyCreated = new org.telegram.telegrambots.meta.api.methods.send.SendMessage();
-                    alreadyCreated.setChatId(chatId.toString());
-                    alreadyCreated.setText("У вас уже есть персонаж: " + result.user.getCharacterName() + ". Вы не можете создать нового.");
-                    try {
-                        execute(alreadyCreated);
-                    } catch (TelegramApiException e) {
-                        System.err.println("Ошибка отправки сообщения о наличии персонажа: " + e.getMessage());
-                    }
-                    return;
-                }
-                org.telegram.telegrambots.meta.api.methods.send.SendMessage askName = new org.telegram.telegrambots.meta.api.methods.send.SendMessage();
-                askName.setChatId(chatId.toString());
-                askName.setText("Напишите имя для персонажа");
-                try {
-                    execute(askName);
-                } catch (TelegramApiException e) {
-                    System.err.println("Ошибка отправки запроса имени персонажа: " + e.getMessage());
-                }
+                storyStartService.handleCreatePersonage(this, chatId, userId);
                 return;
             }
         }
@@ -58,11 +39,19 @@ public class Bot extends TelegramLongPollingBot { // класс бота
         if (update.hasMessage() && update.getMessage().hasText()) {
             String text = update.getMessage().getText();
             Long chatId = update.getMessage().getChatId();
+            Long userId = update.getMessage().getFrom().getId();
 
             // Обрабатываем команду /start отдельно
             if ("/start".equals(text)) {
-                startCommandService.handleStartCommand(this, chatId);
-                return; // Выходим, чтобы не обрабатывать дальше
+                storyStartService.handleStart(this, chatId, userId);
+                return;
+            }
+
+            // Обработка ввода имени персонажа
+            UserEntity user = storyStartService.userService.getUserByTgId(userId);
+            if (user != null && "AWAITING_CHARACTER_NAME".equals(user.getState())) {
+                storyStartService.handleCharacterNameInput(this, chatId, userId, text);
+                return;
             }
 
             // Обрабатываем все остальные сообщения через MessageHandlerService

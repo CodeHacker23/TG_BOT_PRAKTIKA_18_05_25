@@ -29,10 +29,92 @@ public class ArrayListStoryService {
     public SendMessage getArrayListTheory(Long chatId) {
         SendMessage theory = new SendMessage();
         theory.setParseMode("Markdown");
-        theory.setText(service.getArrayListInfo());
+        theory.setText(getArrayListInfo());
         theory.setChatId(chatId);
         return theory;
     }
+
+
+    private static String formatArrayListInfo() {
+        StringBuilder sb = new StringBuilder();
+
+        // Пример экранирования
+        sb.append("ArrayList - это динамический массив, реализующий интерфейс List.\n");
+        sb.append("Он автоматически меняет размер на 50% при добавлении/удалении элементов,\n");
+        sb.append("но операции вставки/удаления в середине списка могут быть медленными\n");
+        sb.append("из-за необходимости копирования элементов.\n\n");
+
+        // Пример создания
+        sb.append("Пример создания:\n");
+        sb.append("```\n");
+        sb.append("ArrayList<String> box = new ArrayList<>();\n");
+        sb.append("```\n\n");
+
+        // Методы
+        sb.append("Основные методы:\n\n");
+
+        // add()
+        sb.append("add(E element) - Добавляет элемент в конец списка.\n");
+        sb.append("```\n");
+        sb.append("ArrayList<String> toys = new ArrayList<>();\n");
+        sb.append("toys.add(\"Машинка\"); // Добавили машинку в коробку\n");
+        sb.append("toys.add(\"Кукла\");   // Добавили куклу\n");
+        sb.append("```\n\n");
+
+        // get()
+        sb.append("get(int index) - Получает элемент по индексу.\n");
+        sb.append("```\n");
+        sb.append("String firstToy = toys.get(0); // Получаем первую игрушку (индекс 0)\n");
+        sb.append("System.out.println(firstToy);  // Выведет: Машинка\n");
+        sb.append("```\n\n");
+
+        // set()
+        sb.append("set(int index, E element) - Заменяет элемент.\n");
+        sb.append("```\n");
+        sb.append("toys.set(1, \"Робот\"); // Заменяем куклу на робота\n");
+        sb.append("```\n\n");
+
+        // remove()
+        sb.append("remove(int index) - Удаляет элемент по индексу.\n");
+        sb.append("```\n");
+        sb.append("toys.remove(0); // Удаляем машинку (индекс 0)\n");
+        sb.append("```\n\n");
+
+        // size()
+        sb.append("size() - Возвращает количество элементов.\n\n");
+        sb.append("```\n");
+        sb.append("int count = toys.size();\n");
+        sb.append("System.out.println(\"В коробке \" + count + \" игрушек\");\n");
+        sb.append("```\n\n");
+
+        // add(int index, E element)
+        sb.append("add(int index, E element) — вставка по индексу. \n");
+        sb.append("Позволяет вставить элемент не только в конец , но и в любое место списка.\n");
+        sb.append("Например, вставить \"Новую игрушку\" между \"Машинкой\" и \"Куклой\":\n");
+        sb.append("```\n");
+        sb.append("toys.add(1, \"Новая игрушка\"); // Теперь порядок: Машинка, Новая игрушка, Кукла. ");
+        sb.append("```\n\n");
+        sb.append("Однако вставка в середину списка требует сдвига всех последующих элементов, что может быть медленным для больших списков!! \n");
+
+        //  System.out.println("Формируемая теория: " + sb.toString());
+
+        return sb.toString();
+    }
+
+    public static String getArrayListInfo() {// Сделали что бы все было по людски, по ООП, метод об Array должен быть приватным
+        return formatArrayListInfo();
+    }
+
+
+    public SendPhoto getPhoto(Long chatId) { //
+        SendPhoto sendPhoto = SendPhoto
+                .builder()
+                .chatId(chatId)
+                .photo(new InputFile("https://cdn-images.mn.ru/images/2025/05/mem-o-kak-size_834x1015.jpg"))
+                .build();
+        return sendPhoto;
+    }
+
 
     public SendPhoto getArrayListPhotoTheory(Long chatId) {
         return service.getPhotoTheory(chatId);
@@ -95,7 +177,7 @@ public class ArrayListStoryService {
             } catch (TelegramApiException e) {
                 System.err.println("Ошибка удаления сообщения: " + e.getMessage());
             }
-        }, 10, TimeUnit.SECONDS);
+        }, 50, TimeUnit.SECONDS);
     }
 
     public void sendTheory(org.telegram.telegrambots.bots.TelegramLongPollingBot bot, Long chatId) {
@@ -124,4 +206,5 @@ public class ArrayListStoryService {
     public Map<Long, Integer> getCorrectAnswers() {
         return correctAnswers;
     }
+
 } 
