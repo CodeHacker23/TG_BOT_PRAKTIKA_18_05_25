@@ -13,6 +13,18 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static org.example.ArrayListStoryService.getArrayListInfo;
 
+/**
+ * MessageHandlerService — главный обработчик всех входящих сообщений пользователя (кроме /start и создания персонажа).
+ * Здесь происходит разруливание сценариев: теория, викторины, ответы, переходы между состояниями.
+ *
+ * Почему нельзя лепить всё в Bot? Потому что иначе твой код быстро превратится в ад для дебага.
+ *
+ * Пример расширения:
+ *   - Хочешь добавить новый сценарий (например, LinkedList)? Делай отдельный StoryService и вызывай его отсюда.
+ *   - Для новых команд — добавляй case в switch, но делегируй логику!
+ *
+ * Юмор: если начнёшь писать 100 if-ов подряд — Архитектор лично напишет тебе в Telegram.
+ */
 @Service
 @RequiredArgsConstructor
 public class MessageHandlerService {
@@ -22,10 +34,22 @@ public class MessageHandlerService {
     private final PersonageCreationService personageCreationService;
     private final Map<Long, Boolean> theorySent = new ConcurrentHashMap<>();
 
+    /**
+     * Проверяет, есть ли у пользователя персонаж
+     * @param user — сущность пользователя
+     * @return true, если персонаж уже создан
+     */
     private boolean hasCharacter(UserEntity user) {
         return user != null && user.getCharacterType() != null && !user.getCharacterType().isEmpty();
     }
 
+    /**
+     * Обрабатывает ввод имени персонажа пользователем
+     * @param bot — TelegramLongPollingBot
+     * @param chatId — ID чата
+     * @param userId — ID пользователя
+     * @param characterName — имя персонажа
+     */
     private void processCharacterNameInput(TelegramLongPollingBot bot, Long chatId, Long userId, String characterName) throws TelegramApiException {
         UserEntity user = userService.getUserByTgId(userId);
         if (user == null) {
@@ -39,7 +63,7 @@ public class MessageHandlerService {
                 bot.execute(alreadyCreated);
                 user.setState(null);
                 userService.saveUser(user);
-                System.out.println("Попытка повторного создания персонажа для пользователя: " + user.getTgId());
+                System.out.println("[MessageHandlerService] Попытка повторного создания персонажа для пользователя: " + user.getTgId());
                 return;
             }
             // Создание персонажа
@@ -50,7 +74,7 @@ public class MessageHandlerService {
             user.setState(null);
             user.setEnergy(8);
             userService.saveUser(user);
-            System.out.println("Создан персонаж: " + user.getCharacterType() + " для пользователя: " + user.getTgId());
+            System.out.println("[MessageHandlerService] Создан персонаж: " + user.getCharacterType() + " для пользователя: " + user.getTgId());
             SendPhoto photo = null;
             if (personage instanceof Personage1) {
                 photo = ((Personage1) personage).getSendPhotoTheory(chatId);
@@ -65,10 +89,19 @@ public class MessageHandlerService {
         }
     }
 
+    /**
+     * Главный обработчик всех входящих сообщений (кроме /start и создания персонажа)
+     * @param bot — TelegramLongPollingBot
+     * @param message — объект Message от Telegram
+     *
+     * Пример:
+     *   messageHandlerService.handleMessage(bot, message);
+     */
     public void handleMessage(TelegramLongPollingBot bot, Message message) throws TelegramApiException {
         String text = message.getText();
         Long chatId = message.getChatId();
         Long userId = message.getFrom().getId();
+        System.out.println("[MessageHandlerService] handleMessage() — получено сообщение: '" + text + "' от userId=" + userId);
 
         // Проверяем статус пользователя
         UserEntity user = userService.getUserByTgId(userId);
@@ -77,7 +110,7 @@ public class MessageHandlerService {
             user.setTgId(userId);
             userService.saveUser(user);
         }
-        //проверка персонажа на состояние пользователя
+        // Проверка персонажа на состояние пользователя
         if (user != null && "AWAITING_CHARACTER_NAME".equals(user.getState())) {
             if (hasCharacter(user)) {
                 SendMessage alreadyCreated = new SendMessage(chatId.toString(), "Вы уже создали персонажа, изменить его нельзя.");
@@ -85,7 +118,7 @@ public class MessageHandlerService {
                 // Сбросить состояние, если вдруг оно осталось
                 user.setState(null);
                 userService.saveUser(user);
-                System.out.println("Попытка повторного создания персонажа для пользователя: " + user.getTgId());
+                System.out.println("[MessageHandlerService] Попытка повторного создания персонажа для пользователя: " + user.getTgId());
                 return;
             }
             // Пользователь должен ввести имя персонажа
@@ -97,23 +130,26 @@ public class MessageHandlerService {
 
         try {
             switch (text) {
-                case "Да" -> {  //отправляется теория с фотографиее о том как работает ArrayList
+                case "Да" -> {  // Отправляется теория с фотографией о том как работает ArrayList
+                    System.out.println("[MessageHandlerService] Пользователь выбрал 'Да' — отправляем теорию по ArrayList.");
                     arrayListStoryService.sendTheory(bot, chatId);
                 }
-                case "Нет" -> { // тут должна запуститься викторина по теме, раз пользователь уверен в своих силах, нужно проверить его по максимум, задать такой эдакий вопрос что бы у него закрались сомнения
-                    System.out.println("Вызов superPool для chatId: " + chatId); // Логируем вызов
+                case "Нет" -> { // Запускается викторина по теме
+                    System.out.println("[MessageHandlerService] Пользователь выбрал 'Нет' — отправляем викторину по ArrayList.");
                     bot.execute(arrayListStoryService.getArrayListSuperQuiz(chatId));
                     arrayListStoryService.sendWithKeyboard(bot, chatId, "Уверен, что не хочешь перечитать теорию?");
                 }
                 case "Я изучаю пайтон" -> {
+                    System.out.println("[MessageHandlerService] Пользователь выбрал 'Я изучаю пайтон' — отправляем Python-фото.");
                     bot.execute(arrayListStoryService.getPythonPhoto(chatId));
                     arrayListStoryService.sendWithKeyboard(bot, chatId, "Согласен?!");
                 }
                 case "/ArrayList" -> {
+                    System.out.println("[MessageHandlerService] Пользователь отправил /ArrayList — отправляем теорию.");
                     processCommand(bot, text, chatId);
                 }
-
                 case "Создать персонажа" -> {
+                    System.out.println("[MessageHandlerService] Пользователь выбрал 'Создать персонажа'.");
                     PersonageCreationService.CharacterCreationResult result = personageCreationService.handleCreatePersonageRequest(userId);
                     if (!result.canCreate) {
                         bot.execute(new SendMessage(chatId.toString(), "У вас уже есть персонаж, создать нового нельзя."));
@@ -121,36 +157,48 @@ public class MessageHandlerService {
                     }
                     bot.execute(new SendMessage(chatId.toString(), "Придумайте имя для персонажа:"));
                 }
-
                 default -> {
+                    System.out.println("[MessageHandlerService] Неизвестная команда, пробуем обработать через processCommand().");
                     processCommand(bot, text, chatId);
                 }
             }
         } catch (TelegramApiException e) {
-            System.err.println("Ошибка обработки сообщения для chatId " + chatId + ": " + e.getMessage());
+            System.err.println("[MessageHandlerService] Ошибка обработки сообщения для chatId " + chatId + ": " + e.getMessage());
             // Не бросаем исключение дальше, чтобы бот продолжал работать
         }
     }
 
+    /**
+     * Обрабатывает команды, не относящиеся к основным сценариям
+     * @param bot — TelegramLongPollingBot
+     * @param text — текст команды
+     * @param chatId — ID чата
+     */
     public void processCommand(TelegramLongPollingBot bot, String text, Long chatId) {
         try {
             String result = service.getWay(text);
             if (result != null && !result.trim().isEmpty()) {
                 org.telegram.telegrambots.meta.api.methods.send.SendMessage sendMessage =
                         new org.telegram.telegrambots.meta.api.methods.send.SendMessage(chatId.toString(), result);
-                sendMessage.setParseMode("Markdown"); // Активируем Markdown
+                sendMessage.setParseMode("Markdown");
                 theorySent.compute(chatId, (k, v) -> true);
                 Message response = bot.execute(sendMessage);
                 if (result.equals(getArrayListInfo())) {
                     arrayListStoryService.scheduleMessageDeletion(bot, chatId, response.getMessageId());
                 }
             } else {
-                System.out.println("Пустой результат для команды: " + text);
+                System.out.println("[MessageHandlerService] Пустой результат для команды: " + text);
             }
         } catch (TelegramApiException e) {
-            System.err.println("Ошибка отправки сообщения для chatId " + chatId + ": " + e.getMessage());
+            System.err.println("[MessageHandlerService] Ошибка отправки сообщения для chatId " + chatId + ": " + e.getMessage());
             // Не бросаем исключение, чтобы бот продолжал работать
         }
     }
 
+    // --- Советы по расширению ---
+    // 1. Для новых сценариев (LinkedList, Set и т.д.) делай отдельные StoryService и вызывай их отсюда.
+    // 2. Не пиши 100 if-ов подряд — делегируй логику!
+    // 3. Для новых команд — добавляй case в switch, но не пихай бизнес-логику прямо сюда.
+    // 4. Если логика повторяется — выноси в абстрактные классы/интерфейсы.
+    // 5. Если добавишь обработку без комментария — Архитектор лично напишет тебе в Telegram.
 } 
