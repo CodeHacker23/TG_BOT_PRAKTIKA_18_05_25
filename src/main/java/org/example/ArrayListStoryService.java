@@ -18,15 +18,39 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * ArrayListStoryService — сервис для сюжетной линии по ArrayList.
+ * Здесь вся теория, фотки, викторины, удаление сообщений и прочий интерактив по ArrayList.
+ *
+ * Почему нельзя лепить всё в одном сервисе? Потому что если ты захочешь добавить LinkedListStoryService — твой код не должен превратиться в кашу.
+ *
+ * Пример расширения:
+ *   - Хочешь сделать сюжет по LinkedList? Создай LinkedListStoryService по аналогии с этим классом.
+ *   - Все методы для LinkedList — только туда!
+ *
+ * Юмор: если начнёшь копипастить методы между сервисами — Архитектор лично напишет тебе в Telegram.
+ */
 @Service
 @RequiredArgsConstructor
 public class ArrayListStoryService {
+    // Сервисы, которые нужны для работы сюжета
     private final org.example.Service service;
     private final KeyboardService keyboardService;
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final Map<Long, Integer> correctAnswers = new ConcurrentHashMap<>();
+    private final PhotoService photoService;
 
+    /**
+     * Отправляет теорию по ArrayList в виде SendMessage
+     * @param chatId — ID чата Telegram
+     * @return SendMessage с теорией
+     *
+     * Пример:
+     *   SendMessage theory = arrayListStoryService.getArrayListTheory(chatId);
+     *   bot.execute(theory);
+     */
     public SendMessage getArrayListTheory(Long chatId) {
+        System.out.println("[ArrayListStoryService] getArrayListTheory() — отправляем теорию по ArrayList для chatId=" + chatId);
         SendMessage theory = new SendMessage();
         theory.setParseMode("Markdown");
         theory.setText(getArrayListInfo());
@@ -34,7 +58,10 @@ public class ArrayListStoryService {
         return theory;
     }
 
-
+    /**
+     * Формирует текст теории по ArrayList (вынесено отдельно для переиспользования)
+     * @return String — текст теории
+     */
     private static String formatArrayListInfo() {
         StringBuilder sb = new StringBuilder();
 
@@ -101,33 +128,48 @@ public class ArrayListStoryService {
         return sb.toString();
     }
 
-    public static String getArrayListInfo() {// Сделали что бы все было по людски, по ООП, метод об Array должен быть приватным
+    /**
+     * Получить теорию по ArrayList (для других сервисов)
+     * @return String — текст теории
+     */
+    public static String getArrayListInfo() {
         return formatArrayListInfo();
     }
 
-
-    public SendPhoto getPhoto(Long chatId) { //
-        SendPhoto sendPhoto = SendPhoto
-                .builder()
-                .chatId(chatId)
-                .photo(new InputFile("https://cdn-images.mn.ru/images/2025/05/mem-o-kak-size_834x1015.jpg"))
-                .build();
-        return sendPhoto;
-    }
-
-
+    /**
+     * Отправляет фото по ArrayList (карточка)
+     * @param chatId — ID чата Telegram
+     * @return SendPhoto с фото и описанием
+     */
     public SendPhoto getArrayListPhotoTheory(Long chatId) {
-        return service.getPhotoTheory(chatId);
+        System.out.println("[ArrayListStoryService] getArrayListPhotoTheory() — отправляем фото по ArrayList для chatId=" + chatId);
+        return photoService.getArrayListTheoryPhoto(chatId);
     }
 
+    /**
+     * Отправляет фото Python (пасхалка)
+     * @param chatId — ID чата Telegram
+     * @return SendPhoto с фото Python
+     */
     public SendPhoto getPythonPhoto(Long chatId) {
+        System.out.println("[ArrayListStoryService] getPythonPhoto() — отправляем Python-фото для chatId=" + chatId);
         return SendPhoto.builder()
                 .chatId(chatId)
                 .photo(new InputFile("https://ltdfoto.ru/images/2025/06/11/IMG_2314.jpg"))
                 .build();
     }
 
+    /**
+     * Отправляет викторину по ArrayList (quiz)
+     * @param chatId — ID чата Telegram
+     * @return SendPoll — объект викторины
+     *
+     * Пример:
+     *   SendPoll poll = arrayListStoryService.getArrayListQuiz(chatId);
+     *   bot.execute(poll);
+     */
     public SendPoll getArrayListQuiz(Long chatId) {
+        System.out.println("[ArrayListStoryService] getArrayListQuiz() — отправляем quiz по ArrayList для chatId=" + chatId);
         SendPoll poll = new SendPoll();
         int result = 2;
         poll.setChatId(chatId);
@@ -137,11 +179,16 @@ public class ArrayListStoryService {
         poll.setType("quiz");
         poll.setExplanation("БЛЯДЬ");
         correctAnswers.put(chatId, result);
-
         return poll;
     }
 
+    /**
+     * Отправляет супер-викторину по ArrayList (сложный вопрос)
+     * @param chatId — ID чата Telegram
+     * @return SendPoll — объект викторины
+     */
     public SendPoll getArrayListSuperQuiz(Long chatId) {
+        System.out.println("[ArrayListStoryService] getArrayListSuperQuiz() — отправляем супер-викторину для chatId=" + chatId);
         SendPoll superPool = new SendPoll();
         int correctOption = 3;
         correctAnswers.put(chatId, correctOption);
@@ -158,7 +205,14 @@ public class ArrayListStoryService {
         return superPool;
     }
 
+    /**
+     * Планирует удаление сообщения через 50 секунд и отправляет новую теорию/викторину
+     * @param bot — TelegramLongPollingBot
+     * @param chatId — ID чата
+     * @param messageId — ID сообщения для удаления
+     */
     public void scheduleMessageDeletion(org.telegram.telegrambots.bots.TelegramLongPollingBot bot, Long chatId, Integer messageId) {
+        System.out.println("[ArrayListStoryService] scheduleMessageDeletion() — планируем удаление сообщения messageId=" + messageId + " для chatId=" + chatId);
         scheduler.schedule(() -> {
             try {
                 DeleteMessage deleteMessage = new DeleteMessage();
@@ -166,7 +220,7 @@ public class ArrayListStoryService {
                 deleteMessage.setMessageId(messageId);
                 bot.execute(deleteMessage);
                 try {
-                    SendPhoto sendPhoto = service.getPhoto(chatId);
+                    SendPhoto sendPhoto = photoService.getStartPhoto(chatId);
                     bot.execute(sendPhoto);
                     bot.execute(getArrayListQuiz(chatId));
                     sendWithKeyboard(bot, chatId, "Хотите прочитать теорию о Arraylist?");
@@ -180,19 +234,32 @@ public class ArrayListStoryService {
         }, 50, TimeUnit.SECONDS);
     }
 
+    /**
+     * Отправляет теорию и фото по ArrayList
+     * @param bot — TelegramLongPollingBot
+     * @param chatId — ID чата
+     */
     public void sendTheory(org.telegram.telegrambots.bots.TelegramLongPollingBot bot, Long chatId) {
+        System.out.println("[ArrayListStoryService] sendTheory() — отправляем теорию и фото по ArrayList для chatId=" + chatId);
         SendMessage theory = getArrayListTheory(chatId);
         SendPhoto sendPhoto = getArrayListPhotoTheory(chatId);
         try {
             bot.execute(sendPhoto);
             bot.execute(theory);
         } catch (TelegramApiException e) {
-            System.out.println("Улетел в ексепшен проблема с фото ");
+            System.out.println("Улетел в эксепшн проблема с фото ");
             e.printStackTrace();
         }
     }
 
+    /**
+     * Отправляет сообщение с клавиатурой (например, для выбора Да/Нет)
+     * @param bot — TelegramLongPollingBot
+     * @param chatId — ID чата
+     * @param text — текст сообщения
+     */
     public void sendWithKeyboard(org.telegram.telegrambots.bots.TelegramLongPollingBot bot, Long chatId, String text) {
+        System.out.println("[ArrayListStoryService] sendWithKeyboard() — отправляем сообщение с клавиатурой для chatId=" + chatId + ", текст: " + text);
         SendMessage message = new SendMessage(chatId.toString(), text);
         message.setReplyMarkup(KeyboardService.getStartKeyboardStatic());
         try {
@@ -203,8 +270,19 @@ public class ArrayListStoryService {
         }
     }
 
+    /**
+     * Получить мапу правильных ответов для викторин (chatId -> номер правильного варианта)
+     * @return Map<Long, Integer>
+     */
     public Map<Long, Integer> getCorrectAnswers() {
         return correctAnswers;
     }
 
+    // --- Советы по расширению ---
+    // 1. Хочешь сделать сюжет по LinkedList? Создай LinkedListStoryService по аналогии с этим классом.
+    // 2. Все методы для LinkedList — только туда, не смешивай с ArrayListStoryService.
+    // 3. Для новых викторин — делай отдельные методы (getLinkedListQuiz и т.д.).
+    // 4. Для новых теорий — отдельные методы (getLinkedListTheory и т.д.).
+    // 5. Не копипасть, а выноси общее в абстрактные классы/интерфейсы, если логика повторяется.
+    // 6. Если добавишь логику без комментария — Архитектор лично напишет тебе в Telegram.
 } 

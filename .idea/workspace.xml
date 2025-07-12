@@ -4,19 +4,47 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/StoryStartService.java" afterDir="false" />
+    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="Чуть модифицировали код">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TG_BOT_PRAKTIKA_18_05_25-larik/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TG_BOT_PRAKTIKA_18_05_25-larik/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TG_BOT_PRAKTIKA_18_05_25-larik/.idea/dataSources.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TG_BOT_PRAKTIKA_18_05_25-larik/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TG_BOT_PRAKTIKA_18_05_25-larik/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TG_BOT_PRAKTIKA_18_05_25-larik/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TG_BOT_PRAKTIKA_18_05_25-larik/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TG_BOT_PRAKTIKA_18_05_25-larik/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TG_BOT_PRAKTIKA_18_05_25-larik/src/main/java/org/example/App.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TG_BOT_PRAKTIKA_18_05_25-larik/src/main/java/org/example/ArrayListStoryService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TG_BOT_PRAKTIKA_18_05_25-larik/src/main/java/org/example/Bot.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TG_BOT_PRAKTIKA_18_05_25-larik/src/main/java/org/example/Config.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TG_BOT_PRAKTIKA_18_05_25-larik/src/main/java/org/example/KeyboardService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TG_BOT_PRAKTIKA_18_05_25-larik/src/main/java/org/example/MessageHandlerService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TG_BOT_PRAKTIKA_18_05_25-larik/src/main/java/org/example/Service.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TG_BOT_PRAKTIKA_18_05_25-larik/src/main/java/org/example/StartCommandService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TG_BOT_PRAKTIKA_18_05_25-larik/src/main/java/org/example/UserEntity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TG_BOT_PRAKTIKA_18_05_25-larik/src/main/java/org/example/UserRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TG_BOT_PRAKTIKA_18_05_25-larik/src/main/java/org/example/UserService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TG_BOT_PRAKTIKA_18_05_25-larik/src/main/resources/IMG_2314.JPG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TG_BOT_PRAKTIKA_18_05_25-larik/src/main/resources/application.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TG_BOT_PRAKTIKA_18_05_25-larik/src/test/java/org/example/AppTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/App.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/ArrayListStoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/ArrayListStoryService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Bot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Config.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/KeyboardService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/KeyboardService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/MessageHandlerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/MessageHandlerService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Personage2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Personage2.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Personage3.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Personage3.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/PersonageBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/PersonageBase.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/PersonageCreationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/PersonageCreationService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Service.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/StartCommandService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/StoryStartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/StoryStartService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/UserEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/UserEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,7 +100,7 @@
     &quot;Spring Boot.App.executor&quot;: &quot;Run&quot;,
     &quot;git-widget-placeholder&quot;: &quot;larik&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/ilari/IdeaProjects/TG_BOT_PRAKTIKA_18_05_25&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/ilari/IdeaProjects/SpringWazhno_05_07_25&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -80,6 +108,12 @@
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.IDE.editor.colors.Java&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;redis&quot;,
+      &quot;postgresql&quot;
+    ]
   }
 }</component>
   <component name="RunManager">
@@ -119,7 +153,8 @@
       <option name="presentableId" value="Default" />
       <updated>1750918794956</updated>
       <workItem from="1751885543093" duration="32545000" />
-      <workItem from="1752166735781" duration="10488000" />
+      <workItem from="1752166735781" duration="21949000" />
+      <workItem from="1752316819013" duration="343000" />
     </task>
     <task id="LOCAL-00001" summary="по идеи всеработает как нужн, на команде старт отправляется фото с текстом, затем отправялется сообщение с кнопкой (создать персонажа) кнопка кликабельна, после кнопки отправляется персонаж с характеристиками и фото. все соеденяется с БД2">
       <option name="closed" value="true" />
@@ -161,7 +196,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752060146912</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Чуть модифицировали код">
+      <option name="closed" value="true" />
+      <created>1752231090881</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1752231090881</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -174,6 +217,7 @@
     <MESSAGE value="Сделал, что бы пользователь задавал имя своему персонажа, так-же сохраняется  все в БД, прикручено было состояние пользователя, что бы бот понимал что он ждет имя от пользоавтеля а не абы чего" />
     <MESSAGE value=" Сделал так что бы пользователь когда ввел имя, ему выпадал рандомно персонаж, либо Флоу(это красный) либо синий это Кодыч, будет еще третий персонаж, и с регистриацией закончено, можно отвести душеньку чуть чуть выпить водочки стопок 10 и пойти делать сюжетную линию по Linked" />
     <MESSAGE value="Сделал так что бы кнопка создать персонажа была кликабельна только один раз, прикрутил создание персонажа к id пользователя телеграм а не к БД, Так удобней искать в таблице пользователя, теперь когда пользователь создает имя персонажу отправляется рандомный персонаж из коллекции, так-же обнуляется состояние пользователя, что бы не было проблем с обработкой на проверку персонажа у пользователя, после того если пользователь захочет нажать на кнопку создать персонажа то ему выйдет сообщение (у вас уже есть персонаж с Именем *от пользователя* Создать нового нельзя." />
-    <option name="LAST_COMMIT_MESSAGE" value="Сделал так что бы кнопка создать персонажа была кликабельна только один раз, прикрутил создание персонажа к id пользователя телеграм а не к БД, Так удобней искать в таблице пользователя, теперь когда пользователь создает имя персонажу отправляется рандомный персонаж из коллекции, так-же обнуляется состояние пользователя, что бы не было проблем с обработкой на проверку персонажа у пользователя, после того если пользователь захочет нажать на кнопку создать персонажа то ему выйдет сообщение (у вас уже есть персонаж с Именем *от пользователя* Создать нового нельзя." />
+    <MESSAGE value="Чуть модифицировали код" />
+    <option name="LAST_COMMIT_MESSAGE" value="Чуть модифицировали код" />
   </component>
 </project>

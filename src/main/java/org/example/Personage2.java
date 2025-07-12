@@ -3,14 +3,30 @@ package org.example;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 
+/**
+ * Personage2 — персонаж с уникальными характеристиками: юмор и коммуникации.
+ * Наследует PersonageBase, добавляет свои свойства.
+ *
+ * Как расширять персонажей:
+ *   - Все уникальные свойства (например, юмор, коммуникации) — только здесь.
+ *   - Общие поля (имя, уровень, энергия и т.д.) — только в PersonageBase.
+ *
+ * Пример создания:
+ *   Personage2 p2 = new Personage2();
+ *   p2.setName("Петя");
+ *   p2.humor(10);
+ *
+ * Юмор: если скопируешь поле humor в Personage3 — Архитектор лично напишет тебе в Telegram.
+ */
 public class Personage2 extends PersonageBase {
-
-    //юмор
+    /** Юмор */
     private int humor;
-    //комуникации
+    /** Коммуникации */
     private int communication;
 
-
+    /**
+     * Конструктор персонажа с предустановленными характеристиками.
+     */
     public Personage2() {
         this.name = "";
         this.level = 0;
@@ -22,7 +38,17 @@ public class Personage2 extends PersonageBase {
         this.status = "Новобранец";
     }
 
+    /**
+     * Получить карточку персонажа для Telegram
+     * @param chatId — ID чата Telegram
+     * @return SendPhoto — карточка персонажа
+     *
+     * Пример:
+     *   SendPhoto card = p2.PhotoTheoryFloy(chatId);
+     *   bot.execute(card);
+     */
     public SendPhoto PhotoTheoryFloy(Long chatId) {
+        System.out.println("[Personage2] PhotoTheoryFloy() — отправляем карточку персонажа, имя: " + name);
         return SendPhoto.builder()
                 .chatId(chatId.toString())
                 .photo(new InputFile("https://ltdfoto.ru/image/soo913"))
@@ -39,18 +65,25 @@ public class Personage2 extends PersonageBase {
     }
 
     /**
-     * Изменить сопротивление дедлайну
+     * Изменить юмор
+     * @param delta — на сколько изменить
      */
     public void humor(int delta) {
         this.humor += delta;
+        System.out.println("[Personage2] humor() — новое значение: " + humor);
     }
 
     /**
-     * Изменить аналитику
+     * Изменить коммуникации
+     * @param delta — на сколько изменить
      */
     public void communication(int delta) {
         this.communication += delta;
+        System.out.println("[Personage2] communication() — новое значение: " + communication);
     }
 
-
+    // --- Советы по расширению ---
+    // 1. Все уникальные свойства (например, юмор, коммуникации) — только здесь.
+    // 2. Не копипасть! Если логика повторяется — выноси в базу.
+    // 3. Если добавишь метод без комментария — Архитектор лично напишет тебе в Telegram.
 }
