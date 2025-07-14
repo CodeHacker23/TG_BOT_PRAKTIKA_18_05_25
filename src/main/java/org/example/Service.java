@@ -47,7 +47,7 @@ public class Service {
                 // answer = arrayListStoryService.getArrayListInfo();
             }
             case "" -> {
-                // Пустой запрос — ничего не делаем
+
             }
             default -> {
                 answer = "";
@@ -98,27 +98,6 @@ public class Service {
 //        stringBuilder.append("Iterable");
 
 //        return stringBuilder.toString();
-
-
-//    public static String escapeMarkdown(String text) {
-//        return text.replace("_", "\\_")
-//                .replace("*", "\\*")
-//                .replace("[", "\\[")
-//                .replace("]", "\\]")
-//                .replace("(", "\\(")
-//                .replace(")", "\\)")
-//                .replace("~", "\\~")
-//                .replace("`", "\\`")
-//                .replace(">", "\\>")
-//                .replace("#", "\\#")
-//                .replace("+", "\\+")
-//                .replace("-", "\\-")
-//                .replace("=", "\\=")
-//                .replace("|", "\\|")
-//                .replace("{", "\\{")
-//                .replace("}", "\\}")
-//                .replace(".", "\\.")
-//                .replace("!", "\\!");
 
 
 

@@ -6,6 +6,8 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.example.PersonageBase.getRandomPersonage;
 
@@ -28,6 +30,7 @@ import static org.example.PersonageBase.getRandomPersonage;
 @Component
 @RequiredArgsConstructor
 public class Bot extends TelegramLongPollingBot { // класс бота
+    private static final Logger log = LoggerFactory.getLogger(Bot.class);
     // Все сервисы, которые нужны боту. Если их станет больше 10 — пора делать рефакторинг.
     private final org.example.Service service;
     private final ArrayListStoryService arrayListStoryService;
@@ -63,16 +66,17 @@ public class Bot extends TelegramLongPollingBot { // класс бота
      */
     @Override
     public void onUpdateReceived(Update update) {
-        System.out.println("[Bot] onUpdateReceived() — получен апдейт: " + update);
+        log.info("onUpdateReceived() — получен апдейт: {}", update);
         if (update.hasCallbackQuery()) {
             String data = update.getCallbackQuery().getData();
             Long chatId = update.getCallbackQuery().getMessage().getChatId();
             Long userId = update.getCallbackQuery().getFrom().getId();
-            System.out.println("[Bot] CallbackQuery: data=" + data + ", chatId=" + chatId + ", userId=" + userId);
+            log.info("CallbackQuery: data={}, chatId={}, userId={}", data, chatId, userId);
 
             if ("create_personage".equals(data)) {
-                System.out.println("[Bot] Пользователь нажал 'Создать персонажа'.");
+                log.info("Пользователь нажал 'Создать персонажа'.");
                 storyStartService.handleCreatePersonage(this, chatId, userId);
+                log.info("Завершена обработка callbackQuery 'create_personage'.");
                 return;
             }
         }
@@ -81,32 +85,38 @@ public class Bot extends TelegramLongPollingBot { // класс бота
             String text = update.getMessage().getText();
             Long chatId = update.getMessage().getChatId();
             Long userId = update.getMessage().getFrom().getId();
-            System.out.println("[Bot] Message: text='" + text + "', chatId=" + chatId + ", userId=" + userId);
+            log.info("Message: text='{}', chatId={}, userId={}", text, chatId, userId);
+
+            // --- Удалён дублирующий планировщик отправки фото с вертолетом ---
 
             // Обрабатываем команду /start отдельно
             if ("/start".equals(text)) {
-                System.out.println("[Bot] Пользователь отправил /start.");
+                log.info("Пользователь отправил /start.");
                 storyStartService.handleStart(this, chatId, userId);
+                log.info("Завершена обработка /start.");
                 return;
             }
 
             // Обработка ввода имени персонажа
             UserEntity user = storyStartService.userService.getUserByTgId(userId);
             if (user != null && "AWAITING_CHARACTER_NAME".equals(user.getState())) {
-                System.out.println("[Bot] Пользователь вводит имя персонажа: '" + text + "'.");
+                log.info("Пользователь вводит имя персонажа: '{}'", text);
                 storyStartService.handleCharacterNameInput(this, chatId, userId, text);
+                log.info("Завершена обработка имени персонажа.");
                 return;
             }
 
             // Обрабатываем все остальные сообщения через MessageHandlerService
             try {
-                System.out.println("[Bot] Передаём сообщение в MessageHandlerService.");
+                log.info("Передаём сообщение в MessageHandlerService.");
                 messageHandlerService.handleMessage(this, update.getMessage());
+                log.info("Завершена обработка сообщения MessageHandlerService.");
             } catch (TelegramApiException e) {
-                System.err.println("[Bot] Ошибка в MessageHandlerService: " + e.getMessage());
+                log.error("Ошибка в MessageHandlerService: {}", e.getMessage());
                 throw new RuntimeException(e);
             }
         }
+        log.info("onUpdateReceived() — обработка апдейта завершена.");
     }
 
     /**
