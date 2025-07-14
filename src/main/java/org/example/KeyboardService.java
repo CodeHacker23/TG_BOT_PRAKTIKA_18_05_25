@@ -1,13 +1,17 @@
 package org.example;
 
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * KeyboardService — фабрика всех клавиатур для бота.
@@ -25,6 +29,7 @@ import java.util.List;
  */
 @Service
 public class KeyboardService  {
+    private static final Logger log = LoggerFactory.getLogger(KeyboardService.class);
     /**
      * Клавиатура для старта (Да/Нет/Я изучаю пайтон)
      * @return ReplyKeyboardMarkup — обычная клавиатура
@@ -33,7 +38,7 @@ public class KeyboardService  {
      *   message.setReplyMarkup(KeyboardService.getStartKeyboardStatic());
      */
     public static ReplyKeyboardMarkup getStartKeyboardStatic() {
-        System.out.println("[KeyboardService] getStartKeyboardStatic() — создаём стартовую клавиатуру.");
+        log.info("[KeyboardService] getStartKeyboardStatic() — создаём стартовую клавиатуру.");
         ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
         keyboard.setResizeKeyboard(true);
         keyboard.setOneTimeKeyboard(true);
@@ -54,7 +59,7 @@ public class KeyboardService  {
      *   message.setReplyMarkup(KeyboardService.getCreatePersonageInlineKeyboard());
      */
     public static InlineKeyboardMarkup getCreatePersonageInlineKeyboard() {
-        System.out.println("[KeyboardService] getCreatePersonageInlineKeyboard() — создаём инлайн-клавиатуру для создания персонажа.");
+        log.info("[KeyboardService] getCreatePersonageInlineKeyboard() — создаём инлайн-клавиатуру для создания персонажа.");
         InlineKeyboardButton button = new InlineKeyboardButton();
         button.setText("Создать персонажа");
         button.setCallbackData("create_personage");
@@ -67,6 +72,43 @@ public class KeyboardService  {
 
         return markup;
     }
+
+    //кнопка для метода Байта с вертолетом
+    public static ReplyKeyboardMarkup KeyboardHelicopter() {
+        log.info("[KeyboardService] KeyboardHelicopter()  — создаём клавиатуру после отправки фото с вертолетом");
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
+
+        KeyboardRow variant = new KeyboardRow();
+        variant.add(new KeyboardButton("✅ Продолжить путь программиста"));
+        variant.add(new KeyboardButton("❓ Но что будет со мной?"));
+        replyKeyboardMarkup.setKeyboard(List.of(variant));
+        return replyKeyboardMarkup;
+    }
+
+    /**
+     * Метод для удаления клавиатуры (пустая клавиатура)
+     * @return ReplyKeyboardRemove — объект для удаления клавиатуры
+     */
+
+
+    public static  ReplyKeyboardRemove removeKeyboard() {
+        return new ReplyKeyboardRemove(true);
+    }
+
+    public static ReplyKeyboardMarkup KeyboardPlot() {
+        log.info("KeyboardPlot() — создаём клавиатуру с кнопкой 'Какая?'");
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
+
+        KeyboardRow which = new KeyboardRow();
+        which.add(new KeyboardButton("Какая?"));
+        replyKeyboardMarkup.setKeyboard(List.of(which));
+        return replyKeyboardMarkup;
+    }
+
 
     // Совет: если хочешь добавить новую клавиатуру (например, для LinkedListStoryService), делай отдельный метод здесь:
     // public static ReplyKeyboardMarkup getLinkedListKeyboard() { ... }
