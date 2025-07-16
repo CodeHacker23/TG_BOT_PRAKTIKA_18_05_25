@@ -37,6 +37,7 @@ public class MessageHandlerService {
     private final PersonageCreationService personageCreationService;
     private final Map<Long, Boolean> theorySent = new ConcurrentHashMap<>();
 
+
     /**
      * Проверяет, есть ли у пользователя персонаж
      * @param user — сущность пользователя
@@ -159,6 +160,7 @@ public class MessageHandlerService {
                     if (!result.canCreate) {
                         log.info("У пользователя уже есть персонаж, создание нового запрещено.");
                         bot.execute(new SendMessage(chatId.toString(), "У вас уже есть персонаж, создать нового нельзя."));
+
                         return;
                     }
                     log.info("Просим пользователя ввести имя персонажа.");
@@ -176,9 +178,22 @@ public class MessageHandlerService {
                     // Убираем клавиатуру после ответа
                     SendMessage remove = new SendMessage();
                     remove.setChatId(chatId);
-                    remove.setText("");
+                    remove.setText(" ");
                     remove.setReplyMarkup(KeyboardService.removeKeyboard());
                     bot.execute(remove);
+                }
+
+                case "Я готов✅" ->{
+                    log.info("Пользователь выбрал 'Я готов ✅'");
+                    chatId = message.getChatId();
+                    bot.execute(StoryStartService.ByteFordjParting(chatId));
+                    // Убираем клавиатуру после ответа
+                    SendMessage remove = new SendMessage();
+                    remove.setChatId(chatId);
+                    remove.setText(" ");
+                    remove.setReplyMarkup(KeyboardService.removeKeyboard());
+                    bot.execute(remove);
+
                 }
                 default -> {
                     log.info("Неизвестная команда, пробуем обработать через processCommand().");
