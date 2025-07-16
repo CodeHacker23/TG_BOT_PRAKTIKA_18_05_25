@@ -257,7 +257,7 @@ public class StoryStartService {
         sendMessage.setChatId(chatId);
         sendMessage.setText("\uD83D\uDCBE Перед запуском своей первой программы ты должен понять, что такое структура.\n" +
                 "⚔\uFE0F Именно поэтому тебя ждёт особая симуляция.");
-        sendMessage.setReplyMarkup(KeyboardService.KeyboardPlot());
+        sendMessage.setReplyMarkup(KeyboardService.KeyboardPlot()); //кнопка 'какая?'
         log.info("ByteFordjProgrammer() — сообщение подготовлено и возвращается.");
         return sendMessage;
     }
@@ -277,10 +277,34 @@ public class StoryStartService {
                 "Добро пожаловать в... ");
         String text = bold + "\n\n" + body + spoiler;
         sendMessage.setText(text);
+        log.info("KeyboardService.KeyboardReady()  — обработка кнопки 'я готов'.");
+        sendMessage.setReplyMarkup(KeyboardService.KeyboardReady());
         log.info("sendWhich() — сообщение подготовлено и возвращается.");
+
         return sendMessage;
     }
+    public static SendMessage ByteFordjParting(Long chatId) {
+        log.info("ByteFordjParting() — вызывается для chatId={}", chatId);
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setParseMode("MarkdownV2");
+        String name = "*" + "БайтФордж" + "*";
+        String cursiv = "_" + MarkdownUtil.escapeMarkdownV2("Сынок…") + "_";
+        String body = MarkdownUtil.escapeMarkdownV2(
+            "Я полагаю на тебя большие надежды. Не подведи.\n" +
+            "Даже если тебе встретится злой Set, двойной Map или мутировавший LinkedList...\n" +
+            "Просто помни: каждая структура — это инструмент.\n" +
+            "Вопрос в том, кто его держит."
+        );
+        String text = name + "\n\n" + cursiv + "\n" + body;
+        sendMessage.setText(text);
+        log.info("ByteFordjParting()  — обработка кнопки 'Войти во врата Рима'. Вызывается для chatId={}", chatId);
+        sendMessage.setReplyMarkup(KeyboardService.removeKeyboard());
+        log.info("ByteFordjParting() — сообщение подготовлено и возвращается.");
 
+        //TODO добавить кнопку на переход сюжетики Рима
+        return sendMessage;
+    }
    
 
     // Если добавишь новый метод без комментария — Доктор БайтФордж лично напишет тебе в Telegram.

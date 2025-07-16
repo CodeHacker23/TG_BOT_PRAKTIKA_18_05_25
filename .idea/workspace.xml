@@ -4,13 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment=" И так мы добавили тотальную документацию кода, тотально все расписано, есть схемы взаимодействия кода между классами, куда ссылается что делает, зачем берет, все работает, выводятся на каждой команде логирование, запущен такой-то метод, и т.д выглядит пушка.">
+    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment=" добавили кнопку к сообщению к фото вертолету,сюжетная линия 1 сделана. Все исправно, и улучшено.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Bot.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/KeyboardService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/KeyboardService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/MessageHandlerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/MessageHandlerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/PhotoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/PhotoService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Service.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/StoryStartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/StoryStartService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -122,6 +120,7 @@
       <workItem from="1751885543093" duration="32545000" />
       <workItem from="1752166735781" duration="21949000" />
       <workItem from="1752316819013" duration="30471000" />
+      <workItem from="1752515868494" duration="16159000" />
     </task>
     <task id="LOCAL-00001" summary="по идеи всеработает как нужн, на команде старт отправляется фото с текстом, затем отправялется сообщение с кнопкой (создать персонажа) кнопка кликабельна, после кнопки отправляется персонаж с характеристиками и фото. все соеденяется с БД2">
       <option name="closed" value="true" />
@@ -187,7 +186,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752317922996</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary=" добавили кнопку к сообщению к фото вертолету,сюжетная линия 1 сделана. Все исправно, и улучшено.">
+      <option name="closed" value="true" />
+      <created>1752516343378</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1752516343378</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -202,6 +209,7 @@
     <MESSAGE value="Сделал так что бы кнопка создать персонажа была кликабельна только один раз, прикрутил создание персонажа к id пользователя телеграм а не к БД, Так удобней искать в таблице пользователя, теперь когда пользователь создает имя персонажу отправляется рандомный персонаж из коллекции, так-же обнуляется состояние пользователя, что бы не было проблем с обработкой на проверку персонажа у пользователя, после того если пользователь захочет нажать на кнопку создать персонажа то ему выйдет сообщение (у вас уже есть персонаж с Именем *от пользователя* Создать нового нельзя." />
     <MESSAGE value="Чуть модифицировали код" />
     <MESSAGE value=" И так мы добавили тотальную документацию кода, тотально все расписано, есть схемы взаимодействия кода между классами, куда ссылается что делает, зачем берет, все работает, выводятся на каждой команде логирование, запущен такой-то метод, и т.д выглядит пушка." />
-    <option name="LAST_COMMIT_MESSAGE" value=" И так мы добавили тотальную документацию кода, тотально все расписано, есть схемы взаимодействия кода между классами, куда ссылается что делает, зачем берет, все работает, выводятся на каждой команде логирование, запущен такой-то метод, и т.д выглядит пушка." />
+    <MESSAGE value=" добавили кнопку к сообщению к фото вертолету,сюжетная линия 1 сделана. Все исправно, и улучшено." />
+    <option name="LAST_COMMIT_MESSAGE" value=" добавили кнопку к сообщению к фото вертолету,сюжетная линия 1 сделана. Все исправно, и улучшено." />
   </component>
 </project>

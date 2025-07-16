@@ -109,10 +109,41 @@ public class KeyboardService  {
         return replyKeyboardMarkup;
     }
 
+//кнопка Я готов - для финального сообщения от Байта форджа
+    public static ReplyKeyboardMarkup KeyboardReady(){
+        log.info("KeyboardReady() - cоздаем клавиатуру с кнопкой 'Я готов' ");
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
+
+        KeyboardRow ready = new KeyboardRow();
+        ready.add(new KeyboardButton("Я готов✅"));
+        replyKeyboardMarkup.setKeyboard(List.of(ready));
+        return replyKeyboardMarkup;
+    }
+
+    public static InlineKeyboardMarkup finalGatesOfRome(){ //завершение первого сюжета 1
+        log.info("[KeyboardService] finalButtonByte — создаём инлайн-клавиатуру для создания перехода в сюжетную линию ArrayList.");
+        InlineKeyboardButton button = new InlineKeyboardButton();
+        button.setText("");
+        button.setCallbackData("create_simulation");
+
+        List<InlineKeyboardButton> row = List.of(button);
+        List<List<InlineKeyboardButton>> keyboard = List.of(row);
+
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+        markup.setKeyboard(keyboard);
+
+        return markup;
+    }
+
+
 
     // Совет: если хочешь добавить новую клавиатуру (например, для LinkedListStoryService), делай отдельный метод здесь:
     // public static ReplyKeyboardMarkup getLinkedListKeyboard() { ... }
     // и вызывай его из нужного сервиса.
 
     // Если добавишь клавиатуру без комментария — Архитектор лично напишет тебе в Telegram.
+
+
 } 
