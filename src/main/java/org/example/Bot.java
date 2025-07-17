@@ -3,7 +3,9 @@ package org.example;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.slf4j.Logger;
@@ -38,6 +40,8 @@ public class Bot extends TelegramLongPollingBot { // класс бота
     private final UserService userService;
     private final PersonageCreationService personageCreationService;
     private final StoryStartService storyStartService;
+    private final PhotoService photoService;
+    private final CallbackQueryHandlerService callbackQueryHandlerService;
 
     /**
      * Проверка, есть ли у пользователя персонаж
@@ -71,15 +75,21 @@ public class Bot extends TelegramLongPollingBot { // класс бота
             String data = update.getCallbackQuery().getData();
             Long chatId = update.getCallbackQuery().getMessage().getChatId();
             Long userId = update.getCallbackQuery().getFrom().getId();
+            Integer messageId = update.getCallbackQuery().getMessage().getMessageId();
             log.info("CallbackQuery: data={}, chatId={}, userId={}", data, chatId, userId);
 
-            if ("create_personage".equals(data)) {
-                log.info("Пользователь нажал 'Создать персонажа'.");
-                storyStartService.handleCreatePersonage(this, chatId, userId);
-                log.info("Завершена обработка callbackQuery 'create_personage'.");
-                return;
-            }
+            // Делегируем обработку всех callbackQuery в отдельный сервис
+            callbackQueryHandlerService.handleCallback(this, data, chatId, userId, messageId);
+            return;
         }
+
+
+
+
+
+
+
+
 
         if (update.hasMessage() && update.getMessage().hasText()) {
             String text = update.getMessage().getText();

@@ -194,7 +194,7 @@ public class StoryStartService {
                 //метод отправки отложеного  фото Байта с вертолетом на 4 сек
                 scheduler.schedule(() -> {
                     SendPhoto photoWithKeyboard = sendByteFordj(chatId);
-                    photoWithKeyboard.setReplyMarkup(KeyboardService.KeyboardHelicopter( ));
+                    photoWithKeyboard.setReplyMarkup(KeyboardService.KeyboardHelicopter());
                     try {
                         bot.execute(photoWithKeyboard); // отправляем фото с кнопками!
                     } catch (TelegramApiException e) {
@@ -250,20 +250,20 @@ public class StoryStartService {
         return photoService.getByteFordj(chatId);
     }
 
-
-    public static SendMessage ByteFordjProgrammer(Long chatId){
+    //отправка далее сообщения по 1 сюжету
+    public static SendMessage ByteFordjProgrammer(Long chatId) {
         log.info("ByteFordjProgrammer() — вызывается для chatId={}", chatId);
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setText("\uD83D\uDCBE Перед запуском своей первой программы ты должен понять, что такое структура.\n" +
                 "⚔\uFE0F Именно поэтому тебя ждёт особая симуляция.");
-        sendMessage.setReplyMarkup(KeyboardService.KeyboardPlot()); //кнопка 'какая?'
+        sendMessage.setReplyMarkup(KeyboardService.KeyboardPlot()); //кнопка 'какая?' вызывается
         log.info("ByteFordjProgrammer() — сообщение подготовлено и возвращается.");
         return sendMessage;
     }
 
-    //отправка ответа на сообщение от пользвателя кнопки (какую?)
-    public static SendMessage sendWhich(Long chatId){
+    //отправка ответа на сообщение от пользвателя кнопки (какую?) по 1 сюжету
+    public static SendMessage sendWhich(Long chatId) {
         log.info("sendWhich() — вызывается для chatId={}", chatId);
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
@@ -273,8 +273,8 @@ public class StoryStartService {
         String spoiler = "||" + MarkdownUtil.escapeMarkdownV2("Римскую проекцию Java-машины.") + "||";
         String body = MarkdownUtil.escapeMarkdownV2(
                 "Это древний мир, где алгоритмы маскируются под воинов,\n" +
-                "а коллекции — под боевые порядки.\n\n" +
-                "Добро пожаловать в... ");
+                        "а коллекции — под боевые порядки.\n\n" +
+                        "Добро пожаловать в... ");
         String text = bold + "\n\n" + body + spoiler;
         sendMessage.setText(text);
         log.info("KeyboardService.KeyboardReady()  — обработка кнопки 'я готов'.");
@@ -283,6 +283,8 @@ public class StoryStartService {
 
         return sendMessage;
     }
+
+    //неизменяемый текст для двух сюжетных линий что 1 что 2
     public static SendMessage ByteFordjParting(Long chatId) {
         log.info("ByteFordjParting() — вызывается для chatId={}", chatId);
         SendMessage sendMessage = new SendMessage();
@@ -291,21 +293,66 @@ public class StoryStartService {
         String name = "*" + "БайтФордж" + "*";
         String cursiv = "_" + MarkdownUtil.escapeMarkdownV2("Сынок…") + "_";
         String body = MarkdownUtil.escapeMarkdownV2(
-            "Я полагаю на тебя большие надежды. Не подведи.\n" +
-            "Даже если тебе встретится злой Set, двойной Map или мутировавший LinkedList...\n" +
-            "Просто помни: каждая структура — это инструмент.\n" +
-            "Вопрос в том, кто его держит."
+                "Я полагаю на тебя большие надежды. Не подведи.\n" +
+                        "Даже если тебе встретится злой Set, двойной Map или мутировавший LinkedList...\n" +
+                        "Просто помни: каждая структура — это инструмент.\n" +
+                        "Вопрос в том, кто его держит."
         );
         String text = name + "\n\n" + cursiv + "\n" + body;
         sendMessage.setText(text);
-        log.info("ByteFordjParting()  — обработка кнопки 'Войти во врата Рима'. Вызывается для chatId={}", chatId);
-        sendMessage.setReplyMarkup(KeyboardService.removeKeyboard());
-        log.info("ByteFordjParting() — сообщение подготовлено и возвращается.");
 
-        //TODO добавить кнопку на переход сюжетики Рима
+        log.info("ByteFordjParting()  — обработка кнопки 'Войти во врата Рима'. Вызывается для chatId={}", chatId);
+        sendMessage.setReplyMarkup(KeyboardService.finalGatesOfRome());
+
+        log.info("ByteFordjParting() — сообщение подготовлено и возвращается.");
         return sendMessage;
     }
-   
+
+    //ответ на 2 линию сюжета если пользователь нажал на кнопку (что будет со мной)
+    public static SendMessage ByteFordjAnswerTwo(Long chatId) {
+        log.info(" ByteFordjAnswerTwo — вызывается для chatId={}", chatId);
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setParseMode("Markdown");
+        sendMessage.setText("*БайтФордж:*\n" +
+                "\n" +
+                "Невозможно предсказать...\n" +
+                "Возможно, ты станешь мастером кода.\n" +
+                "А может — попадёшь в NullPointerException вечной практики.\n" +
+                "\n" +
+                "_Но помни: именно ты компилируешь свой путь._\n" +
+                "_Удача любит тех, кто не боится дебага._");
+        sendMessage.setReplyMarkup(KeyboardService.userChoice(chatId));
+        return sendMessage;
+    }
+
+
+    //обработка кнопки Сбежать с симуляции
+    public static SendMessage sendEscape(Long chatId) {
+        log.info("sendEscape — вызывается для chatId={}", chatId);
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setParseMode("Markdown");
+        sendMessage.setText("*БайтФордж:*\n" +
+                "Сбежать?\n" +
+                "Когда в тебе уже пульсирует поток?  \n" +
+                "Когда GC уже следит за тобой?\n");
+        sendMessage.setReplyMarkup(KeyboardService.userChoice(chatId));
+        return sendMessage;
+    }
+
+    public static SendMessage sendEscapeTwoText(Long chatId) {
+        log.info("sendEscapeTwoText — вызывается для chatId={}", chatId);
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setParseMode("Markdown");
+        sendMessage.setText("*БайтФордж:*\n" +
+                "Ладно… Я дам тебе шанс. \n" +
+                "Один… последний… стек отхода, где прячутся те, кто не решился");
+
+        return sendMessage;
+    }
+
 
     // Если добавишь новый метод без комментария — Доктор БайтФордж лично напишет тебе в Telegram.
 }

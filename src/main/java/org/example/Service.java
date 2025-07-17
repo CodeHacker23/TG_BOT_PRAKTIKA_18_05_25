@@ -79,27 +79,6 @@ public class Service {
 }
 
 
-//        stringBuilder.append("bot for lesson collection\n");
-//        stringBuilder.append("/list\n"); // я
-//        stringBuilder.append("/ArrayList\n");
-//        stringBuilder.append("/LinkedList\n");
-//        stringBuilder.append("************\n");
-//        stringBuilder.append("/Set\n");
-//        stringBuilder.append("/HashSet\n");
-//        stringBuilder.append("/linkedHashSet\n");
-//        stringBuilder.append("/TreeSet\n");
-//        stringBuilder.append("************\n"); // C
-//        stringBuilder.append("/Map\n");
-//        stringBuilder.append("/HashMap\n");
-//        stringBuilder.append("/LinkedHashMap\n");
-//        stringBuilder.append("/TreeMap\n");
-//        stringBuilder.append("************\n");
-//        stringBuilder.append("Comparator\n");
-//        stringBuilder.append("Iterable");
-
-//        return stringBuilder.toString();
-
-
 
 
 

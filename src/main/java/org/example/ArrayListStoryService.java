@@ -53,10 +53,11 @@ public class ArrayListStoryService {
         System.out.println("[ArrayListStoryService] getArrayListTheory() — отправляем теорию по ArrayList для chatId=" + chatId);
         SendMessage theory = new SendMessage();
         theory.setParseMode("Markdown");
-        theory.setText(getArrayListInfo());
+        theory.setText(getArrayListInfo(chatId));
         theory.setChatId(chatId);
         return theory;
     }
+
 
     /**
      * Формирует текст теории по ArrayList (вынесено отдельно для переиспользования)
@@ -132,7 +133,7 @@ public class ArrayListStoryService {
      * Получить теорию по ArrayList (для других сервисов)
      * @return String — текст теории
      */
-    public static String getArrayListInfo() {
+    public static String getArrayListInfo(Long chatId) {
         return formatArrayListInfo();
     }
 
