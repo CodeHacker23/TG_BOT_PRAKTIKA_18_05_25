@@ -46,6 +46,11 @@ public class UserEntity {
     /** Энергия пользователя (например, на сутки) */
     private int energy;
 
+    /** Флаг: прошёл ли пользователь сюжетку ArrayList (true — уже был, false — ещё нет) */
+    private boolean passedArrayList = false;
+
+     
+
     // --- Советы по расширению ---
     // 1. Новое поле? Добавь его здесь и в миграцию (ALTER TABLE ...).
     // 2. Не пихай бизнес-логику — только данные.

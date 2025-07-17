@@ -1,7 +1,6 @@
 package org.example;
 
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
@@ -125,8 +124,8 @@ public class KeyboardService  {
     public static InlineKeyboardMarkup finalGatesOfRome(){ //завершение первого сюжета 1
         log.info("[KeyboardService] finalButtonByte — создаём инлайн-клавиатуру для создания перехода в сюжетную линию ArrayList.");
         InlineKeyboardButton button = new InlineKeyboardButton();
-        button.setText("");
-        button.setCallbackData("create_simulation");
+        button.setText("\uD83C\uDFDB️ Войти во врата Рима");
+        button.setCallbackData("enter_arraylist");
 
         List<InlineKeyboardButton> row = List.of(button);
         List<List<InlineKeyboardButton>> keyboard = List.of(row);
@@ -134,9 +133,53 @@ public class KeyboardService  {
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
         markup.setKeyboard(keyboard);
 
+
         return markup;
     }
 
+    //заверешение 1 сюжетной ветки
+    public static ReplyKeyboardMarkup  gladiatorPlot(Long chatId){
+        log.info("gladiatorPlot() - cоздаем клавиатуру с кнопкой 'Принять доспехи'  'Нет, я программист, а не гладиатор' ");
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
+
+        KeyboardRow ready = new KeyboardRow();
+        ready.add(new KeyboardButton("Принять доспехи ⚔\uFE0F"));
+        ready.add(new KeyboardButton("Нет, я программист, а не гладиатор \uD83E\uDDD1\u200D\uD83D\uDCBB"));
+
+        replyKeyboardMarkup.setKeyboard(List.of(ready));
+        return replyKeyboardMarkup;
+    }
+
+    //2 сюжетная линия
+    public static ReplyKeyboardMarkup  userChoice(Long chatId){
+        log.info("gladiatorPlot() - cоздаем клавиатуру с кнопкой '✅ Принять судьбу программиста'  '❌ Сбежать от компиляции' ");
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
+
+        KeyboardRow ready = new KeyboardRow();
+        ready.add(new KeyboardButton("✅ Принять судьбу программиста"));
+        ready.add(new KeyboardButton("❌ Сбежать от компиляции"));
+
+        replyKeyboardMarkup.setKeyboard(List.of(ready));
+        return replyKeyboardMarkup;
+    }
+
+    //2 сюжетная линия
+    public static ReplyKeyboardMarkup comeBack(Long chatId){
+        log.info("gladiatorPlot() - cоздаем клавиатуру с кнопкой '\uD83D\uDCCE Вернуться и скомпилироваться' ");
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
+
+        KeyboardRow ready = new KeyboardRow();
+        ready.add(new KeyboardButton("\uD83D\uDCCE Вернуться и скомпилироваться"));
+
+        replyKeyboardMarkup.setKeyboard(List.of(ready));
+        return replyKeyboardMarkup;
+    }
 
 
     // Совет: если хочешь добавить новую клавиатуру (например, для LinkedListStoryService), делай отдельный метод здесь:

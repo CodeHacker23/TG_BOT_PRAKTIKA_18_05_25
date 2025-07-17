@@ -10,8 +10,14 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static org.example.ArrayListStoryService.getArrayListInfo;
+
+import static org.example.StoryStartService.ByteFordjParting;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +42,7 @@ public class MessageHandlerService {
     public final UserService userService;
     private final PersonageCreationService personageCreationService;
     private final Map<Long, Boolean> theorySent = new ConcurrentHashMap<>();
+    private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
 
     /**
@@ -64,6 +71,7 @@ public class MessageHandlerService {
         if ("AWAITING_CHARACTER_NAME".equals(user.getState())) {
             if (hasCharacter(user)) {
                 SendMessage alreadyCreated = new SendMessage(chatId.toString(), "Вы уже создали персонажа, изменить его нельзя.");
+
                 bot.execute(alreadyCreated);
                 user.setState(null);
                 userService.saveUser(user);
@@ -135,6 +143,7 @@ public class MessageHandlerService {
         }
 
         try {
+            Long finalChatId = chatId;
             switch (text) {
                 case "Да" -> {
                     log.info("Пользователь выбрал 'Да' — отправляем теорию по ArrayList.");
@@ -186,7 +195,7 @@ public class MessageHandlerService {
                 case "Я готов✅" ->{
                     log.info("Пользователь выбрал 'Я готов ✅'");
                     chatId = message.getChatId();
-                    bot.execute(StoryStartService.ByteFordjParting(chatId));
+                    bot.execute(ByteFordjParting(chatId));
                     // Убираем клавиатуру после ответа
                     SendMessage remove = new SendMessage();
                     remove.setChatId(chatId);
@@ -195,6 +204,35 @@ public class MessageHandlerService {
                     bot.execute(remove);
 
                 }
+                case "❓ Но что будет со мной?" -> {
+                    log.info("Пользователь выбрал '❓ Но что будет со мной?' {}", chatId);
+                    chatId = message.getChatId();
+                    bot.execute(StoryStartService.ByteFordjAnswerTwo(chatId));
+                }
+                case "❌ Сбежать от компиляции" -> {
+                    log.info("Пользователь выбрал '❌ Сбежать от компиляции' {}", chatId);
+                    chatId = message.getChatId();
+                    bot.execute(StoryStartService.sendEscapeTwoText(chatId));
+                    // --- Вот тут добавляем отправку фото через 2 секунды ---
+                    scheduler = Executors.newSingleThreadScheduledExecutor();
+                    scheduler.schedule(() -> {
+                        SendPhoto photo = PhotoService.photoJava6(finalChatId);
+                        photo.setReplyMarkup(KeyboardService.comeBack(finalChatId));
+                        try {
+                            bot.execute(photo);
+                        } catch (TelegramApiException e) {
+                            log.error("Ошибка при отправке фото после сбега: ", e);
+                        }
+                    }, 2, TimeUnit.SECONDS);
+
+                }
+
+                case "Принять доспехи ⚔\uFE0F" -> {
+
+                }
+
+
+
                 default -> {
                     log.info("Неизвестная команда, пробуем обработать через processCommand().");
                     processCommand(bot, text, chatId);
@@ -211,7 +249,7 @@ public class MessageHandlerService {
      * @param text — текст команды
      * @param chatId — ID чата
      */
-    public void processCommand(TelegramLongPollingBot bot, String text, Long chatId) {
+    public  void processCommand(TelegramLongPollingBot bot, String text, Long chatId) {
         log.info("processCommand() — text='{}', chatId={}", text, chatId);
         try {
             String result = service.getWay(text);
@@ -221,7 +259,7 @@ public class MessageHandlerService {
                 sendMessage.setParseMode("Markdown");
                 theorySent.compute(chatId, (k, v) -> true);
                 Message response = bot.execute(sendMessage);
-                if (result.equals(getArrayListInfo())) {
+                if (result.equals(getArrayListInfo(chatId))) {
                     arrayListStoryService.scheduleMessageDeletion(bot, chatId, response.getMessageId());
                 }
             } else {

@@ -57,7 +57,6 @@ public class PhotoService {
         return SendPhoto.builder()
                 .chatId(chatId)
                 .photo(new InputFile("https://thepresentation.ru/img/tmb/4/355544/cfe8189200c24b3ef3cec4bbae5c92b1-800x.jpg"))
-                .caption("Теория по ArrayList ...")
                 .parseMode("Markdown")
                 .build();
     }
@@ -122,7 +121,7 @@ public class PhotoService {
         return personage3.PhotoTheoryGeks(chatId);
     }
 
-    //метод фото которы йотправялет Байта с вертолетом.
+    //метод фото которы отправляет Байта с вертолетом.
     public SendPhoto getByteFordj(Long chatId) {
         SendPhoto ByteFordjGoodbay = SendPhoto.builder()
                 .chatId(chatId)
@@ -138,6 +137,55 @@ public class PhotoService {
                 .build();
         return ByteFordjGoodbay;
     }
+
+    //мем встреча в Рим
+    public SendPhoto photoWarrior(Long chatId){
+        SendPhoto sendPhotoStart = SendPhoto
+                .builder()
+                .chatId(chatId)
+                .photo(new InputFile("https://imgfoto.host/i/IMG-6301.cWiDQ5"))
+                .caption("Приветствую, тебя воин! \n" +
+                        "Я потомок JVM! \n" +
+                        "Moй Stack переполнен, но я все равно стою, как Римская империя!!")
+                .build();
+        return sendPhotoStart;
+    }
+
+
+    //генерал фотка его
+    public SendPhoto photoIteratorius(Long chatId){
+        SendPhoto sendPhoto = SendPhoto
+                .builder()
+                .chatId(chatId)
+                .photo(new InputFile("https://ltdfoto.ru/image/sC91sk"))
+                .caption("*Я — Генерал Итераториус.* \n"+
+                        "_На этой арене не выживают те, кто не знает, что такое .next()..._\n" +
+                        "\n" +
+                        "Ты прибыл из будущего...\n" +
+                        "Но, чтобы выжить здесь, тебе нужен новый облик.\n" +
+                        "Не худи, не наушники, не кофеин — А броня \uD83D\uDEE1.\n" +
+                        "\n" +
+                        "Держи доспехи — под размер твоего кода!")
+                .parseMode("Markdown")
+                .replyMarkup(KeyboardService.gladiatorPlot(chatId))
+                .build();
+        return sendPhoto;
+    }
+
+    public static SendPhoto photoJava6(Long chatId){
+        SendPhoto sendPhoto = SendPhoto
+                .builder()
+                .chatId(chatId)
+                .photo(new InputFile("https://ltdfoto.ru/image/sCbgoi"))
+                .caption("Это называется...\n" +
+                        "Симуляция ``` Sys.exit(0) ```\n" +
+                        "Место, где нет структуры. Где каждый день — try, но никогда — catch.")
+                .parseMode("Markdown")
+                .replyMarkup(KeyboardService.comeBack(chatId))
+                .build();
+        return  sendPhoto;
+    }
+
 
     // Добавляйте сюда любые другие методы для фото, если потребуется
     // Если добавишь метод без комментария — тебя найдёт Доктор БайтФордж и заставит писать документацию до пенсии.
