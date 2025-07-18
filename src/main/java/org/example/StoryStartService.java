@@ -5,20 +5,14 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.example.MarkdownUtil;
 
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import org.example.PersonageRepository;
 
 
 /**
@@ -257,6 +251,7 @@ public class StoryStartService {
     private PersonageEntity createPersonageEntityFromBase(PersonageBase base, UserEntity user, String characterName) {
         PersonageEntity entity = new PersonageEntity();
         entity.setUser(user);
+        entity.setTgId(user.getTgId());
         entity.setCharacterType(base.getClass().getSimpleName());
         entity.setName(characterName);
         entity.setLevel(base.getLevel());
@@ -268,6 +263,12 @@ public class StoryStartService {
         if (base instanceof Personage1 p1) {
             entity.setDeadlineResistance(p1.getDeadlineResistance());
             entity.setAnalytics(p1.getAnalytics());
+        } else if (base instanceof Personage2 p2) {
+            entity.setHumor(p2.getHumor());
+            entity.setCommunication(p2.getCommunication());
+        } else if (base instanceof Personage3 p3) {
+            entity.setCodeAccuracy(p3.getCodeAccuracy());
+            entity.setOptimization(p3.getOptimization());
         }
         // TODO: добавить обработку уникальных полей для Personage2, Personage3, если появятся
         return entity;
@@ -382,6 +383,34 @@ public class StoryStartService {
 
         return sendMessage;
     }
+
+
+    public static SendMessage IDEtext(Long chatId) {
+        log.info("IDEtext — вызывается для chatId={}", chatId);
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setParseMode("Markdown");
+        sendMessage.setText("*Итераториус*\n\n" +
+                "Идея хорошая.\n" +
+                "Только не забудь:\n" +
+                "Однажды парень тоже решил «обновить IDE» . \n");
+        return sendMessage;
+    }
+
+    public static SendMessage IDEtext2(Long finalChatId1) {
+        log.info("IDEtext2 — вызывается для chatId={}", finalChatId1);
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(finalChatId1);
+        sendMessage.setParseMode("Markdown");
+        sendMessage.setText("*Итераториус*\n\n" +
+                "Через 2 часа он оказался в Eclipse\n" +
+                "без света, без плагинов… и без веры.\n\n" +
+                "Осталась только тьма…\n" +
+                "и рабочий стол в *NetBeans.*\n");
+        sendMessage.setReplyMarkup(KeyboardService.KeyboardIDE(finalChatId1));
+        return sendMessage;
+    }
+
 
 
     // Если добавишь новый метод без комментария — Доктор БайтФордж лично напишет тебе в Telegram.

@@ -4,15 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="добавил кнопку к сюжету, и почти закончил первую сюжетную линию">
+    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="Все работает, нужно до делать конечные кнопки для персонажа в доспехах.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Bot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/KeyboardService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/KeyboardService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/MessageHandlerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/MessageHandlerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Personage1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Personage1.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/PersonageCreationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/PersonageCreationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Personage2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Personage2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Personage3.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Personage3.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/PersonageEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/PersonageEntity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/StoryStartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/StoryStartService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/UserEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/UserEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -207,7 +206,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752648119915</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="проект запускается не реализованы некоторые кнопки, все сбилось откатываюсь до пуша">
+      <option name="closed" value="true" />
+      <created>1752827225117</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1752827225117</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -224,6 +231,8 @@
     <MESSAGE value=" И так мы добавили тотальную документацию кода, тотально все расписано, есть схемы взаимодействия кода между классами, куда ссылается что делает, зачем берет, все работает, выводятся на каждой команде логирование, запущен такой-то метод, и т.д выглядит пушка." />
     <MESSAGE value=" добавили кнопку к сообщению к фото вертолету,сюжетная линия 1 сделана. Все исправно, и улучшено." />
     <MESSAGE value="добавил кнопку к сюжету, и почти закончил первую сюжетную линию" />
-    <option name="LAST_COMMIT_MESSAGE" value="добавил кнопку к сюжету, и почти закончил первую сюжетную линию" />
+    <MESSAGE value="проект запускается не реализованы некоторые кнопки, все сбилось откатываюсь до пуша" />
+    <MESSAGE value="Все работает, нужно до делать конечные кнопки для персонажа в доспехах." />
+    <option name="LAST_COMMIT_MESSAGE" value="Все работает, нужно до делать конечные кнопки для персонажа в доспехах." />
   </component>
 </project>

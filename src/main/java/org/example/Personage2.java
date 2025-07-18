@@ -82,6 +82,13 @@ public class Personage2 extends PersonageBase {
         System.out.println("[Personage2] communication() — новое значение: " + communication);
     }
 
+    public int getHumor() {
+        return humor;
+    }
+    public int getCommunication() {
+        return communication;
+    }
+
     // --- Советы по расширению ---
     // 1. Все уникальные свойства (например, юмор, коммуникации) — только здесь.
     // 2. Не копипасть! Если логика повторяется — выноси в базу.
