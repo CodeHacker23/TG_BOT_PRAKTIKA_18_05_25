@@ -18,14 +18,27 @@ import java.util.Optional;
  * Юмор: если начнёшь писать SQL вручную в репозитории — Архитектор лично напишет тебе в Telegram.
  */
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
-    /** Найти пользователя по Telegram ID */
+    /**
+     * Найти пользователя по Telegram ID
+     * @param tgId — Telegram user ID
+     * @return Optional<UserEntity> — пользователь, если найден
+     * Пример:
+     *   Optional<UserEntity> userOpt = userRepository.findByTgId(123456789L);
+     */
     Optional<UserEntity> findByTgId(Long tgId);
 
-    /** Найти пользователя по username */
+    /**
+     * Найти пользователя по username
+     * @param username — имя пользователя
+     * @return UserEntity — пользователь, если найден
+     * Пример:
+     *   UserEntity user = userRepository.findByUsername("vasya");
+     */
     UserEntity findByUsername(String username);
 
     // --- Советы по расширению ---
     // 1. Новый способ поиска? Добавь метод findByXxx.
     // 2. Не пихай бизнес-логику — только запросы к БД.
     // 3. Если добавишь метод без комментария — Архитектор лично напишет тебе в Telegram.
+    // Если потребуется сложная логика — создай кастомный репозиторий и реализуй там с логами.
 }

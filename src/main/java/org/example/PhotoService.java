@@ -122,7 +122,17 @@ public class PhotoService {
     }
 
     //метод фото которы отправляет Байта с вертолетом.
+    /**
+     * Фото с БайтФорджем на вертолёте (эпичный момент)
+     * @param chatId — ID чата Telegram
+     * @return SendPhoto — фото для эпичного прощания
+     * Пример:
+     *   SendPhoto photo = photoService.getByteFordj(chatId);
+     *   bot.execute(photo);
+     * Юмор: если не добавишь подпись — БайтФордж улетит без тебя.
+     */
     public SendPhoto getByteFordj(Long chatId) {
+        System.out.println("[PhotoService] getByteFordj() — вызываем фото с БайтФорджем на вертолёте.");
         SendPhoto ByteFordjGoodbay = SendPhoto.builder()
                 .chatId(chatId)
                 .photo(new InputFile("https://ltdfoto.ru/image/s5AGts"))
@@ -138,8 +148,17 @@ public class PhotoService {
         return ByteFordjGoodbay;
     }
 
-    //мем встреча в Рим
+    /**
+     * Мем: встреча в Риме (фото воина)
+     * @param chatId — ID чата Telegram
+     * @return SendPhoto — мемная фотка
+     * Пример:
+     *   SendPhoto photo = photoService.photoWarrior(chatId);
+     *   bot.execute(photo);
+     * Юмор: если не добавишь мем — Архитектор пришлёт тебе мем про SpaghettiCode.
+     */
     public SendPhoto photoWarrior(Long chatId){
+        System.out.println("[PhotoService] photoWarrior() — отправляем мемную фотку воина.");
         SendPhoto sendPhotoStart = SendPhoto
                 .builder()
                 .chatId(chatId)
@@ -151,9 +170,17 @@ public class PhotoService {
         return sendPhotoStart;
     }
 
-
-    //генерал фотка его
+    /**
+     * Фото генерала Итераториуса (легенда коллекций)
+     * @param chatId — ID чата Telegram
+     * @return SendPhoto — фото генерала
+     * Пример:
+     *   SendPhoto photo = photoService.photoIteratorius(chatId);
+     *   bot.execute(photo);
+     * Юмор: если не знаешь, что такое .next() — Итераториус тебя не пощадит.
+     */
     public SendPhoto photoIteratorius(Long chatId){
+        System.out.println("[PhotoService] photoIteratorius() — отправляем фото генерала Итераториуса.");
         SendPhoto sendPhoto = SendPhoto
                 .builder()
                 .chatId(chatId)
@@ -172,7 +199,17 @@ public class PhotoService {
         return sendPhoto;
     }
 
+    /**
+     * Фото Java 6 (симуляция Sys.exit(0))
+     * @param chatId — ID чата Telegram
+     * @return SendPhoto — мемная фотка про Java 6
+     * Пример:
+     *   SendPhoto photo = PhotoService.photoJava6(chatId);
+     *   bot.execute(photo);
+     * Юмор: если не знаешь, что такое try/catch — баги вылезут из всех коллекций.
+     */
     public static SendPhoto photoJava6(Long chatId){
+        System.out.println("[PhotoService] photoJava6() — отправляем мемную фотку про Java 6.");
         SendPhoto sendPhoto = SendPhoto
                 .builder()
                 .chatId(chatId)

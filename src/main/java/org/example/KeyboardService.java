@@ -139,7 +139,7 @@ public class KeyboardService  {
 
     //заверешение 1 сюжетной ветки
     public static ReplyKeyboardMarkup  gladiatorPlot(Long chatId){
-        log.info("gladiatorPlot() - cоздаем клавиатуру с кнопкой 'Принять доспехи'  'Нет, я программист, а не гладиатор' ");
+        log.info("gladiatorPlot() - cоздаем клавиатуру с кнопкой 'Принять доспехи'  'Я лучше пойду обновлю IDE' ");
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         replyKeyboardMarkup.setResizeKeyboard(true);
         replyKeyboardMarkup.setOneTimeKeyboard(true);

@@ -15,8 +15,13 @@ public class Personage1 extends PersonageBase {
 
     /**
      * Конструктор персонажа с предустановленными характеристиками.
+     * Здесь создаётся новый герой с уникальными параметрами.
+     * Пример:
+     *   Personage1 p1 = new Personage1();
+     * Юмор: если забудешь вызвать super() — Архитектор лично напишет тебе в Telegram.
      */
     public Personage1() {
+        System.out.println("[Personage1] Конструктор — создаём нового персонажа Personage1");
         this.name = "";
         this.level = 0;
         this.energy = 8;
@@ -25,33 +30,66 @@ public class Personage1 extends PersonageBase {
         this.deadlineResistance = 90;
         this.analytics = 110;
         this.status = "Новобранец";
+        System.out.println("[Personage1] Конструктор — персонаж создан: " + this);
     }
 
     /**
      * Изменить сопротивление дедлайну
+     * @param delta — на сколько изменить
+     * Пример:
+     *   p1.changeDeadlineResistance(5);
+     * Юмор: если сопротивление стало отрицательным — пора брать отпуск.
      */
     public void changeDeadlineResistance(int delta) {
+        System.out.println("[Personage1] changeDeadlineResistance() — старт, текущее значение: " + deadlineResistance);
         this.deadlineResistance += delta;
+        System.out.println("[Personage1] changeDeadlineResistance() — завершено, новое значение: " + deadlineResistance);
     }
 
     /**
      * Изменить аналитику
+     * @param delta — на сколько изменить
+     * Пример:
+     *   p1.changeAnalytics(10);
+     * Юмор: если аналитика > 9000 — ты уже Архитектор.
      */
     public void changeAnalytics(int delta) {
+        System.out.println("[Personage1] changeAnalytics() — старт, текущее значение: " + analytics);
         this.analytics += delta;
+        System.out.println("[Personage1] changeAnalytics() — завершено, новое значение: " + analytics);
     }
 
+    /**
+     * Получить сопротивление дедлайну
+     * @return int — текущее значение сопротивления дедлайну
+     * Пример:
+     *   int dr = p1.getDeadlineResistance();
+     */
     public int getDeadlineResistance() {
+        System.out.println("[Personage1] getDeadlineResistance() — возвращаем значение: " + deadlineResistance);
         return deadlineResistance;
     }
+    /**
+     * Получить аналитику
+     * @return int — текущее значение аналитики
+     * Пример:
+     *   int a = p1.getAnalytics();
+     */
     public int getAnalytics() {
+        System.out.println("[Personage1] getAnalytics() — возвращаем значение: " + analytics);
         return analytics;
     }
 
     /**
      * Получить объект SendPhoto с фото и описанием персонажа для Telegram
+     * @param chatId — ID чата Telegram
+     * @return SendPhoto — карточка персонажа
+     * Пример:
+     *   SendPhoto card = p1.getSendPhotoTheory(chatId);
+     *   bot.execute(card);
      */
     public SendPhoto getSendPhotoTheory(Long chatId) {
+        System.out.println("[Personage1] getSendPhotoTheory() — отправляем карточку персонажа, имя: " + name);
         return SendPhoto.builder()
                 .chatId(chatId.toString())
                 .photo(new InputFile("https://ltdfoto.ru/images/2025/07/02/KODYC.jpg"))
@@ -66,5 +104,7 @@ public class Personage1 extends PersonageBase {
                 .parseMode("Markdown")
                 .build();
     }
+
+
 }
  
