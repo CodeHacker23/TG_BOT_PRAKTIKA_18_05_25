@@ -80,7 +80,7 @@ public class UserService {
             newUser.setTgId(tgId);
             return newUser;
         });
-        user.setCharacterType(personage.getClass().getSimpleName());
+        user.getPersonage().setCharacterType(personage.getClass().getSimpleName());
         userRepository.save(user);
     }
 

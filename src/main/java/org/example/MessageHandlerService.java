@@ -51,7 +51,7 @@ public class MessageHandlerService {
      * @return true, если персонаж уже создан
      */
     private boolean hasCharacter(UserEntity user) {
-        return user != null && user.getCharacterType() != null && !user.getCharacterType().isEmpty();
+        return user != null && user.getPersonage() != null && user.getPersonage().getCharacterType() != null && !user.getPersonage().getCharacterType().isEmpty();
     }
 
     /**
@@ -81,12 +81,11 @@ public class MessageHandlerService {
             // Создание персонажа
             PersonageBase personage = PersonageBase.getRandomPersonage();
             personage.setName(characterName);
-            user.setCharacterType(personage.getClass().getSimpleName());
-            user.setCharacterName("*" + characterName + "*");
-            user.setState(null);
-            user.setEnergy(8);
+            user.getPersonage().setCharacterType(personage.getClass().getSimpleName());
+            user.getPersonage().setName("*" + characterName + "*");
+            user.getPersonage().setEnergy(8);
             userService.saveUser(user);
-            log.info("Создан персонаж: {} для пользователя: {}", user.getCharacterType(), user.getTgId());
+            log.info("Создан персонаж: {} для пользователя: {}", user.getPersonage() != null ? user.getPersonage().getCharacterType() : "<нет персонажа>", user.getTgId());
             SendPhoto photo = null;
             if (personage instanceof Personage1) {
                 photo = ((Personage1) personage).getSendPhotoTheory(chatId);

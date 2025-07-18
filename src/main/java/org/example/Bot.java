@@ -52,7 +52,7 @@ public class Bot extends TelegramLongPollingBot { // класс бота
      *   if (hasCharacter(user)) { ... }
      */
     private boolean hasCharacter(UserEntity user) {
-        return user != null && user.getCharacterType() != null && !user.getCharacterType().isEmpty();
+        return user != null && user.getPersonage() != null && user.getPersonage().getCharacterType() != null && !user.getPersonage().getCharacterType().isEmpty();
     }
 
     /**

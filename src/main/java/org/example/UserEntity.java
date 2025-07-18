@@ -22,34 +22,52 @@ import lombok.Data;
 @Data
 @Table(name = "users")
 public class UserEntity {
-    /** Внутренний ID пользователя (PRIMARY KEY) */
+    /**
+     * Внутренний ID пользователя (PRIMARY KEY)
+     * Используется для связи с персонажем (PersonageEntity)
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** Telegram user ID (уникальный) */
+    /**
+     * Telegram user ID (уникальный идентификатор пользователя в Telegram)
+     */
     @Column(unique = true)
     private Long tgId;
 
-    /** Имя пользователя в Telegram */
+    /**
+     * Имя пользователя в Telegram
+     */
     private String username;
 
-    /** Тип выбранного персонажа (Personage1, Personage2, ...) */
-    private String characterType;
-
-    /** Имя персонажа, заданное пользователем */
-    private String characterName;
-
-    /** Текущее состояние пользователя (например, AWAITING_CHARACTER_NAME) */
+    /**
+     * Текущее состояние пользователя (например, AWAITING_CHARACTER_NAME)
+     * Используется для отслеживания прогресса пользователя в боте
+     */
     private String state = "AWAITING_CHARACTER_NAME";
 
-    /** Энергия пользователя (например, на сутки) */
-    private int energy;
-
-    /** Флаг: прошёл ли пользователь сюжетку ArrayList (true — уже был, false — ещё нет) */
+    /**
+     * Флаг: прошёл ли пользователь сюжетку ArrayList (true — уже был, false — ещё нет)
+     */
     private boolean passedArrayList = false;
 
-     
+    /**
+     * Связь с персонажем пользователя (PersonageEntity)
+     * Один пользователь — один персонаж (OneToOne)
+     * mappedBy = "user" означает, что владеющая сторона — PersonageEntity
+     */
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private PersonageEntity personage;
+
+    /**
+     * Геттер для получения персонажа пользователя
+     * @return персонаж пользователя или null, если не создан
+     */
+    public PersonageEntity getPersonage() {
+        return personage;
+    }
+
 
     // --- Советы по расширению ---
     // 1. Новое поле? Добавь его здесь и в миграцию (ALTER TABLE ...).

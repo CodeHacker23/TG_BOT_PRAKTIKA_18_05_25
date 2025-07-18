@@ -6,14 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="добавил кнопку к сюжету, и почти закончил первую сюжетную линию">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/ArrayListStoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/ArrayListStoryService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Bot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/KeyboardService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/KeyboardService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/MessageHandlerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/MessageHandlerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/PhotoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/PhotoService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Service.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Personage1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Personage1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/PersonageCreationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/PersonageCreationService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/StoryStartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/StoryStartService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/UserEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/UserEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

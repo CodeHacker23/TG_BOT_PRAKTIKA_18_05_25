@@ -32,8 +32,8 @@ public class PersonageCreationService {
      */
     public boolean hasCharacter(UserEntity user) {
         boolean result = user != null
-                && user.getCharacterType() != null && !user.getCharacterType().isEmpty()
-                && user.getCharacterName() != null && !user.getCharacterName().isEmpty();
+                && user.getPersonage() != null && user.getPersonage().getCharacterType() != null && !user.getPersonage().getCharacterType().isEmpty()
+                && user.getPersonage() != null && user.getPersonage().getName() != null && !user.getPersonage().getName().isEmpty();
         System.out.println("[PersonageCreationService] hasCharacter() — userId=" + (user != null ? user.getTgId() : null) + ", result=" + result);
         return result;
     }

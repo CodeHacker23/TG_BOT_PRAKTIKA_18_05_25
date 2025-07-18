@@ -41,6 +41,13 @@ public class Personage1 extends PersonageBase {
         this.analytics += delta;
     }
 
+    public int getDeadlineResistance() {
+        return deadlineResistance;
+    }
+    public int getAnalytics() {
+        return analytics;
+    }
+
     /**
      * Получить объект SendPhoto с фото и описанием персонажа для Telegram
      */
