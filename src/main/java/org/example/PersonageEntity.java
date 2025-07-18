@@ -79,5 +79,19 @@ public class PersonageEntity {
      * Аналитика (характеристика)
      */
     private Integer analytics;
+
+    /**
+     * Telegram user ID (уникальный идентификатор пользователя в Telegram)
+     */
+    private Long tgId;
+
+    /** Юмор (уникальное поле Personage2) */
+    private Integer humor;
+    /** Коммуникации (уникальное поле Personage2) */
+    private Integer communication;
+    /** Точность кода (уникальное поле Personage3) */
+    private Integer codeAccuracy;
+    /** Оптимизация (уникальное поле Personage3) */
+    private Integer optimization;
     // ... добавь остальные уникальные поля для других персонажей
 } 

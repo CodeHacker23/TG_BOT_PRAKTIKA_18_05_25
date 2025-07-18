@@ -24,13 +24,13 @@ import org.slf4j.LoggerFactory;
 /**
  * MessageHandlerService — главный обработчик всех входящих сообщений пользователя (кроме /start и создания персонажа).
  * Здесь происходит разруливание сценариев: теория, викторины, ответы, переходы между состояниями.
- *
+ * <p>
  * Почему нельзя лепить всё в Bot? Потому что иначе твой код быстро превратится в ад для дебага.
- *
+ * <p>
  * Пример расширения:
- *   - Хочешь добавить новый сценарий (например, LinkedList)? Делай отдельный StoryService и вызывай его отсюда.
- *   - Для новых команд — добавляй case в switch, но делегируй логику!
- *
+ * - Хочешь добавить новый сценарий (например, LinkedList)? Делай отдельный StoryService и вызывай его отсюда.
+ * - Для новых команд — добавляй case в switch, но делегируй логику!
+ * <p>
  * Юмор: если начнёшь писать 100 if-ов подряд — Архитектор лично напишет тебе в Telegram.
  */
 @Service
@@ -47,6 +47,7 @@ public class MessageHandlerService {
 
     /**
      * Проверяет, есть ли у пользователя персонаж
+     *
      * @param user — сущность пользователя
      * @return true, если персонаж уже создан
      */
@@ -56,9 +57,10 @@ public class MessageHandlerService {
 
     /**
      * Обрабатывает ввод имени персонажа пользователем
-     * @param bot — TelegramLongPollingBot
-     * @param chatId — ID чата
-     * @param userId — ID пользователя
+     *
+     * @param bot           — TelegramLongPollingBot
+     * @param chatId        — ID чата
+     * @param userId        — ID пользователя
      * @param characterName — имя персонажа
      */
     private void processCharacterNameInput(TelegramLongPollingBot bot, Long chatId, Long userId, String characterName) throws TelegramApiException {
@@ -102,11 +104,12 @@ public class MessageHandlerService {
 
     /**
      * Главный обработчик всех входящих сообщений (кроме /start и создания персонажа)
-     * @param bot — TelegramLongPollingBot
-     * @param message — объект Message от Telegram
      *
-     * Пример:
-     *   messageHandlerService.handleMessage(bot, message);
+     * @param bot     — TelegramLongPollingBot
+     * @param message — объект Message от Telegram
+     *                <p>
+     *                Пример:
+     *                messageHandlerService.handleMessage(bot, message);
      */
     public void handleMessage(TelegramLongPollingBot bot, Message message) throws TelegramApiException {
         String text = message.getText();
@@ -124,7 +127,7 @@ public class MessageHandlerService {
         }
         // Проверка персонажа на состояние пользователя
         if (user != null && "AWAITING_CHARACTER_NAME".equals(user.getState())) {
-            if(hasCharacter(user)){
+            if (hasCharacter(user)) {
                 log.info("Попытка повторного создания персонажа для пользователя: {}", user.getTgId());
                 SendMessage alreadyCreated = new SendMessage(chatId.toString(), "Вы уже создали персонажа, изменить его нельзя.");
                 bot.execute(alreadyCreated);
@@ -143,6 +146,7 @@ public class MessageHandlerService {
 
         try {
             Long finalChatId = chatId;
+            Long finalChatId1 = chatId;
             switch (text) {
                 case "Да" -> {
                     log.info("Пользователь выбрал 'Да' — отправляем теорию по ArrayList.");
@@ -177,7 +181,7 @@ public class MessageHandlerService {
                 case "✅ Продолжить путь программиста" -> {
                     log.info("Пользователь выбрал 'Продолжить путь программиста'.");
                     chatId = message.getChatId();
-                    bot.execute( StoryStartService.ByteFordjProgrammer(chatId));
+                    bot.execute(StoryStartService.ByteFordjProgrammer(chatId));
                 }
                 case "Какая?" -> {
                     log.info("Пользователь выбрал 'Какая?'.");
@@ -191,7 +195,7 @@ public class MessageHandlerService {
                     bot.execute(remove);
                 }
 
-                case "Я готов✅" ->{
+                case "Я готов✅" -> {
                     log.info("Пользователь выбрал 'Я готов ✅'");
                     chatId = message.getChatId();
                     bot.execute(ByteFordjParting(chatId));
@@ -226,9 +230,43 @@ public class MessageHandlerService {
 
                 }
 
-                case "Принять доспехи ⚔\uFE0F" -> {
+                case "Я лучше пойду обновлю IDE" -> {
+                    log.info("Пользователь выбрал 'Я лучше пойду обновлю IDE' {}", chatId);
+                    chatId = message.getChatId();
+                    bot.execute(StoryStartService.IDEtext(chatId));
+                    scheduler.schedule(() -> {
+                        try {
+                            bot.execute(StoryStartService.IDEtext2(finalChatId1));
+                        } catch (TelegramApiException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }, 2, TimeUnit.SECONDS);
 
                 }
+
+                case "✅ Принять судьбу программиста" -> {
+                    log.info("Пользователь выбрал '✅ Принять судьбу программиста' {}", chatId);
+                    chatId = message.getChatId();
+                    bot.execute(StoryStartService.ByteFordjProgrammer(chatId));
+                }
+
+                case "\uD83D\uDCCE Вернуться и скомпилироваться" ->{
+                    log.info("Пользователь выбрал 'Вернуться и скомпилироваться' {}", chatId);
+                    chatId = message.getChatId();
+                    bot.execute(StoryStartService.ByteFordjProgrammer(chatId));
+                    log.info("[Вернуться и скомпилироваться] - отработал  ");
+                }
+
+                case "Принять доспехи ⚔\uFE0F" -> {
+                    log.info("Пользователь выбрал 'Принять доспехи ⚔\uFE0F' {}", chatId);
+                }
+
+                case "☕\uFE0F К чёрту NetBeans. Я готов к Риму!" ->{
+                    log.info("☕\uFE0F К чёрту NetBeans. Я готов к Риму!' {}", chatId);
+
+                }
+
+
 
 
 
@@ -244,17 +282,18 @@ public class MessageHandlerService {
 
     /**
      * Обрабатывает команды, не относящиеся к основным сценариям
-     * @param bot — TelegramLongPollingBot
-     * @param text — текст команды
+     *
+     * @param bot    — TelegramLongPollingBot
+     * @param text   — текст команды
      * @param chatId — ID чата
      */
-    public  void processCommand(TelegramLongPollingBot bot, String text, Long chatId) {
+    public void processCommand(TelegramLongPollingBot bot, String text, Long chatId) {
         log.info("processCommand() — text='{}', chatId={}", text, chatId);
         try {
             String result = service.getWay(text);
             if (result != null && !result.trim().isEmpty()) {
                 log.info("Отправляем результат команды: '{}'", result);
-                SendMessage sendMessage = new   SendMessage(chatId.toString(), result);
+                SendMessage sendMessage = new SendMessage(chatId.toString(), result);
                 sendMessage.setParseMode("Markdown");
                 theorySent.compute(chatId, (k, v) -> true);
                 Message response = bot.execute(sendMessage);

@@ -82,6 +82,13 @@ public class Personage3 extends PersonageBase {
         System.out.println("[Personage3] optimization() — новое значение: " + optimization);
     }
 
+    public int getCodeAccuracy() {
+        return codeAccuracy;
+    }
+    public int getOptimization() {
+        return optimization;
+    }
+
     // --- Советы по расширению ---
     // 1. Все уникальные свойства (например, codeAccuracy, optimization) — только здесь.
     // 2. Не копипасть! Если логика повторяется — выноси в базу.

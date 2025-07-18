@@ -146,7 +146,7 @@ public class KeyboardService  {
 
         KeyboardRow ready = new KeyboardRow();
         ready.add(new KeyboardButton("Принять доспехи ⚔\uFE0F"));
-        ready.add(new KeyboardButton("Нет, я программист, а не гладиатор \uD83E\uDDD1\u200D\uD83D\uDCBB"));
+        ready.add(new KeyboardButton("Я лучше пойду обновлю IDE"));
 
         replyKeyboardMarkup.setKeyboard(List.of(ready));
         return replyKeyboardMarkup;
@@ -176,6 +176,20 @@ public class KeyboardService  {
 
         KeyboardRow ready = new KeyboardRow();
         ready.add(new KeyboardButton("\uD83D\uDCCE Вернуться и скомпилироваться"));
+
+        replyKeyboardMarkup.setKeyboard(List.of(ready));
+        return replyKeyboardMarkup;
+    }
+
+    //2 сюжетная линия
+    public static ReplyKeyboardMarkup  KeyboardIDE(Long chatId){
+        log.info("KeyboardIDE - cоздаем клавиатуру с кнопкой '☕\uFE0F К чёрту NetBeans. Я готов к Риму!' ");
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
+
+        KeyboardRow ready = new KeyboardRow();
+        ready.add(new KeyboardButton("☕\uFE0F К чёрту NetBeans. Я готов к Риму!"));
 
         replyKeyboardMarkup.setKeyboard(List.of(ready));
         return replyKeyboardMarkup;
