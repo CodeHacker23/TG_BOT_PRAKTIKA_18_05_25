@@ -192,7 +192,11 @@ public class MessageHandlerService {
                     remove.setChatId(chatId);
                     remove.setText(" ");
                     remove.setReplyMarkup(KeyboardService.removeKeyboard());
-                    bot.execute(remove);
+                    if (remove.getText() != null && !remove.getText().trim().isEmpty()) {
+                        bot.execute(remove);
+                    } else {
+                        log.error("Попытка отправить пустое сообщение для chatId {}! Сообщение не будет отправлено.", chatId);
+                    }
                 }
 
                 case "Я готов✅" -> {
@@ -204,7 +208,11 @@ public class MessageHandlerService {
                     remove.setChatId(chatId);
                     remove.setText(" ");
                     remove.setReplyMarkup(KeyboardService.removeKeyboard());
-                    bot.execute(remove);
+                    if (remove.getText() != null && !remove.getText().trim().isEmpty()) {
+                        bot.execute(remove);
+                    } else {
+                        log.error("Попытка отправить пустое сообщение для chatId {}! Сообщение не будет отправлено.", chatId);
+                    }
 
                 }
                 case "❓ Но что будет со мной?" -> {
@@ -301,7 +309,7 @@ public class MessageHandlerService {
                     arrayListStoryService.scheduleMessageDeletion(bot, chatId, response.getMessageId());
                 }
             } else {
-                log.info("Пустой результат для команды: {}", text);
+                log.error("Попытка отправить пустое сообщение для chatId {}! Сообщение не будет отправлено.", chatId);
             }
         } catch (TelegramApiException e) {
             log.error("Ошибка отправки сообщения для chatId {}: {}", chatId, e.getMessage());

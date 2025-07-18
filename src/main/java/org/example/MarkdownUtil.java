@@ -22,12 +22,17 @@ public class MarkdownUtil {
      *
      * Пример:
      *   String safe = MarkdownUtil.escapeMarkdownV2("*Hello* _world_.");
-     *   // safe: \*Hello\* \_world\_\.
+     *   // safe: \\*Hello\\* \\_world\\_.
+     * Юмор: если забудешь экранировать точку — Telegram тебя накажет.
      */
     public static String escapeMarkdownV2(String text) {
-        if (text == null) return null;
+        System.out.println("[MarkdownUtil] escapeMarkdownV2() — старт, входной текст: " + text);
+        if (text == null) {
+            System.out.println("[MarkdownUtil] escapeMarkdownV2() — входной текст null, возвращаем null");
+            return null;
+        }
         // Экранируем все спецсимволы по очереди
-        return text.replace("_", "\\_")
+        String result = text.replace("_", "\\_")
                 .replace("*", "\\*")
                 .replace("[", "\\[")
                 .replace("]", "\\]")
@@ -45,6 +50,8 @@ public class MarkdownUtil {
                 .replace("}", "\\}")
                 .replace(".", "\\.")
                 .replace("!", "\\!");
+        System.out.println("[MarkdownUtil] escapeMarkdownV2() — результат: " + result);
+        return result;
     }
 
     /**

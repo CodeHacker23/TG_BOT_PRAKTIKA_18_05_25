@@ -51,9 +51,14 @@ public class ArrayListStoryService {
      */
     public SendMessage getArrayListTheory(Long chatId) {
         System.out.println("[ArrayListStoryService] getArrayListTheory() — отправляем теорию по ArrayList для chatId=" + chatId);
+        String theoryText = getArrayListInfo(chatId);
+        if (theoryText == null || theoryText.trim().isEmpty()) {
+            System.err.println("Попытка отправить пустую теорию по ArrayList для chatId=" + chatId + "! Сообщение не будет отправлено.");
+            return null;
+        }
         SendMessage theory = new SendMessage();
         theory.setParseMode("Markdown");
-        theory.setText(getArrayListInfo(chatId));
+        theory.setText(theoryText);
         theory.setChatId(chatId);
         return theory;
     }
@@ -246,7 +251,11 @@ public class ArrayListStoryService {
         SendPhoto sendPhoto = getArrayListPhotoTheory(chatId);
         try {
             bot.execute(sendPhoto);
-            bot.execute(theory);
+            if (theory != null && theory.getText() != null && !theory.getText().trim().isEmpty()) {
+                bot.execute(theory);
+            } else {
+                System.err.println("Попытка отправить пустую теорию по ArrayList для chatId=" + chatId + "! Сообщение не будет отправлено.");
+            }
         } catch (TelegramApiException e) {
             System.out.println("Улетел в эксепшн проблема с фото ");
             e.printStackTrace();
@@ -261,6 +270,10 @@ public class ArrayListStoryService {
      */
     public void sendWithKeyboard(org.telegram.telegrambots.bots.TelegramLongPollingBot bot, Long chatId, String text) {
         System.out.println("[ArrayListStoryService] sendWithKeyboard() — отправляем сообщение с клавиатурой для chatId=" + chatId + ", текст: " + text);
+        if (text == null || text.trim().isEmpty()) {
+            System.err.println("Попытка отправить пустое сообщение с клавиатурой для chatId=" + chatId + "! Сообщение не будет отправлено.");
+            return;
+        }
         SendMessage message = new SendMessage(chatId.toString(), text);
         message.setReplyMarkup(KeyboardService.getStartKeyboardStatic());
         try {

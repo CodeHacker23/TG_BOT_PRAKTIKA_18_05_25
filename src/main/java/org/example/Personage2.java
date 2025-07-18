@@ -26,8 +26,13 @@ public class Personage2 extends PersonageBase {
 
     /**
      * Конструктор персонажа с предустановленными характеристиками.
+     * Здесь создаётся новый герой с уникальными параметрами.
+     * Пример:
+     *   Personage2 p2 = new Personage2();
+     * Юмор: если забудешь вызвать super() — Архитектор лично напишет тебе в Telegram.
      */
     public Personage2() {
+        System.out.println("[Personage2] Конструктор — создаём нового персонажа Personage2");
         this.name = "";
         this.level = 0;
         this.energy = 8;
@@ -36,13 +41,13 @@ public class Personage2 extends PersonageBase {
         this.humor = 140;
         this.communication = 160;
         this.status = "Новобранец";
+        System.out.println("[Personage2] Конструктор — персонаж создан: " + this);
     }
 
     /**
      * Получить карточку персонажа для Telegram
      * @param chatId — ID чата Telegram
      * @return SendPhoto — карточка персонажа
-     *
      * Пример:
      *   SendPhoto card = p2.PhotoTheoryFloy(chatId);
      *   bot.execute(card);
@@ -59,7 +64,7 @@ public class Personage2 extends PersonageBase {
                         "⭐Очки достижения: " + achievementPoints + "\n" +
                         "\uD83D\uDCB2Деньги: " + currency + "\n" +
                         "\uD83D\uDE01Юмор: " + humor + " — Его мемы так же опасны, как баги в пятницу.  \n" +
-                        "\uD83D\uDDE3\uFE0FНавыки коммуникации: " + communication + " — Объяснит баг так, что ты начнешь сомневаться в себе...")
+                        "\uD83D\uDDE3\uFE0FНавыки коммуникации: " + communication + " — Объяснит баг так, что ты начнёшь сомневаться в себе...")
                 .parseMode("Markdown")
                 .build();
     }
@@ -67,25 +72,47 @@ public class Personage2 extends PersonageBase {
     /**
      * Изменить юмор
      * @param delta — на сколько изменить
+     * Пример:
+     *   p2.humor(10);
+     * Юмор: если юмор < 0 — пора на стендап.
      */
     public void humor(int delta) {
+        System.out.println("[Personage2] humor() — старт, текущее значение: " + humor);
         this.humor += delta;
-        System.out.println("[Personage2] humor() — новое значение: " + humor);
+        System.out.println("[Personage2] humor() — завершено, новое значение: " + humor);
     }
 
     /**
      * Изменить коммуникации
      * @param delta — на сколько изменить
+     * Пример:
+     *   p2.communication(5);
+     * Юмор: если коммуникации > 9000 — ты уже тимлид.
      */
     public void communication(int delta) {
+        System.out.println("[Personage2] communication() — старт, текущее значение: " + communication);
         this.communication += delta;
-        System.out.println("[Personage2] communication() — новое значение: " + communication);
+        System.out.println("[Personage2] communication() — завершено, новое значение: " + communication);
     }
 
+    /**
+     * Получить значение юмора
+     * @return int — текущее значение юмора
+     * Пример:
+     *   int h = p2.getHumor();
+     */
     public int getHumor() {
+        System.out.println("[Personage2] getHumor() — возвращаем значение: " + humor);
         return humor;
     }
+    /**
+     * Получить значение коммуникаций
+     * @return int — текущее значение коммуникаций
+     * Пример:
+     *   int c = p2.getCommunication();
+     */
     public int getCommunication() {
+        System.out.println("[Personage2] getCommunication() — возвращаем значение: " + communication);
         return communication;
     }
 

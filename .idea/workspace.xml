@@ -6,12 +6,19 @@
   <component name="ChangeListManager">
     <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="Все работает, нужно до делать конечные кнопки для персонажа в доспехах.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/ArrayListStoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/ArrayListStoryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Bot.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/KeyboardService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/KeyboardService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/MarkdownUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/MarkdownUtil.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/MessageHandlerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/MessageHandlerService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Personage1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Personage1.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Personage2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Personage2.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Personage3.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Personage3.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/PersonageEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/PersonageEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/StoryStartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/StoryStartService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/PersonageRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/PersonageRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/PhotoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/PhotoService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/UserEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/UserEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/UserRepository.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -214,7 +221,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752827225117</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Все работает, нужно до делать конечные кнопки для персонажа в доспехах.">
+      <option name="closed" value="true" />
+      <created>1752835156009</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1752835156009</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
