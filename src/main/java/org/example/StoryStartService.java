@@ -18,7 +18,8 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
+import org.example.PersonageRepository;
+
 
 /**
  * StoryStartService — дирижёр старта и главный сценарист вступления.
@@ -50,6 +51,7 @@ public class StoryStartService {
     public final UserService userService;
     public final PhotoService photoService;
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    private final PersonageRepository personageRepository;
 
     /**
      * Отправка стартового фото с приветствием от БайтФорджа
@@ -173,22 +175,24 @@ public class StoryStartService {
             return;
         }
 
-        // Создаём случайного персонажа
-        PersonageBase personage = PersonageBase.getRandomPersonage();
-        personage.setName(characterName);
-        log.info("handleCharacterNameInput() — создан персонаж типа: {}, имя: {}", personage.getClass().getSimpleName(), characterName);
+        // Создаём случайного персонажа (PersonageBase)
+        PersonageBase personageBase = PersonageBase.getRandomPersonage();
+        personageBase.setName(characterName);
+        log.info("handleCharacterNameInput() — создан персонаж типа: {}, имя: {}", personageBase.getClass().getSimpleName(), characterName);
 
-        // Привязываем персонажа к пользователю и сохраняем энергию
-        user.setCharacterType(personage.getClass().getSimpleName());
-        user.setCharacterName(characterName);
+        // Преобразуем и сохраняем персонажа
+        PersonageEntity personageEntity = createPersonageEntityFromBase(personageBase, user, characterName);
+        personageRepository.save(personageEntity);
+
+        // Сбросить состояние пользователя после создания персонажа
         user.setState(null);
-        user.setEnergy(personage.getEnergy());
         userService.saveUser(user);
-        log.info("handleCharacterNameInput() — пользователь сохранён с новым персонажем.");
+
+        log.info("handleCharacterNameInput() — персонаж сохранён в базе данных и состояние пользователя сброшено.");
 
         // Отправляем карточку персонажа
         SendPhoto photo = null;
-        switch (personage) {
+        switch (personageBase) {
             case Personage1 personage1 -> {
                 photo = personage1.getSendPhotoTheory(chatId);//отправялем персонажа 1
                 //метод отправки отложеного  фото Байта с вертолетом на 4 сек
@@ -241,6 +245,32 @@ public class StoryStartService {
             }
         }
 
+    }
+
+    /**
+     * Преобразует PersonageBase в PersonageEntity и привязывает к пользователю
+     * @param base — базовый персонаж (Personage1, 2, 3)
+     * @param user — пользователь
+     * @param characterName — имя персонажа
+     * @return PersonageEntity с заполненными полями
+     */
+    private PersonageEntity createPersonageEntityFromBase(PersonageBase base, UserEntity user, String characterName) {
+        PersonageEntity entity = new PersonageEntity();
+        entity.setUser(user);
+        entity.setCharacterType(base.getClass().getSimpleName());
+        entity.setName(characterName);
+        entity.setLevel(base.getLevel());
+        entity.setEnergy(base.getEnergy());
+        entity.setAchievementPoints(base.getAchievementPoints());
+        entity.setCurrency(base.getCurrency());
+        entity.setStatus(base.getStatus());
+        // Уникальные поля для каждого типа персонажа
+        if (base instanceof Personage1 p1) {
+            entity.setDeadlineResistance(p1.getDeadlineResistance());
+            entity.setAnalytics(p1.getAnalytics());
+        }
+        // TODO: добавить обработку уникальных полей для Personage2, Personage3, если появятся
+        return entity;
     }
 
     //метод отправки фото
