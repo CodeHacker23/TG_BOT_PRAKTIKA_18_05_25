@@ -44,30 +44,7 @@ public class Personage3 extends PersonageBase {
         System.out.println("[Personage3] Конструктор — персонаж создан: " + this);
     }
 
-    /**
-     * Получить карточку персонажа для Telegram
-     * @param chatId — ID чата Telegram
-     * @return SendPhoto — карточка персонажа
-     * Пример:
-     *   SendPhoto card = p3.PhotoTheoryGeks(chatId);
-     *   bot.execute(card);
-     */
-    public SendPhoto PhotoTheoryGeks(Long chatId) {
-        System.out.println("[Personage3] PhotoTheoryGeks() — отправляем карточку персонажа, имя: " + name);
-        return SendPhoto.builder()
-                .chatId(chatId)
-                .photo(new InputFile("https://ltdfoto.ru/images/2025/07/09/GEKS.jpg"))
-                .caption("*" + name + "*" + "\n\n" +
-                        "_Статус_: " + status + "\n" +
-                        "\uD83C\uDFC6Level: " + level + "\n" +
-                        "⚡Энергия: " + energy + "\n" +
-                        "⭐Очки достижения: " + achievementPoints + "\n" +
-                        "\uD83D\uDCB2Деньги: " + currency + "\n" +
-                        "\uD83D\uDD0DТочность кода: " + codeAccuracy  + " — Найдёт баг даже в километре кода. Комментариев нет? Для него это не баг, а квест!\n" +
-                        "⚙️Процесс оптимизации: " +  optimization + " — Перепишет твой код так, что компилятор удивится..")
-                .parseMode("Markdown")
-                .build();
-    }
+
 
     /**
      * Изменить точность кода
@@ -116,6 +93,66 @@ public class Personage3 extends PersonageBase {
         return optimization;
     }
 
+    /**
+     * Заполнить поля персонажа из сущности PersonageEntity (универсально)
+     * @param entity — сущность персонажа из БД
+     */
+    public void fillFromEntity(org.example.model.entity.PersonageEntity entity) {
+        this.name = entity.getName();
+        this.level = entity.getLevel();
+        this.energy = entity.getEnergy();
+        this.achievementPoints = entity.getAchievementPoints();
+        this.currency = entity.getCurrency();
+        this.status = entity.getStatus();
+        // Добавь уникальные поля Personage3, если есть
+    }
+    /**
+     * Получить карточку персонажа для Telegram
+     * @param chatId — ID чата Telegram
+     * @return SendPhoto — карточка персонажа
+     * Пример:
+     *   SendPhoto card = p3.PhotoTheoryGeks(chatId);
+     *   bot.execute(card);
+     */
+    public SendPhoto PhotoTheoryGeks(Long chatId) {
+        System.out.println("[Personage3] PhotoTheoryGeks() — отправляем карточку персонажа, имя: " + name);
+        return SendPhoto.builder()
+                .chatId(chatId)
+                .photo(new InputFile("https://ltdfoto.ru/images/2025/07/09/GEKS.jpg"))
+                .caption("*" + name + "*" + "\n\n" +
+                        "_Статус_: " + status + "\n" +
+                        "\uD83C\uDFC6Level: " + level + "\n" +
+                        "⚡Энергия: " + energy + "\n" +
+                        "⭐Очки достижения: " + achievementPoints + "\n" +
+                        "\uD83D\uDCB2Деньги: " + currency + "\n" +
+                        "\uD83D\uDD0DТочность кода: " + codeAccuracy  + " — Найдёт баг даже в километре кода. Комментариев нет? Для него это не баг, а квест!\n" +
+                        "⚙️Процесс оптимизации: " +  optimization + " — Перепишет твой код так, что компилятор удивится..")
+                .parseMode("Markdown")
+                .build();
+    }
+
+
+
+    public  SendPhoto getRomanPersonage3  (Long chatId, int optimizationDelta) {
+        String caption = "*" + name + "*\n\n" +
+                "_Статус_: 'Изменено' = Легионер\n" +
+                "🏆Level: " + level + " (+1)\n" +
+                "⚡️Энергия: " + energy + "\n" +
+                "⭐️Очки достижения: " + achievementPoints + " (+50)\n" +
+                "💲Деньги: " + currency + " (+450)\n" +
+                "\uD83D\uDD0DТочность кода: " + codeAccuracy  + " — Найдёт баг даже в километре кода. Комментариев нет? Для него это не баг, а квест!\n" +
+                "⚙️Процесс оптимизации: " +  optimization + " (+" + optimizationDelta + ") — Перепишет твой код так, что компилятор удивится.." +
+                "📜 *Комментарий от Итераториуса:*\n" +
+                "_Не каждый новичок носит доспехи. Но каждый герой — начинал c них._\n" +
+                "держи +" + optimizationDelta + " к ⚙️ оптимизации, за храбрость! ";
+
+        return  SendPhoto.builder()
+                .chatId(chatId.toString())
+                .photo(new org.telegram.telegrambots.meta.api.objects.InputFile("https://ltdfoto.ru/image/sYkmCW"))
+                .caption(caption)
+                .parseMode("Markdown")
+                .build();
+    }
     // --- Советы по расширению ---
     // 1. Все уникальные свойства (например, codeAccuracy, optimization) — только здесь.
     // 2. Не копипасть! Если логика повторяется — выноси в базу.

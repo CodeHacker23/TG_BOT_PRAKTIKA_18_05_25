@@ -6,6 +6,7 @@ import org.example.model.entity.UserEntity;
 import org.example.service.PhotoService;
 import org.example.service.UserService;
 import org.example.service.StoryStartService;
+import org.example.service.PersonageService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.example.model.personage.Personage1;
+import org.example.model.personage.Personage2;
+import org.example.model.personage.Personage3;
 
 
 /**
@@ -63,6 +67,7 @@ public class CallbackQueryHandlerService {
     private final PhotoService photoService;
 
     private final StoryStartService storyStartService;
+    private final PersonageService personageService;
 
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     /**
@@ -78,6 +83,7 @@ public class CallbackQueryHandlerService {
             case "enter_arraylist" -> handleArrayList(bot, chatId, userId);
             case "create_personage" -> storyStartService.
                     handleCreatePersonage(bot, chatId, userId);
+            case "accept_armor" -> handleAcceptArmor(bot, chatId, userId);
             // Добавляй новые кейсы для других кнопок!
             default -> log.info("Неизвестный callbackData: {} (chatId={}, userId={})", data, chatId, userId);
         }
@@ -119,6 +125,65 @@ public class CallbackQueryHandlerService {
             } catch (TelegramApiException e) {
                 log.error("Ошибка при отправке сообщения об ошибке: {}", e.getMessage());
             }
+        }
+    }
+
+    /**
+     * Обработка инлайн-кнопки 'Принять доспехи' (accept_armor)
+     * Здесь происходит магия: персонажу начисляются новые характеристики, а пользователю отправляется обновлённая карточка.
+     */
+    private void handleAcceptArmor(Bot bot, Long chatId, Long userId) {
+        // 1. Получаем пользователя по userId (Telegram ID)
+        UserEntity user = userService.getUserByTgId(userId);
+        if (user == null) {
+            // Если пользователя нет — отправляем ошибку и выходим
+            try {
+                bot.execute(new SendMessage(chatId.toString(), "Ошибка: пользователь не найден!"));
+            } catch (Exception ignored) {}
+            return;
+        }
+        // 2. Получаем его персонажа
+        var personage = user.getPersonage();
+        if (personage == null) {
+            try {
+                bot.execute(new SendMessage(chatId.toString(), "Ошибка: персонаж не найден!"));
+            } catch (Exception ignored) {}
+            return;
+        }
+        // 3. Определяем тип персонажа (characterType)
+        String type = personage.getCharacterType();
+        // 4. Обновляем характеристики через PersonageService (рандом для аналитики)
+        // (добавь @Autowired PersonageService personageService; в этот класс!)
+        personageService.updateStats(
+            personage,
+            1,      // levelDelta
+            50,     // achievementDelta
+            450.0,  // currencyDelta
+            25,     // analyticsDelta (min)
+            30,     // analyticsMax (max)
+            true    // randomAnalytics
+        );
+        // 5. Создаём объект нужного персонажа и заполняем его из сущности
+        if ("Personage1".equals(type)) {
+            Personage1 p1 = new Personage1();
+            p1.fillFromEntity(personage);
+            try {
+                bot.execute(p1.getRomanArmorCard( chatId,  0 ));
+            } catch (Exception e) {
+                log.error("Ошибка при отправке карточки Personage1: {}", e.getMessage());
+            }
+        } else if ("Personage2".equals(type)) {
+            Personage2 p2 = new Personage2();
+            p2.fillFromEntity(personage);
+            // ... аналогично: bot.execute(p2.getRomanArmorCard(chatId));
+        } else if ("Personage3".equals(type)) {
+            Personage3 p3 = new Personage3();
+            p3.fillFromEntity(personage);
+            // ... аналогично: bot.execute(p3.getRomanArmorCard(chatId));
+        } else {
+            try {
+                bot.execute(new SendMessage(chatId.toString(), "Ошибка: неизвестный тип персонажа!"));
+            } catch (Exception ignored) {}
         }
     }
 } 

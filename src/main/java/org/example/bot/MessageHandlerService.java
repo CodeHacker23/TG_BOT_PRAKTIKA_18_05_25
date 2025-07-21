@@ -2,6 +2,8 @@ package org.example.bot;
 
 import lombok.RequiredArgsConstructor;
 
+import org.example.model.entity.PersonageEntity;
+import org.example.service.*;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -23,11 +25,7 @@ import org.example.model.personage.PersonageBase;
 import org.example.model.personage.Personage1;
 import org.example.model.personage.Personage2;
 import org.example.model.personage.Personage3;
-import org.example.service.UserService;
-import org.example.service.PersonageCreationService;
-import org.example.service.ArrayListStoryService;
-import org.example.service.StoryStartService;
-import org.example.service.PhotoService;
+import org.example.service.PersonageService;
 
 /**
  * MessageHandlerService — главный обработчик всех входящих сообщений пользователя (кроме /start и создания персонажа).
@@ -51,8 +49,7 @@ public class MessageHandlerService {
     private final PersonageCreationService personageCreationService;
     private final Map<Long, Boolean> theorySent = new ConcurrentHashMap<>();
     private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-
-
+    private final PersonageService personageService;
 
 
     /**
@@ -275,13 +272,64 @@ public class MessageHandlerService {
                     log.info("[Вернуться и скомпилироваться] - отработал  ");
                 }
 
-                case "Принять доспехи ⚔\uFE0F" -> {
-                    log.info("Пользователь выбрал 'Принять доспехи ⚔\uFE0F' {}", chatId);
+                case "Принять доспехи ⚔️" -> {
+                    log.info("Пользователь выбрал 'Принять доспехи ⚔️' {}", chatId);
+                    // 1. Получаем пользователя и его персонажа
+                    user = userService.getUserByTgId(userId);
+                    if (user == null) {
+                        bot.execute(new SendMessage(chatId.toString(), "Ошибка: пользователь не найден!"));
+                        break;
+                    }
+                    PersonageEntity personage = user.getPersonage();
+                    if (personage == null) {
+                        bot.execute(new SendMessage(chatId.toString(), "Ошибка: персонаж не найден!"));
+                        break;
+                    }
 
+                    // 2. Определяем тип персонажа
+                    String type = personage.getCharacterType();
+
+                    // 3. Сохраняем старое значение аналитики
+                    int oldAnalytics = personage.getAnalytics() != null ? personage.getAnalytics() : 0;
+
+                    // 4. Обновляем характеристики через personageService (рандом для аналитики)
+                    personageService.updateStats(
+                        personage,
+                        1,      // levelDelta
+                        50,     // achievementDelta
+                        450.0,  // currencyDelta
+                        27,     // analyticsDelta (min)
+                        40,     // analyticsMax (max)
+
+                        true    // randomAnalytics
+                    );
+
+                    // 5. Считаем дельту аналитики
+                    int newAnalytics = personage.getAnalytics() != null ? personage.getAnalytics() : 0;
+                    int analyticsDelta = newAnalytics - oldAnalytics;
+
+                    // 6. Создаём объект нужного персонажа и заполняем его из сущности
+                    if ("Personage1".equals(type)) {
+                        Personage1 p1 = new Personage1();
+                        p1.fillFromEntity(personage);
+                        bot.execute(p1.getRomanArmorCard(chatId, analyticsDelta));
+                    } else if ("Personage2".equals(type)) {
+                        Personage2 p2 = new Personage2();
+                        p2.fillFromEntity(personage);
+                         bot.execute(p2.getRomanFloy (chatId, analyticsDelta));
+                    } else if ("Personage3".equals(type)) {
+                        Personage3 p3 = new Personage3();
+                        p3.fillFromEntity(personage);
+                        bot.execute(p3.getRomanPersonage3(chatId, analyticsDelta));
+                    } else {
+                        bot.execute(new SendMessage(chatId.toString(), "Ошибка: неизвестный тип персонажа!"));
+                    }
                 }
 
                 case "☕\uFE0F К чёрту NetBeans. Я готов к Риму!" ->{
                     log.info("☕\uFE0F К чёрту NetBeans. Я готов к Риму!' {}", chatId);
+
+
 
                 }
 
