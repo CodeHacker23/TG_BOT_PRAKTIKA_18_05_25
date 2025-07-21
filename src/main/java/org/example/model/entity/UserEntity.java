@@ -24,8 +24,6 @@ import lombok.Data;
 public class UserEntity {
     /**
      * Внутренний ID пользователя (PRIMARY KEY)
-     * Используется для связи с персонажем (PersonageEntity)
-     * Пример: 42L
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,39 +31,30 @@ public class UserEntity {
 
     /**
      * Telegram user ID (уникальный идентификатор пользователя в Telegram)
-     * Пример: 123456789L
      */
     @Column(unique = true)
     private Long tgId;
 
     /**
-     * Имя пользователя в Telegram
-     * Пример: "@username"
-     */
-    private String username;
-
-    /**
-     * Текущее состояние пользователя (например, AWAITING_CHARACTER_NAME)
-     * Используется для отслеживания прогресса пользователя в боте
-     * Пример: "AWAITING_CHARACTER_NAME"
-     */
-    private String state = "AWAITING_CHARACTER_NAME";
-
-    /**
-     * Флаг: прошёл ли пользователь сюжетку ArrayList (true — уже был, false — ещё нет)
-     * Пример: true
-     */
-    private boolean passedArrayList = false;
-
-    /**
      * Связь с персонажем пользователя (PersonageEntity)
      * Один пользователь — один персонаж (OneToOne)
-     * mappedBy = "user" означает, что владеющая сторона — PersonageEntity
-     * Пример:
-     *   userEntity.setPersonage(personageEntity);
      */
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private PersonageEntity personage;
+
+    /**
+     * Текущий сюжет, который проходит пользователь
+     */
+    private String currentStory;
+
+    /**
+     * Имя пользователя в Telegram
+     */
+    private String username;
+
+    // Остальные поля (state, passedArrayList и т.д.)
+    private String state = "AWAITING_CHARACTER_NAME";
+    private boolean passedArrayList = false;
 
     /**
      * Геттер для получения персонажа пользователя
@@ -126,6 +115,13 @@ public class UserEntity {
             ", username='" + username + '\'' +
             // НЕ добавляй personage!
             '}';
+    }
+
+    public String getCurrentStory() {
+        return currentStory;
+    }
+    public void setCurrentStory(String currentStory) {
+        this.currentStory = currentStory;
     }
 
 

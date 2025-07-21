@@ -148,7 +148,7 @@ public class Personage3 extends PersonageBase {
 
         return  SendPhoto.builder()
                 .chatId(chatId.toString())
-                .photo(new org.telegram.telegrambots.meta.api.objects.InputFile("https://ltdfoto.ru/image/sYkmCW"))
+                .photo(new org.telegram.telegrambots.meta.api.objects.InputFile("https://ltdfoto.ru/image/sYkNt3"))
                 .caption(caption)
                 .parseMode("Markdown")
                 .build();

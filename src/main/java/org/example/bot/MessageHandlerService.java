@@ -328,7 +328,55 @@ public class MessageHandlerService {
 
                 case "☕\uFE0F К чёрту NetBeans. Я готов к Риму!" ->{
                     log.info("☕\uFE0F К чёрту NetBeans. Я готов к Риму!' {}", chatId);
+                    user = userService.getUserByTgId(userId);
+                    if (user == null) {
+                        bot.execute(new SendMessage(chatId.toString(), "Ошибка: пользователь не найден!"));
+                        break;
+                    }
+                    PersonageEntity personage = user.getPersonage();
+                    if (personage == null) {
+                        bot.execute(new SendMessage(chatId.toString(), "Ошибка: персонаж не найден!"));
+                        break;
+                    }
 
+                    // 2. Определяем тип персонажа
+                    String type = personage.getCharacterType();
+
+                    // 3. Сохраняем старое значение аналитики
+                    int oldAnalytics = personage.getAnalytics() != null ? personage.getAnalytics() : 0;
+
+                    // 4. Обновляем характеристики через personageService (рандом для аналитики)
+                    personageService.updateStats(
+                            personage,
+                            1,      // levelDelta
+                            50,     // achievementDelta
+                            450.0,  // currencyDelta
+                            27,     // analyticsDelta (min)
+                            40,     // analyticsMax (max)
+
+                            true    // randomAnalytics
+                    );
+
+                    // 5. Считаем дельту аналитики
+                    int newAnalytics = personage.getAnalytics() != null ? personage.getAnalytics() : 0;
+                    int analyticsDelta = newAnalytics - oldAnalytics;
+
+                    // 6. Создаём объект нужного персонажа и заполняем его из сущности
+                    if ("Personage1".equals(type)) {
+                        Personage1 p1 = new Personage1();
+                        p1.fillFromEntity(personage);
+                        bot.execute(p1.getRomanArmorCard(chatId, analyticsDelta));
+                    } else if ("Personage2".equals(type)) {
+                        Personage2 p2 = new Personage2();
+                        p2.fillFromEntity(personage);
+                        bot.execute(p2.getRomanFloy  (chatId, analyticsDelta));
+                    } else if ("Personage3".equals(type)) {
+                        Personage3 p3 = new Personage3();
+                        p3.fillFromEntity(personage);
+                        bot.execute(p3.getRomanPersonage3(chatId, analyticsDelta));
+                    } else {
+                        bot.execute(new SendMessage(chatId.toString(), "Ошибка: неизвестный тип персонажа!"));
+                    }
 
 
                 }
