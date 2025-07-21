@@ -4,25 +4,27 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="">
+    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="добавлены пакеты обновлено, все работает">
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/CallbackQueryHandlerService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/KeyboardService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/MessageHandlerService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/model/entity/PersonageEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/model/entity/UserEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/model/personage/Personage1.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/model/personage/Personage2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/model/personage/Personage3.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/model/personage/PersonageBase.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/repository/PersonageRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/repository/UserRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayListStoryService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/service/PersonageCreationService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/service/PhotoService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/service/StoryStartService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/service/UserService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/ArrayListStoryService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Bot.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/CallbackQueryHandlerService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/KeyboardService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/MessageHandlerService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Personage1.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Personage2.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Personage3.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/PersonageBase.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/PersonageCreationService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/PersonageEntity.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/PersonageRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/PhotoService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/StoryStartService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/UserEntity.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/UserRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/UserService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Config.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Service.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -142,7 +144,7 @@
       <workItem from="1752688642599" duration="3328000" />
       <workItem from="1752729749021" duration="13921000" />
       <workItem from="1752954117647" duration="604000" />
-      <workItem from="1752956495657" duration="2000000" />
+      <workItem from="1752956495657" duration="3668000" />
     </task>
     <task id="LOCAL-00001" summary="по идеи всеработает как нужн, на команде старт отправляется фото с текстом, затем отправялется сообщение с кнопкой (создать персонажа) кнопка кликабельна, после кнопки отправляется персонаж с характеристиками и фото. все соеденяется с БД2">
       <option name="closed" value="true" />
@@ -248,7 +250,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752837703580</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="добавление классов в пакеты">
+      <option name="closed" value="true" />
+      <created>1752958674162</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1752958674162</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -268,6 +278,8 @@
     <MESSAGE value="проект запускается не реализованы некоторые кнопки, все сбилось откатываюсь до пуша" />
     <MESSAGE value="Все работает, нужно до делать конечные кнопки для персонажа в доспехах." />
     <MESSAGE value="Добавлены логи" />
-    <option name="LAST_COMMIT_MESSAGE" value="Добавлены логи" />
+    <MESSAGE value="добавление классов в пакеты" />
+    <MESSAGE value="добавлены пакеты обновлено, все работает" />
+    <option name="LAST_COMMIT_MESSAGE" value="добавлены пакеты обновлено, все работает" />
   </component>
 </project>

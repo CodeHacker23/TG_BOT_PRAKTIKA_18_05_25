@@ -1,8 +1,8 @@
 package org.example;
 
 import lombok.RequiredArgsConstructor;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.objects.InputFile;
+import org.example.service.UserService;
+
 
 /**
  * Service — универсальный сервис для обработки команд, которые не относятся к конкретному сюжету.
