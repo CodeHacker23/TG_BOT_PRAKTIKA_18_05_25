@@ -150,4 +150,14 @@ public class PersonageEntity {
         this.level = level;
     }
     // ... по аналогии можно добавить для других ключевых полей ...
+
+    @Override
+    public String toString() {
+        return "PersonageEntity{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", level=" + level +
+            // НЕ добавляй user!
+            '}';
+    }
 } 

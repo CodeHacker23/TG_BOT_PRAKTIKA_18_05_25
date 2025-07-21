@@ -1,129 +1,233 @@
-# MANUAL: Как менять характеристики персонажа, делать рандом и показывать это пользователю
+# Мануал по работе с персонажем 1 (Personage1)
+
+## 1. Что такое Personage1
+
+`Personage1` — это Java-класс, описывающий одного из игровых персонажей бота. Он наследует базовые характеристики из `PersonageBase` и добавляет свои уникальные параметры (например, сопротивление дедлайну и аналитику).
 
 ---
 
-## 1. Как устроено хранение характеристик
-- Все характеристики (energy, achievementPoints, analytics и т.д.) — это поля в PersonageBase и его наследниках (Personage1, Personage2, ...).
-- Для сохранения между сессиями — дублируй нужные поля в UserEntity и обновляй их после изменений.
+## 2. Структура класса Personage1
 
----
-
-## 2. Как изменить характеристику вручную
 ```java
-personage.changeAchievementPoints(10); // +10 очков достижений
-personage.energy(-3); // -3 энергии
-```
+public class Personage1 extends PersonageBase {
+    private int deadlineResistance; // Сопротивление дедлайну
+    private int analytics;          // Аналитика
 
----
+    public Personage1() {
+        this.name = "";
+        this.level = 0;
+        this.energy = 8;
+        this.achievementPoints = 0;
+        this.currency = 0;
+        this.deadlineResistance = 90;
+        this.analytics = 110;
+        this.status = "Новобранец";
+    }
 
-## 3. Как сделать рандомное изменение (универсально!)
+    // Методы для изменения характеристик
+    public void changeDeadlineResistance(int delta) { this.deadlineResistance += delta; }
+    public void changeAnalytics(int delta) { this.analytics += delta; }
 
-В PersonageBase теперь есть метод:
-```java
-int delta = personage.randomizeIntField("analytics", 18, 29); // +рандом от 18 до 29 к аналитике
-```
-- Работает с любым int-полем ("energy", "achievementPoints", "analytics", ...)
-- Логирует: что, на сколько и как изменилось
-- Если поле не найдено — пишет ошибку в лог
+    // Геттеры
+    public int getDeadlineResistance() { return deadlineResistance; }
+    public int getAnalytics() { return analytics; }
 
----
-
-## 4. Как вывести пользователю, что у него изменилось
-```java
-int delta = personage.randomizeIntField("analytics", 18, 29);
-SendPhoto photo = personage.KodychRim(chatId);
-bot.execute(photo);
-if (delta != 0) {
-    SendMessage msg = new SendMessage(chatId.toString(),
-        (delta > 0 ? "Тебе добавлено " : "У тебя отняли ") + Math.abs(delta) + " очков аналитики!");
-    bot.execute(msg);
+    // Метод для отправки карточки персонажа
+    public SendPhoto getSendPhotoTheory(Long chatId) { ... }
 }
 ```
 
 ---
 
-## 5. Как сохранить изменения в БД
-- После изменения характеристик — обнови UserEntity:
+## 3. Как обновлять характеристики персонажа в БД
+
+1. Получить пользователя по chatId:
+   ```java
+   UserEntity user = userService.getUserByTgId(chatId);
+   ```
+2. Получить его персонажа:
+   ```java
+   PersonageEntity personage = user.getPersonage();
+   ```
+3. Изменить нужные параметры:
+   ```java
+   personage.setStatus("Легионер");
+   personage.setLevel(1);
+   personage.setAchievementPoints(50);
+   personage.setCurrency(450.0);
+   personage.setAnalytics(145);
+   // и т.д.
+   ```
+4. Сохранить изменения:
+   ```java
+   personageRepository.save(personage);
+   ```
+
+---
+
+## 4. Универсальный метод обновления характеристик
+
 ```java
-user.setAchievementPoints(personage.getAchievementPoints());
-user.setEnergy(personage.getEnergy());
-userService.saveUser(user);
+public void updatePersonageStats(PersonageEntity personage, int levelDelta, int achievementDelta, double currencyDelta, int analyticsDelta) {
+    personage.setLevel(personage.getLevel() + levelDelta);
+    personage.setAchievementPoints(personage.getAchievementPoints() + achievementDelta);
+    personage.setCurrency(personage.getCurrency() + currencyDelta);
+    personage.setAnalytics(personage.getAnalytics() + analyticsDelta);
+    personageRepository.save(personage);
+}
 ```
 
 ---
 
-## 6. Как добавить новую характеристику
-1. Добавь поле в PersonageBase/Personage1 и UserEntity
-2. Добавь миграцию в БД (ALTER TABLE ...)
-3. Используй randomizeIntField("имяПоля", min, max) для рандома
+## 5. Как выводить карточку персонажа с нужным текстом и фото
+
+В классе `Personage1` делаем метод:
+
+```java
+public SendPhoto getRomanArmorCard(Long chatId) {
+    String caption = "*" + name + "*\n\n" +
+        "_Статус_: 'Изменено' = Легионер\n" +
+        "🏆Level: " + level + " (+1)\n" +
+        "⚡️Энергия: " + energy + "\n" +
+        "⭐️Очки достижения: " + achievementPoints + " (+50)\n" +
+        "💲Деньги: " + currency + " (+450)\n" +
+        "⌚️Сопротивление дедлайну: " + deadlineResistance + " — Привык работать под давлением сроков, но не всегда этому рад.\n" +
+        "📊Аналитика: " + analytics + " (+35) — Умение находить скрытые связи в коде\n\n" +
+        "📜 Комментарий от Итераториуса:\n" +
+        "_Не каждый новичок носит доспех. Но каждый герой — начинал в нём._\n" +
+        "держи +35 к 📊 аналитике, за храбрость.";
+
+    return SendPhoto.builder()
+        .chatId(chatId.toString())
+        .photo(new InputFile("https://ltdfoto.ru/image/sCNCjY"))
+        .caption(caption)
+        .parseMode("Markdown")
+        .build();
+}
+```
 
 ---
 
-## 7. Схема (UML)
+## 6. Как вызывать это из обработчика кнопки
+
+```java
+UserEntity user = userService.getUserByTgId(chatId);
+PersonageEntity personage = user.getPersonage();
+
+// Обновляем параметры
+personage.setStatus("Легионер");
+personage.setLevel(personage.getLevel() + 1);
+personage.setAchievementPoints(personage.getAchievementPoints() + 50);
+personage.setCurrency(personage.getCurrency() + 450.0);
+personage.setAnalytics(personage.getAnalytics() + 35);
+personageRepository.save(personage);
+
+// Получаем объект персонажа (например, Personage1)
+Personage1 p1 = new Personage1();
+p1.setName(personage.getName());
+p1.setLevel(personage.getLevel());
+p1.setEnergy(personage.getEnergy());
+p1.setAchievementPoints(personage.getAchievementPoints());
+p1.setCurrency(personage.getCurrency());
+p1.setStatus(personage.getStatus());
+p1.changeAnalytics(personage.getAnalytics() - p1.getAnalytics());
+p1.changeDeadlineResistance(personage.getDeadlineResistance() - p1.getDeadlineResistance());
+
+// Отправляем карточку
+SendPhoto photo = p1.getRomanArmorCard(chatId);
+bot.execute(photo);
+```
+
+---
+
+## 7. Как добавить новые характеристики
+
+- Добавь новое поле в `PersonageBase` или в `Personage1`.
+- Добавь геттер/сеттер.
+- Добавь обработку в методах обновления и вывода карточки.
+
+---
+
+## 8. FAQ и советы
+
+- **Все изменения характеристик — через сущность персонажа и репозиторий.**
+- **Вывод карточки — через метод в классе персонажа, который возвращает SendPhoto с нужным текстом и фоткой.**
+- **Добавлять новые характеристики — просто: поле, геттер/сеттер, обработка в сервисе и карточке.**
+- **Для каждого персонажа — свой метод карточки, свой шаблон текста.**
+
+---
+
+## 9. Чёрный юмор и напутствие
+
+Если ты всё ещё не понял, как обновлять характеристики персонажа — иди и перечитай этот мануал ещё раз. Если и после этого не понял — зови Архитектора, он тебе объяснит на пальцах (и, возможно, на твоём же коде). Не бойся экспериментировать — хуже, чем было, уже не будет! 
+
+---
+
+# Как правильно обновлять характеристики персонажа с рандомом, считать дельту и не словить боль JPA/Spring
+
+## 1. Схема таблиц (упрощённо)
+
 ```mermaid
-classDiagram
-    class UserEntity {
-        +Long tgId
-        +String characterType
-        +String characterName
-        +int energy
-        +int achievementPoints
-        +... (добавляй новые поля)
+erDiagram
+    USERS ||--o| PERSONAGES : has
+    USERS {
+        Long id
+        Long tgId
+        String username
+        ...
     }
-    class UserService {
-        +getUserByTgId(Long)
-        +saveUser(UserEntity)
+    PERSONAGES {
+        Long id
+        Long user_id
+        String name
+        int level
+        int analytics
+        ...
     }
-    class PersonageBase {
-        +String name
-        +int energy
-        +int achievementPoints
-        +randomizeIntField(String, int, int)
-    }
-    class Personage1 {
-        +int analytics
-        +KodychRim(Long)
-    }
-    UserEntity --> PersonageBase : (данные)
-    Personage1 --|> PersonageBase
-    UserService --> UserEntity
 ```
 
+## 2. Как обновлять характеристики с рандомом
+
+- Перед апдейтом сохраняй старое значение аналитики:
+  ```java
+  int oldAnalytics = personage.getAnalytics() != null ? personage.getAnalytics() : 0;
+  ```
+- Вызывай сервис с рандомом:
+  ```java
+  personageService.updateStats(personage, 1, 50, 450.0, 25, 30, true);
+  ```
+- После апдейта получай новое значение и дельту:
+  ```java
+  int newAnalytics = personage.getAnalytics() != null ? personage.getAnalytics() : 0;
+  int analyticsDelta = newAnalytics - oldAnalytics;
+  ```
+
+## 3. Как формировать карточку с дельтой
+
+- Передавай дельту в метод карточки:
+  ```java
+  bot.execute(personage1.getRomanArmorCard(chatId, analyticsDelta));
+  ```
+- В карточке:
+  ```java
+  "📊Аналитика: " + analytics + " (+" + analyticsDelta + ") — Умение находить скрытые связи в коде"
+  ```
+
+## 4. Как избежать боли с JPA/Spring
+
+- **Не делай статических сервисов!** Всегда внедряй сервисы через конструктор и @Service/@RequiredArgsConstructor.
+- **Не вызывай toString() у связанных сущностей!** Это вызывает рекурсию и StackOverflow.
+- **Не храни бизнес-логику в контроллере/хендлере — выноси в сервисы.**
+- **Проверяй, что все зависимости внедряются через Spring, а не через new.**
+- **Проверяй, что все методы, которые должны быть экземплярными, не объявлены static.**
+
+## 5. Чёрный юмор и советы
+
+- Если ты всё ещё ловишь NullPointerException — проверь, не забыл ли ты внедрить сервис через конструктор.
+- Если у тебя в карточке всегда +0 — ты забыл считать дельту до апдейта.
+- Если бот падает с рекурсией — убери связанные сущности из toString().
+- Если ты всё ещё не понял, перечитай этот мануал, потом спроси у Архитектора, потом выпей кофе и попробуй ещё раз.
+
 ---
 
-## 8. FAQ
-- **Q: Можно ли менять любые поля?**
-  - A: Только int! Для других типов — пиши отдельный метод.
-- **Q: Что если поле не найдено?**
-  - A: Будет ошибка в логах, ничего не сломается.
-- **Q: Как сделать рандом с отрицательным диапазоном?**
-  - A: Просто укажи min < 0, max > 0 (например, -5, 10).
-- **Q: Как добавить характеристику, чтобы она сохранялась?**
-  - A: Добавь в UserEntity, обновляй после изменений.
-
----
-
-## 9. Пример полной цепочки
-```java
-UserEntity user = userService.getUserByTgId(tgId);
-Personage1 personage = new Personage1();
-personage.setName(user.getCharacterName());
-// ... подставь остальные поля
-int delta = personage.randomizeIntField("analytics", 18, 29);
-user.setAchievementPoints(personage.getAchievementPoints());
-userService.saveUser(user);
-SendPhoto photo = personage.KodychRim(chatId);
-bot.execute(photo);
-if (delta != 0) {
-    SendMessage msg = new SendMessage(chatId.toString(),
-        (delta > 0 ? "Тебе добавлено " : "У тебя отняли ") + Math.abs(delta) + " очков аналитики!");
-    bot.execute(msg);
-}
-```
-
----
-
-## 10. Чёрный юмор и советы
-- Не забудь обновлять UserEntity, иначе после рестарта у пользователя будет "синдром потерянных очков".
-- Не пытайся рандомить String — Архитектор тебя найдёт.
-- Если не понял — перечитай мануал, потом спроси у Архитектора. 
+**Теперь ты умеешь делать карточки с рандомом, дельтой и без боли!** 

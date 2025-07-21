@@ -1,5 +1,6 @@
 package org.example.model.personage;
 
+import org.example.model.entity.PersonageEntity;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 
@@ -32,6 +33,8 @@ public class Personage1 extends PersonageBase {
         this.status = "Новобранец";
         System.out.println("[Personage1] Конструктор — персонаж создан: " + this);
     }
+
+
 
     /**
      * Изменить сопротивление дедлайну
@@ -104,24 +107,49 @@ public class Personage1 extends PersonageBase {
                 .parseMode("Markdown")
                 .build();
     }
-    public SendPhoto ReamPersonage1(Long chatId) {
-        System.out.println("[Personage1] ReamPersonage1 — отправляем карточку персонажа в доспехаха Рима, имя: " + name);
-        return SendPhoto.builder()
-                .chatId(chatId.toString())
-                .photo(new InputFile("https://ltdfoto.ru/image/sCNCjY"))
-                .caption( "*" + name + "*" + "\n\n" +
-                        "_Статус_: " + status  + "\n" +
-                        "\uD83C\uDFC6Level: " + level + "\n" +
-                        "⚡Энергия: " + energy + "\n" +
-                        "⭐Очки достижения: " + achievementPoints + "\n" +
-                        "\uD83D\uDCB2Деньги: " + currency + "\n" +
-                        "⌚Сопротивление дедлайну: " + deadlineResistance + " — Привык работать под давлением сроков, но не всегда этому рад. \n" +
-                        "\uD83D\uDCCAАналитика: " + analytics + " — Умение находить скрытые связи в коде")
-                .parseMode("Markdown")
-                .build();
+
+
+    /**
+     * Заполнить поля персонажа из сущности PersonageEntity (универсально)
+     * @param entity — сущность персонажа из БД
+     */
+    public void fillFromEntity(org.example.model.entity.PersonageEntity entity) {
+        this.name = entity.getName();
+        this.level = entity.getLevel();
+        this.energy = entity.getEnergy();
+        this.achievementPoints = entity.getAchievementPoints();
+        this.currency = entity.getCurrency();
+        this.status = entity.getStatus();
+        this.analytics = entity.getAnalytics() != null ? entity.getAnalytics() : 0;
+        this.deadlineResistance = entity.getDeadlineResistance() != null ? entity.getDeadlineResistance() : 0;
     }
 
+    /**
+     * Получить карточку персонажа после апгрейда "Римские доспехи" с учётом дельты аналитики
+     * @param chatId — ID чата Telegram
+     * @param analyticsDelta — на сколько увеличилась аналитика
+     * @return SendPhoto — карточка персонажа с обновлёнными характеристиками
+     */
+    public  SendPhoto getRomanArmorCard(Long chatId, int analyticsDelta) {
+        String caption = "*" + name + "*\n\n" +
+            "_Статус_: 'Изменено' = Легионер\n" +
+            "🏆Level: " + level + " (+1)\n" +
+            "⚡️Энергия: " + energy + "\n" +
+            "⭐️Очки достижения: " + achievementPoints + " (+50)\n" +
+            "💲Деньги: " + currency + " (+450)\n" +
+            "⌚️Сопротивление дедлайну: " + deadlineResistance + " — Привык работать под давлением сроков, но не всегда этому рад.\n" +
+            "📊Аналитика: " + analytics + " (+" + analyticsDelta + ") — Умение находить скрытые связи в коде\n\n" +
+            "📜 *Комментарий от Итераториуса:*\n" +
+            "_Не каждый новичок носит доспехи. Но каждый герой — начинал c них._\n" +
+            "держи +" + analyticsDelta + " к 📊 аналитике, за храбрость.";
 
+        return  SendPhoto.builder()
+            .chatId(chatId.toString())
+            .photo(new org.telegram.telegrambots.meta.api.objects.InputFile("https://ltdfoto.ru/image/sCNCjY"))
+            .caption(caption)
+            .parseMode("Markdown")
+            .build();
+    }
 
 
 }

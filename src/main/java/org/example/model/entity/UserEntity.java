@@ -118,6 +118,16 @@ public class UserEntity {
         this.username = username;
     }
 
+    @Override
+    public String toString() {
+        return "UserEntity{" +
+            "id=" + id +
+            ", tgId=" + tgId +
+            ", username='" + username + '\'' +
+            // НЕ добавляй personage!
+            '}';
+    }
+
 
     // --- Советы по расширению ---
     // 1. Новое поле? Добавь его здесь и в миграцию (ALTER TABLE ...).

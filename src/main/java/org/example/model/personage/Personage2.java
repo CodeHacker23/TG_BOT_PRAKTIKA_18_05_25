@@ -45,6 +45,20 @@ public class Personage2 extends PersonageBase {
     }
 
     /**
+     * Заполнить поля персонажа из сущности PersonageEntity (универсально)
+     * @param entity — сущность персонажа из БД
+     */
+    public void fillFromEntity(org.example.model.entity.PersonageEntity entity) {
+        this.name = entity.getName();
+        this.level = entity.getLevel();
+        this.energy = entity.getEnergy();
+        this.achievementPoints = entity.getAchievementPoints();
+        this.currency = entity.getCurrency();
+        this.status = entity.getStatus();
+        // Добавь уникальные поля Personage2, если есть
+    }
+
+    /**
      * Получить карточку персонажа для Telegram
      * @param chatId — ID чата Telegram
      * @return SendPhoto — карточка персонажа
@@ -65,6 +79,29 @@ public class Personage2 extends PersonageBase {
                         "\uD83D\uDCB2Деньги: " + currency + "\n" +
                         "\uD83D\uDE01Юмор: " + humor + " — Его мемы так же опасны, как баги в пятницу.  \n" +
                         "\uD83D\uDDE3\uFE0FНавыки коммуникации: " + communication + " — Объяснит баг так, что ты начнёшь сомневаться в себе...")
+                .parseMode("Markdown")
+                .build();
+    }
+
+
+
+    public  SendPhoto getRomanFloy (Long chatId, int communicationDelta) {
+        String caption = "*" + name + "*\n\n" +
+                "_Статус_: 'Изменено' = Легионер\n" +
+                "🏆Level: " + level + " (+1)\n" +
+                "⚡️Энергия: " + energy + "\n" +
+                "⭐️Очки достижения: " + achievementPoints + " (+50)\n" +
+                "💲Деньги: " + currency + " (+450)\n" +
+                "\uD83D\uDE01Юмор:  " + humor + " — Его мемы так же опасны, как баги в пятницу. \n" +
+                "\uD83D\uDDE3\uFE0F Навыки коммуникации: " + communication  + " (+" + communicationDelta + ") — Объяснит баг так, что ты начнёшь сомневаться в себе... \n\n" +
+                "📜 *Комментарий от Итераториуса:*\n" +
+                "_Не каждый новичок носит доспехи. Но каждый герой — начинал c них._\n" +
+                "держи +" + communicationDelta + " к \uD83D\uDDE3\uFE0F коммуникации, за храбрость! ";
+
+        return  SendPhoto.builder()
+                .chatId(chatId.toString())
+                .photo(new org.telegram.telegrambots.meta.api.objects.InputFile("https://ltdfoto.ru/image/sYkmCW"))
+                .caption(caption)
                 .parseMode("Markdown")
                 .build();
     }
