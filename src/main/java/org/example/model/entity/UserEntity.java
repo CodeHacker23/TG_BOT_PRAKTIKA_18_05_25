@@ -39,7 +39,7 @@ public class UserEntity {
      * Связь с персонажем пользователя (PersonageEntity)
      * Один пользователь — один персонаж (OneToOne)
      */
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private PersonageEntity personage;
 
     /**

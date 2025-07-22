@@ -6,6 +6,7 @@ import org.example.model.entity.PersonageEntity;
 import org.example.model.entity.UserEntity;
 import org.example.model.personage.PersonageBase;
 import org.example.repository.PersonageRepository;
+import org.example.service.PhotoService.PhotoStart;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -53,7 +54,7 @@ public class StoryStartService {
     private final PersonageCreationService personageCreationService;
     // Сервис для работы с пользователями
     public final UserService userService;
-    public final PhotoService photoService;
+    public final PhotoStart photoStart;
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private final PersonageRepository personageRepository;
 
@@ -288,7 +289,7 @@ public class StoryStartService {
     public SendPhoto sendByteFordj(Long chatId) {
         log.info("sendByteFordj() — вызывается для chatId={}", chatId);
         log.info("sendByteFordj() — подготовка фото Форджа с вертолетом.");
-        return photoService.getByteFordj(chatId);
+        return photoStart.getByteFordj(chatId);
     }
 
     //отправка далее сообщения по 1 сюжету
