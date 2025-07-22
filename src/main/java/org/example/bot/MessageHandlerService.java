@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.example.model.entity.PersonageEntity;
 import org.example.service.*;
+import org.example.service.PhotoService.PhotoStart;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -29,15 +30,15 @@ import org.example.service.PersonageService;
 
 /**
  * Главный обработчик всех входящих сообщений пользователя (кроме /start и создания персонажа).
- *
+ * <p>
  * Здесь происходит:
  * - Разруливание сценариев (сюжеты, викторины, ответы, переходы между состояниями).
  * - Делегирование в StoryService, если сценарий сложный.
- *
+ * <p>
  * Юмор: если напишешь 100 if-ов подряд — Архитектор лично напишет тебе в Telegram и добавит багов.
- *
+ * <p>
  * Пример:
- *   handleMessage(bot, message); // и пусть он сам разбирается
+ * handleMessage(bot, message); // и пусть он сам разбирается
  */
 @Service
 @RequiredArgsConstructor
@@ -88,6 +89,9 @@ public class MessageHandlerService {
                 return;
             }
             // Создание персонажа
+            if (user.getPersonage() == null) {
+                user.setPersonage(new org.example.model.entity.PersonageEntity());
+            }
             PersonageBase personage = PersonageBase.getRandomPersonage();
             personage.setName(characterName);
             user.getPersonage().setCharacterType(personage.getClass().getSimpleName());
@@ -170,8 +174,16 @@ public class MessageHandlerService {
                     arrayListStoryService.sendWithKeyboard(bot, chatId, "Согласен?!");
                 }
                 case "/ArrayList" -> {
-                    log.info("Пользователь отправил /ArrayList — отправляем теорию.");
-                    processCommand(bot, text, chatId);
+                    log.info("Пользователь отправил /ArrayList — запускаем сюжетную линию ArrayList.");
+                    SendMessage theory = arrayListStoryService.getArrayListTheory(chatId);
+
+
+                    try {
+                        Message response = bot.execute(theory);
+                        arrayListStoryService.scheduleMessageDeletion(bot, chatId, response.getMessageId());
+                    } catch (TelegramApiException e) {
+                        log.error("Ошибка при отправке теории по ArrayList: {}", e.getMessage());
+                    }
                 }
                 case "Создать персонажа" -> {
                     log.info("Пользователь выбрал 'Создать персонажа'.");
@@ -234,7 +246,7 @@ public class MessageHandlerService {
                     // --- Вот тут добавляем отправку фото через 2 секунды ---
                     scheduler = Executors.newSingleThreadScheduledExecutor();
                     scheduler.schedule(() -> {
-                        SendPhoto photo = PhotoService.photoJava6(finalChatId);
+                        SendPhoto photo = PhotoStart.photoJava6(finalChatId);
                         photo.setReplyMarkup(KeyboardService.comeBack(finalChatId));
                         try {
                             bot.execute(photo);
@@ -265,7 +277,7 @@ public class MessageHandlerService {
                     bot.execute(StoryStartService.ByteFordjProgrammer(chatId));
                 }
 
-                case "\uD83D\uDCCE Вернуться и скомпилироваться" ->{
+                case "\uD83D\uDCCE Вернуться и скомпилироваться" -> {
                     log.info("Пользователь выбрал 'Вернуться и скомпилироваться' {}", chatId);
                     chatId = message.getChatId();
                     bot.execute(StoryStartService.ByteFordjProgrammer(chatId));
@@ -294,14 +306,14 @@ public class MessageHandlerService {
 
                     // 4. Обновляем характеристики через personageService (рандом для аналитики)
                     personageService.updateStats(
-                        personage,
-                        1,      // levelDelta
-                        50,     // achievementDelta
-                        450.0,  // currencyDelta
-                        27,     // analyticsDelta (min)
-                        40,     // analyticsMax (max)
+                            personage,
+                            1,      // levelDelta
+                            50,     // achievementDelta
+                            450.0,  // currencyDelta
+                            27,     // analyticsDelta (min)
+                            40,     // analyticsMax (max)
 
-                        true    // randomAnalytics
+                            true    // randomAnalytics
                     );
 
                     // 5. Считаем дельту аналитики
@@ -316,7 +328,7 @@ public class MessageHandlerService {
                     } else if ("Personage2".equals(type)) {
                         Personage2 p2 = new Personage2();
                         p2.fillFromEntity(personage);
-                         bot.execute(p2.getRomanFloy (chatId, analyticsDelta));
+                        bot.execute(p2.getRomanFloy(chatId, analyticsDelta));
                     } else if ("Personage3".equals(type)) {
                         Personage3 p3 = new Personage3();
                         p3.fillFromEntity(personage);
@@ -326,7 +338,7 @@ public class MessageHandlerService {
                     }
                 }
 
-                case "☕\uFE0F К чёрту NetBeans. Я готов к Риму!" ->{
+                case "☕\uFE0F К чёрту NetBeans. Я готов к Риму!" -> {
                     log.info("☕\uFE0F К чёрту NetBeans. Я готов к Риму!' {}", chatId);
                     user = userService.getUserByTgId(userId);
                     if (user == null) {
@@ -369,7 +381,7 @@ public class MessageHandlerService {
                     } else if ("Personage2".equals(type)) {
                         Personage2 p2 = new Personage2();
                         p2.fillFromEntity(personage);
-                        bot.execute(p2.getRomanFloy  (chatId, analyticsDelta));
+                        bot.execute(p2.getRomanFloy(chatId, analyticsDelta));
                     } else if ("Personage3".equals(type)) {
                         Personage3 p3 = new Personage3();
                         p3.fillFromEntity(personage);
@@ -377,11 +389,7 @@ public class MessageHandlerService {
                     } else {
                         bot.execute(new SendMessage(chatId.toString(), "Ошибка: неизвестный тип персонажа!"));
                     }
-
-
                 }
-
-
 
 
 

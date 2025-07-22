@@ -1,7 +1,10 @@
 package org.example.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.service.PhotoService.PhotoReam;
+import org.example.service.PhotoService.PhotoStart;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.polls.SendPoll;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -35,11 +38,11 @@ import org.example.bot.KeyboardService;
 @RequiredArgsConstructor
 public class ArrayListStoryService {
     // Сервисы, которые нужны для работы сюжета
-    private final org.example.Service service;
+    // private final org.example.Service service; // УДАЛЕНО для устранения цикла
     private final KeyboardService keyboardService;
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final Map<Long, Integer> correctAnswers = new ConcurrentHashMap<>();
-    private final PhotoService photoService;
+    private final PhotoStart photoStart;
 
     /**
      * Отправляет теорию по ArrayList в виде SendMessage
@@ -74,7 +77,7 @@ public class ArrayListStoryService {
 
         // Пример экранирования
         sb.append("ArrayList - это динамический массив, реализующий интерфейс List.\n");
-        sb.append("Он автоматически меняет размер на 50% при добавлении/удалении элементов,\n");
+        sb.append("Он автоматически меняет свой размер на 50% - 100% при добавлении/удалении элементов,\n");
         sb.append("но операции вставки/удаления в середине списка могут быть медленными\n");
         sb.append("из-за необходимости копирования элементов.\n\n");
 
@@ -128,7 +131,7 @@ public class ArrayListStoryService {
         sb.append("```\n");
         sb.append("toys.add(1, \"Новая игрушка\"); // Теперь порядок: Машинка, Новая игрушка, Кукла. ");
         sb.append("```\n\n");
-        sb.append("Однако вставка в середину списка требует сдвига всех последующих элементов, что может быть медленным для больших списков!! \n");
+        sb.append("Однако вставка в середину/начало списка требует сдвига всех последующих элементов, что может быть медленным для больших списков!! \n");
 
         //  System.out.println("Формируемая теория: " + sb.toString());
 
@@ -150,7 +153,7 @@ public class ArrayListStoryService {
      */
     public SendPhoto getArrayListPhotoTheory(Long chatId) {
         System.out.println("[ArrayListStoryService] getArrayListPhotoTheory() — отправляем фото по ArrayList для chatId=" + chatId);
-        return photoService.getArrayListTheoryPhoto(chatId);
+        return PhotoReam.getArrayListTheoryPhoto(chatId);
     }
 
     /**
@@ -218,7 +221,7 @@ public class ArrayListStoryService {
      * @param chatId — ID чата
      * @param messageId — ID сообщения для удаления
      */
-    public void scheduleMessageDeletion(org.telegram.telegrambots.bots.TelegramLongPollingBot bot, Long chatId, Integer messageId) {
+    public void scheduleMessageDeletion(TelegramLongPollingBot bot, Long chatId, Integer messageId) {
         System.out.println("[ArrayListStoryService] scheduleMessageDeletion() — планируем удаление сообщения messageId=" + messageId + " для chatId=" + chatId);
         scheduler.schedule(() -> {
             try {
@@ -227,7 +230,7 @@ public class ArrayListStoryService {
                 deleteMessage.setMessageId(messageId);
                 bot.execute(deleteMessage);
                 try {
-                    SendPhoto sendPhoto = photoService.getStartPhoto(chatId);
+                    SendPhoto sendPhoto = photoStart.getStartPhoto(chatId);
                     bot.execute(sendPhoto);
                     bot.execute(getArrayListQuiz(chatId));
                     sendWithKeyboard(bot, chatId, "Хотите прочитать теорию о Arraylist?");
@@ -238,7 +241,7 @@ public class ArrayListStoryService {
             } catch (TelegramApiException e) {
                 System.err.println("Ошибка удаления сообщения: " + e.getMessage());
             }
-        }, 50, TimeUnit.SECONDS);
+        }, 10, TimeUnit.SECONDS);
     }
 
     /**

@@ -1,6 +1,7 @@
 package org.example.bot;
 
 import lombok.RequiredArgsConstructor;
+import org.example.service.PhotoService.PhotoStart;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 
@@ -11,13 +12,10 @@ import org.slf4j.LoggerFactory;
 
 import org.example.model.entity.UserEntity;
 
-import org.example.service.PhotoService;
 import org.example.service.UserService;
 import org.example.service.StoryStartService;
 import org.example.service.PersonageCreationService;
 import org.example.service.ArrayListStoryService;
-
-import java.util.ArrayList;
 
 /**
  * Bot — твой главный дирижёр, шлюз между Telegram и всем этим бардаком.
@@ -43,7 +41,7 @@ public class Bot extends TelegramLongPollingBot { // класс бота
     private final UserService userService;
     private final PersonageCreationService personageCreationService;
     private final StoryStartService storyStartService;
-    private final PhotoService photoService;
+    private final PhotoStart photoStart;
     private final CallbackQueryHandlerService callbackQueryHandlerService;
 
     /**

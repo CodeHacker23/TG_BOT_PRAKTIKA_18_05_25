@@ -1,6 +1,7 @@
 package org.example;
 
 import lombok.RequiredArgsConstructor;
+import org.example.service.ArrayListStoryService;
 import org.example.service.UserService;
 
 
@@ -21,6 +22,7 @@ import org.example.service.UserService;
 public class Service {
 
     private final UserService userService;
+    private final ArrayListStoryService arrayListStoryService;
 
     /**
      * Обрабатывает команды и делегирует их в нужные StoryService
@@ -43,8 +45,8 @@ public class Service {
                 answer = listCommand();
             }
             case "/ArrayList" -> {
-                // Делегируй обработку в ArrayListStoryService!
-                // answer = arrayListStoryService.getArrayListInfo();
+                // Делегируем обработку в ArrayListStoryService!
+                answer = ArrayListStoryService.getArrayListInfo(null); // null, потому что chatId не нужен для текста
             }
             case "" -> {
 

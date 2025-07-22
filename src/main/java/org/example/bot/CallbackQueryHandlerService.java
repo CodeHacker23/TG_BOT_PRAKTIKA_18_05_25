@@ -3,7 +3,8 @@ package org.example.bot;
 import lombok.RequiredArgsConstructor;
 import org.example.model.entity.UserEntity;
 
-import org.example.service.PhotoService;
+import org.example.service.PhotoService.PhotoReam;
+import org.example.service.PhotoService.PhotoStart;
 import org.example.service.UserService;
 import org.example.service.StoryStartService;
 import org.example.service.PersonageService;
@@ -38,12 +39,14 @@ import org.example.model.personage.Personage3;
 public class CallbackQueryHandlerService {
     private static final Logger log = LoggerFactory.getLogger(CallbackQueryHandlerService.class);
     private final UserService userService;
-    private final PhotoService photoService;
+    private final PhotoStart photoStart;
 
     private final StoryStartService storyStartService;
     private final PersonageService personageService;
 
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    private final PhotoReam photoReam;
+
     /**
      * Главный обработчик всех callbackQuery
      * @param bot — твой TelegramLongPollingBot (Bot)
@@ -77,11 +80,11 @@ public class CallbackQueryHandlerService {
         } else if (user != null) {
             try {
                 log.info("[CallbackQueryHandlerService] photoWarrior(chatId) - вызвана отправка командора пользователю: {}" ,chatId);
-                bot.execute(photoService.photoWarrior(chatId)); //вызываем наш мем с воином
+                bot.execute(photoReam.photoWarrior(chatId)); //вызываем наш мем с воином
                 scheduler.schedule(() -> {
                     try {
                         log.info(" [CallbackQueryHandlerService] - photoService.photoIteratorius() - вызвана отправка командора пользователю: {}" ,chatId);
-                        bot.execute(photoService.photoIteratorius(chatId)); //вызываем нашу фотку командора Итературиаса
+                        bot.execute(photoReam.photoIteratorius(chatId)); //вызываем нашу фотку командора Итературиаса
                         KeyboardService.gladiatorPlot(chatId);
                     } catch (TelegramApiException e) {
                         log.error("Ошибка при отправке фото Итератуса: {}", e.getMessage());
