@@ -45,10 +45,9 @@ public class Service {
             case "/list" -> {
                 answer = listCommand();
             }
-            case "/ArrayList" -> {
-                // Делегируем обработку в ArrayListStoryService!
-               answer = ArrayListStory.getArrayListInfo(null); // null, потому что chatId не нужен для текста
-            }
+            // case "📜 Получить боевой свиток" -> {
+            //     // Обработка этой команды делегируется в ArrayListStory через MessageHandlerService
+            // }
             case "" -> {
 
             }

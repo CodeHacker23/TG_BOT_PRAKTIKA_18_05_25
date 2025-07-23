@@ -29,6 +29,7 @@ import org.example.model.personage.Personage2;
 import org.example.model.personage.Personage3;
 import org.example.service.PersonageService;
 import org.example.service.StoryStartService;
+import org.example.service.ArrayListStory;
 
 /**
  * Главный обработчик всех входящих сообщений пользователя (кроме /start и создания персонажа).
@@ -54,6 +55,7 @@ public class MessageHandlerService {
     private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private final PersonageService personageService;
     private final StoryStartService storyStartService;
+    private final ArrayListStory arrayListStory;
 
 
     /**
@@ -131,77 +133,22 @@ public class MessageHandlerService {
         Long userId = message.getFrom().getId();
         log.info("handleMessage() — получено сообщение: '{}' от userId={}, chatId={}", text, userId, chatId);
 
-        // Проверяем: если команда относится к начальной сюжетной ветке — делегируем в StoryStartService
-        // Это избавляет от длинных if/switch и централизует логику старта
+        // 1. Начальная сюжетная ветка
         if (storyStartService.canHandle(text)) {
             log.info("MessageHandlerService: делегируем команду '{}' в StoryStartService", text);
             storyStartService.handle(bot, message);
             return;
         }
 
-        // Проверяем статус пользователя
-        UserEntity user = userService.getUserByTgId(userId);
-        if (user == null) {
-            log.info("Новый пользователь, создаём UserEntity для userId={}", userId);
-            user = new UserEntity();
-            user.setTgId(userId);
-            userService.saveUser(user);
-        }
-        // Проверка персонажа на состояние пользователя
-        if (user != null && "AWAITING_CHARACTER_NAME".equals(user.getState())) {
-            if (hasCharacter(user)) {
-                log.info("Попытка повторного создания персонажа для пользователя: {}", user.getTgId());
-                SendMessage alreadyCreated = new SendMessage(chatId.toString(), "Вы уже создали персонажа, изменить его нельзя.");
-                bot.execute(alreadyCreated);
-                // Сбросить состояние, если вдруг оно осталось
-                user.setState(null);
-                userService.saveUser(user);
-                return;
-            }
-            // Пользователь должен ввести имя персонажа
-            String characterName = text;
-            log.info("Пользователь вводит имя персонажа: '{}'", characterName);
-            // Получаем случайного персонажа
-            processCharacterNameInput(bot, chatId, userId, characterName);
+        // 2. Ветка ArrayList (и другие коллекции)
+        if (arrayListStory.canHandle(text)) {
+            log.info("MessageHandlerService: делегируем команду '{}' в ArrayListStory", text);
+            arrayListStory.handle(bot, message);
             return;
         }
 
-        try {
-            Long finalChatId = chatId;
-            Long finalChatId1 = chatId;
-            switch (text) {
-                // --- КОМАНДЫ НАЧАЛЬНОЙ СЮЖЕТНОЙ ВЕТКИ ДЕЛЕГИРУЮТСЯ В StoryStartService ---
-                // (см. делегирование выше через storyStartService.canHandle/handle)
-                case "Да" -> {
-                    log.info("Пользователь выбрал 'Да' — отправляем теорию по ArrayList.");
-                    arrayListStoryService.sendTheory(bot, chatId);
-                }
-                case "Нет" -> {
-                    log.info("Пользователь выбрал 'Нет' — отправляем викторину по ArrayList.");
-                    bot.execute(arrayListStoryService.getArrayListSuperQuiz(chatId));
-                    arrayListStoryService.sendWithKeyboard(bot, chatId, "Уверен, что не хочешь перечитать теорию?");
-                }
-                case "Я изучаю пайтон" -> {
-                    log.info("Пользователь выбрал 'Я изучаю пайтон' — отправляем Python-фото.");
-                    bot.execute(arrayListStoryService.getPythonPhoto(chatId));
-                    arrayListStoryService.sendWithKeyboard(bot, chatId, "Согласен?!");
-                }
-                case "/ArrayList" -> {
-                    log.info("Пользователь отправил /ArrayList — запускаем сюжетную линию ArrayList.");
-                    SendMessage theory = arrayListStoryService.getArrayListTheory(chatId);
-                    try {
-                        Message response = bot.execute(theory);
-                        arrayListStoryService.scheduleMessageDeletion(bot, chatId, response.getMessageId());
-                    } catch (TelegramApiException e) {
-                        log.error("Ошибка при отправке теории по ArrayList: {}", e.getMessage());
-                    }
-                }
-                // --- Остальные кейсы (например, сюжетные ветки Рима, если они не делегируются) ---
-                // ... оставь только уникальные не-стартовые сценарии ...
-            }
-        } catch (TelegramApiException e) {
-            log.error("Ошибка обработки сообщения для chatId {}: {}", chatId, e.getMessage());
-        }
+        // 3. Остальные команды (например, processCommand)
+        processCommand(bot, text, chatId);
     }
 
     /**

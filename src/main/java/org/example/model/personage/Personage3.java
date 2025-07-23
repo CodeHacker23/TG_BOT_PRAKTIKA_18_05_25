@@ -104,7 +104,8 @@ public class Personage3 extends PersonageBase {
         this.achievementPoints = entity.getAchievementPoints();
         this.currency = entity.getCurrency();
         this.status = entity.getStatus();
-        // Добавь уникальные поля Personage3, если есть
+        this.codeAccuracy = entity.getCodeAccuracy() != null ? entity.getCodeAccuracy() : 0;
+        this.optimization = entity.getOptimization() != null ? entity.getOptimization() : 0;
     }
     /**
      * Получить карточку персонажа для Telegram
