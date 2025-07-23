@@ -148,36 +148,11 @@ public class MessageHandlerService {
         }
 
         // 3. Остальные команды (например, processCommand)
-        processCommand(bot, text, chatId);
+        // Удалить метод processCommand полностью
     }
 
-    /**
-     * Обрабатывает команды, не относящиеся к основным сценариям
-     *
-     * @param bot    — TelegramLongPollingBot
-     * @param text   — текст команды
-     * @param chatId — ID чата
-     */
-    public void processCommand(TelegramLongPollingBot bot, String text, Long chatId) {
-        log.info("processCommand() — text='{}', chatId={}", text, chatId);
-        try {
-            String result = service.getWay(text);
-            if (result != null && !result.trim().isEmpty()) {
-                log.info("Отправляем результат команды: '{}'", result);
-                SendMessage sendMessage = new SendMessage(chatId.toString(), result);
-                sendMessage.setParseMode("Markdown");
-                theorySent.compute(chatId, (k, v) -> true);
-                Message response = bot.execute(sendMessage);
-                if (result.equals(ArrayListStory.getArrayListInfo(chatId))) {
-                    arrayListStoryService.scheduleMessageDeletion(bot, chatId, response.getMessageId());
-                }
-            } else {
-                log.error("Попытка отправить пустое сообщение для chatId {}! Сообщение не будет отправлено.", chatId);
-            }
-        } catch (TelegramApiException e) {
-            log.error("Ошибка отправки сообщения для chatId {}: {}", chatId, e.getMessage());
-        }
-    }
+
+
 
     // --- Советы по расширению ---
     // 1. Для новых сценариев (LinkedList, Set и т.д.) делай отдельные StoryService и вызывай их отсюда.

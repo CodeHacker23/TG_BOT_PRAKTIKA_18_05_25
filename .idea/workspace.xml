@@ -4,17 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="Началась реализация сюжетной ветки Array, разгрузил класс MessageHandlerService, в осоенности кейсы разгрузил, далее планируется расширение сюжетной ветки и оптимизация кода">
+    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment=" началась реализация сюжетной ветки, теория о Array выходит но пока что не удаляется">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Service.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/MessageHandlerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/MessageHandlerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/model/personage/Personage2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/model/personage/Personage2.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/model/personage/Personage3.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/model/personage/Personage3.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayListStory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayListStory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayListStoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayListStoryService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/PersonageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/PersonageService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/StoryStartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/StoryStartService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -290,7 +285,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753261228294</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary=" началась реализация сюжетной ветки, теория о Array выходит но пока что не удаляется">
+      <option name="closed" value="true" />
+      <created>1753271381935</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1753271381935</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -314,6 +317,7 @@
     <MESSAGE value="работает" />
     <MESSAGE value="вроде вссе как положено" />
     <MESSAGE value="Началась реализация сюжетной ветки Array, разгрузил класс MessageHandlerService, в осоенности кейсы разгрузил, далее планируется расширение сюжетной ветки и оптимизация кода" />
-    <option name="LAST_COMMIT_MESSAGE" value="Началась реализация сюжетной ветки Array, разгрузил класс MessageHandlerService, в осоенности кейсы разгрузил, далее планируется расширение сюжетной ветки и оптимизация кода" />
+    <MESSAGE value=" началась реализация сюжетной ветки, теория о Array выходит но пока что не удаляется" />
+    <option name="LAST_COMMIT_MESSAGE" value=" началась реализация сюжетной ветки, теория о Array выходит но пока что не удаляется" />
   </component>
 </project>
