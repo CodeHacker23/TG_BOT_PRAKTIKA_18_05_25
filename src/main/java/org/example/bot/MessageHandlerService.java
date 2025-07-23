@@ -2,6 +2,7 @@ package org.example.bot;
 
 import lombok.RequiredArgsConstructor;
 
+import org.example.bot.KeyboardService.KeyboardService;
 import org.example.model.entity.PersonageEntity;
 import org.example.service.*;
 import org.example.service.PhotoService.PhotoStart;
@@ -27,6 +28,7 @@ import org.example.model.personage.Personage1;
 import org.example.model.personage.Personage2;
 import org.example.model.personage.Personage3;
 import org.example.service.PersonageService;
+import org.example.service.StoryStartService;
 
 /**
  * Главный обработчик всех входящих сообщений пользователя (кроме /start и создания персонажа).
@@ -51,6 +53,7 @@ public class MessageHandlerService {
     private final Map<Long, Boolean> theorySent = new ConcurrentHashMap<>();
     private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private final PersonageService personageService;
+    private final StoryStartService storyStartService;
 
 
     /**
@@ -128,6 +131,14 @@ public class MessageHandlerService {
         Long userId = message.getFrom().getId();
         log.info("handleMessage() — получено сообщение: '{}' от userId={}, chatId={}", text, userId, chatId);
 
+        // Проверяем: если команда относится к начальной сюжетной ветке — делегируем в StoryStartService
+        // Это избавляет от длинных if/switch и централизует логику старта
+        if (storyStartService.canHandle(text)) {
+            log.info("MessageHandlerService: делегируем команду '{}' в StoryStartService", text);
+            storyStartService.handle(bot, message);
+            return;
+        }
+
         // Проверяем статус пользователя
         UserEntity user = userService.getUserByTgId(userId);
         if (user == null) {
@@ -159,6 +170,8 @@ public class MessageHandlerService {
             Long finalChatId = chatId;
             Long finalChatId1 = chatId;
             switch (text) {
+                // --- КОМАНДЫ НАЧАЛЬНОЙ СЮЖЕТНОЙ ВЕТКИ ДЕЛЕГИРУЮТСЯ В StoryStartService ---
+                // (см. делегирование выше через storyStartService.canHandle/handle)
                 case "Да" -> {
                     log.info("Пользователь выбрал 'Да' — отправляем теорию по ArrayList.");
                     arrayListStoryService.sendTheory(bot, chatId);
@@ -176,8 +189,6 @@ public class MessageHandlerService {
                 case "/ArrayList" -> {
                     log.info("Пользователь отправил /ArrayList — запускаем сюжетную линию ArrayList.");
                     SendMessage theory = arrayListStoryService.getArrayListTheory(chatId);
-
-
                     try {
                         Message response = bot.execute(theory);
                         arrayListStoryService.scheduleMessageDeletion(bot, chatId, response.getMessageId());
@@ -185,218 +196,8 @@ public class MessageHandlerService {
                         log.error("Ошибка при отправке теории по ArrayList: {}", e.getMessage());
                     }
                 }
-                case "Создать персонажа" -> {
-                    log.info("Пользователь выбрал 'Создать персонажа'.");
-                    PersonageCreationService.CharacterCreationResult result = personageCreationService.handleCreatePersonageRequest(userId);
-                    if (!result.canCreate) {
-                        log.info("У пользователя уже есть персонаж, создание нового запрещено.");
-                        bot.execute(new SendMessage(chatId.toString(), "У вас уже есть персонаж, создать нового нельзя."));
-
-                        return;
-                    }
-                    log.info("Просим пользователя ввести имя персонажа.");
-                    bot.execute(new SendMessage(chatId.toString(), "Придумайте имя для персонажа:"));
-                }
-                case "✅ Продолжить путь программиста" -> {
-                    log.info("Пользователь выбрал 'Продолжить путь программиста'.");
-                    chatId = message.getChatId();
-                    bot.execute(StoryStartService.ByteFordjProgrammer(chatId));
-                }
-                case "Какая?" -> {
-                    log.info("Пользователь выбрал 'Какая?'.");
-                    chatId = message.getChatId();
-                    bot.execute(StoryStartService.sendWhich(chatId));
-                    // Убираем клавиатуру после ответа
-                    SendMessage remove = new SendMessage();
-                    remove.setChatId(chatId);
-                    remove.setText(" ");
-                    remove.setReplyMarkup(KeyboardService.removeKeyboard());
-                    if (remove.getText() != null && !remove.getText().trim().isEmpty()) {
-                        bot.execute(remove);
-                    } else {
-                        log.error("Попытка отправить пустое сообщение для chatId {}! Сообщение не будет отправлено.", chatId);
-                    }
-                }
-
-                case "Я готов✅" -> {
-                    log.info("Пользователь выбрал 'Я готов ✅'");
-                    chatId = message.getChatId();
-                    bot.execute(StoryStartService.ByteFordjParting(chatId));
-                    // Убираем клавиатуру после ответа
-                    SendMessage remove = new SendMessage();
-                    remove.setChatId(chatId);
-                    remove.setText(" ");
-                    remove.setReplyMarkup(KeyboardService.removeKeyboard());
-                    if (remove.getText() != null && !remove.getText().trim().isEmpty()) {
-                        bot.execute(remove);
-                    } else {
-                        log.error("Попытка отправить пустое сообщение для chatId {}! Сообщение не будет отправлено.", chatId);
-                    }
-
-                }
-                case "❓ Но что будет со мной?" -> {
-                    log.info("Пользователь выбрал '❓ Но что будет со мной?' {}", chatId);
-                    chatId = message.getChatId();
-                    bot.execute(StoryStartService.ByteFordjAnswerTwo(chatId));
-                }
-                case "❌ Сбежать от компиляции" -> {
-                    log.info("Пользователь выбрал '❌ Сбежать от компиляции' {}", chatId);
-                    chatId = message.getChatId();
-                    bot.execute(StoryStartService.sendEscapeTwoText(chatId));
-                    // --- Вот тут добавляем отправку фото через 2 секунды ---
-                    scheduler = Executors.newSingleThreadScheduledExecutor();
-                    scheduler.schedule(() -> {
-                        SendPhoto photo = PhotoStart.photoJava6(finalChatId);
-                        photo.setReplyMarkup(KeyboardService.comeBack(finalChatId));
-                        try {
-                            bot.execute(photo);
-                        } catch (TelegramApiException e) {
-                            log.error("Ошибка при отправке фото после сбега: ", e);
-                        }
-                    }, 2, TimeUnit.SECONDS);
-
-                }
-
-                case "Я лучше пойду обновлю IDE" -> {
-                    log.info("Пользователь выбрал 'Я лучше пойду обновлю IDE' {}", chatId);
-                    chatId = message.getChatId();
-                    bot.execute(StoryStartService.IDEtext(chatId));
-                    scheduler.schedule(() -> {
-                        try {
-                            bot.execute(StoryStartService.IDEtext2(finalChatId1));
-                        } catch (TelegramApiException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }, 2, TimeUnit.SECONDS);
-
-                }
-
-                case "✅ Принять судьбу программиста" -> {
-                    log.info("Пользователь выбрал '✅ Принять судьбу программиста' {}", chatId);
-                    chatId = message.getChatId();
-                    bot.execute(StoryStartService.ByteFordjProgrammer(chatId));
-                }
-
-                case "\uD83D\uDCCE Вернуться и скомпилироваться" -> {
-                    log.info("Пользователь выбрал 'Вернуться и скомпилироваться' {}", chatId);
-                    chatId = message.getChatId();
-                    bot.execute(StoryStartService.ByteFordjProgrammer(chatId));
-                    log.info("[Вернуться и скомпилироваться] - отработал  ");
-                }
-
-                case "Принять доспехи ⚔️" -> {
-                    log.info("Пользователь выбрал 'Принять доспехи ⚔️' {}", chatId);
-                    // 1. Получаем пользователя и его персонажа
-                    user = userService.getUserByTgId(userId);
-                    if (user == null) {
-                        bot.execute(new SendMessage(chatId.toString(), "Ошибка: пользователь не найден!"));
-                        break;
-                    }
-                    PersonageEntity personage = user.getPersonage();
-                    if (personage == null) {
-                        bot.execute(new SendMessage(chatId.toString(), "Ошибка: персонаж не найден!"));
-                        break;
-                    }
-
-                    // 2. Определяем тип персонажа
-                    String type = personage.getCharacterType();
-
-                    // 3. Сохраняем старое значение аналитики
-                    int oldAnalytics = personage.getAnalytics() != null ? personage.getAnalytics() : 0;
-
-                    // 4. Обновляем характеристики через personageService (рандом для аналитики)
-                    personageService.updateStats(
-                            personage,
-                            1,      // levelDelta
-                            50,     // achievementDelta
-                            450.0,  // currencyDelta
-                            27,     // analyticsDelta (min)
-                            40,     // analyticsMax (max)
-
-                            true    // randomAnalytics
-                    );
-
-                    // 5. Считаем дельту аналитики
-                    int newAnalytics = personage.getAnalytics() != null ? personage.getAnalytics() : 0;
-                    int analyticsDelta = newAnalytics - oldAnalytics;
-
-                    // 6. Создаём объект нужного персонажа и заполняем его из сущности
-                    if ("Personage1".equals(type)) {
-                        Personage1 p1 = new Personage1();
-                        p1.fillFromEntity(personage);
-                        bot.execute(p1.getRomanArmorCard(chatId, analyticsDelta));
-                    } else if ("Personage2".equals(type)) {
-                        Personage2 p2 = new Personage2();
-                        p2.fillFromEntity(personage);
-                        bot.execute(p2.getRomanFloy(chatId, analyticsDelta));
-                    } else if ("Personage3".equals(type)) {
-                        Personage3 p3 = new Personage3();
-                        p3.fillFromEntity(personage);
-                        bot.execute(p3.getRomanPersonage3(chatId, analyticsDelta));
-                    } else {
-                        bot.execute(new SendMessage(chatId.toString(), "Ошибка: неизвестный тип персонажа!"));
-                    }
-                }
-
-                case "☕\uFE0F К чёрту NetBeans. Я готов к Риму!" -> {
-                    log.info("☕\uFE0F К чёрту NetBeans. Я готов к Риму!' {}", chatId);
-                    user = userService.getUserByTgId(userId);
-                    if (user == null) {
-                        bot.execute(new SendMessage(chatId.toString(), "Ошибка: пользователь не найден!"));
-                        break;
-                    }
-                    PersonageEntity personage = user.getPersonage();
-                    if (personage == null) {
-                        bot.execute(new SendMessage(chatId.toString(), "Ошибка: персонаж не найден!"));
-                        break;
-                    }
-
-                    // 2. Определяем тип персонажа
-                    String type = personage.getCharacterType();
-
-                    // 3. Сохраняем старое значение аналитики
-                    int oldAnalytics = personage.getAnalytics() != null ? personage.getAnalytics() : 0;
-
-                    // 4. Обновляем характеристики через personageService (рандом для аналитики)
-                    personageService.updateStats(
-                            personage,
-                            1,      // levelDelta
-                            50,     // achievementDelta
-                            450.0,  // currencyDelta
-                            27,     // analyticsDelta (min)
-                            40,     // analyticsMax (max)
-
-                            true    // randomAnalytics
-                    );
-
-                    // 5. Считаем дельту аналитики
-                    int newAnalytics = personage.getAnalytics() != null ? personage.getAnalytics() : 0;
-                    int analyticsDelta = newAnalytics - oldAnalytics;
-
-                    // 6. Создаём объект нужного персонажа и заполняем его из сущности
-                    if ("Personage1".equals(type)) {
-                        Personage1 p1 = new Personage1();
-                        p1.fillFromEntity(personage);
-                        bot.execute(p1.getRomanArmorCard(chatId, analyticsDelta));
-                    } else if ("Personage2".equals(type)) {
-                        Personage2 p2 = new Personage2();
-                        p2.fillFromEntity(personage);
-                        bot.execute(p2.getRomanFloy(chatId, analyticsDelta));
-                    } else if ("Personage3".equals(type)) {
-                        Personage3 p3 = new Personage3();
-                        p3.fillFromEntity(personage);
-                        bot.execute(p3.getRomanPersonage3(chatId, analyticsDelta));
-                    } else {
-                        bot.execute(new SendMessage(chatId.toString(), "Ошибка: неизвестный тип персонажа!"));
-                    }
-                }
-
-
-
-                default -> {
-                    log.info("Неизвестная команда, пробуем обработать через processCommand().");
-                    processCommand(bot, text, chatId);
-                }
+                // --- Остальные кейсы (например, сюжетные ветки Рима, если они не делегируются) ---
+                // ... оставь только уникальные не-стартовые сценарии ...
             }
         } catch (TelegramApiException e) {
             log.error("Ошибка обработки сообщения для chatId {}: {}", chatId, e.getMessage());
@@ -420,7 +221,7 @@ public class MessageHandlerService {
                 sendMessage.setParseMode("Markdown");
                 theorySent.compute(chatId, (k, v) -> true);
                 Message response = bot.execute(sendMessage);
-                if (result.equals(arrayListStoryService.getArrayListInfo(chatId))) {
+                if (result.equals(ArrayListStory.getArrayListInfo(chatId))) {
                     arrayListStoryService.scheduleMessageDeletion(bot, chatId, response.getMessageId());
                 }
             } else {
