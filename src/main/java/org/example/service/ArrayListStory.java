@@ -10,6 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.HashMap;
@@ -92,29 +95,14 @@ public class ArrayListStory { //наша ветка по сюжетке Array
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private final PersonageRepository personageRepository;
     private final Map<String, BiConsumer<TelegramLongPollingBot, Message>> CommandsReam = new HashMap<>();
-
+    private final ArrayListStoryService arrayListStoryService;
 
 
     @PostConstruct
     public void initReam() {
         CommandsReam.put("📜 Получить боевой свиток", (bot, msg) -> {
-            String theory = getArrayListInfo(msg.getChatId());
-            log.info("[ArrayListStory] theory='{}'", theory);
-            if (theory == null || theory.trim().isEmpty()) {
-                log.error("[ArrayListStory] Теория пуста, сообщение не будет отправлено!");
-                return;
-            }
-            SendMessage sendMessage = new SendMessage(msg.getChatId().toString(), theory);
-            sendMessage.setParseMode("Markdown");
-            try {
-                bot.execute(sendMessage);
-            } catch (TelegramApiException e) {
-                log.error("[ArrayListStory] -📜 Получить боевой свиток  ");
-                System.err.println("Ошибка отправки боевого свитка: " + e.getMessage());
-            }
+            sendTheoryWithAutoDelete(bot, msg.getChatId());
         });
-
-
     }
 
 
@@ -211,12 +199,34 @@ public class ArrayListStory { //наша ветка по сюжетке Array
     }
 
     /**
-     * Получить теорию по ArrayList (для других сервисов)
-     *
-     * @return String — текст теории
+     * Планирует удаление сообщения через 4 секунды и отправляет клавиатуру
+     * @param bot — TelegramLongPollingBot
+     * @param chatId — ID чата
      */
-    public static String getArrayListInfo(Long chatId) {
-        return formatArrayListInfo();
+    public void sendTheoryWithAutoDelete(TelegramLongPollingBot bot, Long chatId) {
+        String theory = formatArrayListInfo();
+        SendMessage sendMessage = new SendMessage(chatId.toString(), theory);
+        sendMessage.setParseMode("Markdown");
+        try {
+            Message sentMsg = bot.execute(sendMessage);
+            Integer messageId = sentMsg.getMessageId();
+            log.info("[ArrayListStory] Отправлено сообщение с теорией, messageId={}", messageId);
+            scheduler.schedule(() -> {
+                try {
+                    log.info("[ArrayListStory] Пробуем удалить сообщение, messageId={}", messageId);
+                    DeleteMessage deleteMessage = new DeleteMessage();
+                    deleteMessage.setChatId(chatId.toString());
+                    deleteMessage.setMessageId(messageId);
+                    bot.execute(deleteMessage);
+                    log.info("[ArrayListStory] Удаление сообщения выполнено, messageId={}", messageId);
+                    arrayListStoryService.sendWithKeyboard(bot, chatId, "Хотите прочитать теорию о Arraylist?");
+                } catch (Exception e) {
+                    log.error("[ArrayListStory] Ошибка при удалении сообщения или отправке клавиатуры", e);
+                }
+            }, 4, java.util.concurrent.TimeUnit.SECONDS);
+        } catch (Exception e) {
+            log.error("[ArrayListStory] Ошибка при отправке теории", e);
+        }
     }
 
     public boolean canHandle(String text) {
@@ -232,5 +242,4 @@ public class ArrayListStory { //наша ветка по сюжетке Array
             log.warn("[ArrayListStory] команда '{}' не найдена в Map", text);
         }
     }
-
 }

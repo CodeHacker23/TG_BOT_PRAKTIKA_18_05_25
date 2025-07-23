@@ -35,28 +35,28 @@ public class ArrayListStoryService {
     private final PhotoStart photoStart;
     private final PhotoReam photoReam;
 
-    /**
-     * Отправляет теорию по ArrayList в виде SendMessage
-     * @param chatId — ID чата Telegram
-     * @return SendMessage с теорией
-     *
-     * Пример:
-     *   SendMessage theory = arrayListStoryService.getArrayListTheory(chatId);
-     *   bot.execute(theory);
-     */
-    public SendMessage getArrayListTheory(Long chatId) {
-        System.out.println("[ArrayListStoryService] getArrayListTheory() — отправляем теорию по ArrayList для chatId=" + chatId);
-        String theoryText = ArrayListStory.getArrayListInfo(chatId);
-        if (theoryText == null || theoryText.trim().isEmpty()) {
-            System.err.println("Попытка отправить пустую теорию по ArrayList для chatId=" + chatId + "! Сообщение не будет отправлено.");
-            return null;
-        }
-        SendMessage theory = new SendMessage();
-        theory.setParseMode("Markdown");
-        theory.setText(theoryText);
-        theory.setChatId(chatId);
-        return theory;
-    }
+//    /**
+//     * Отправляет теорию по ArrayList в виде SendMessage
+//     * @param chatId — ID чата Telegram
+//     * @return SendMessage с теорией
+//     *
+//     * Пример:
+//     *   SendMessage theory = arrayListStoryService.getArrayListTheory(chatId);
+//     *   bot.execute(theory);
+//     */
+//    public SendMessage getArrayListTheory(Long chatId) {
+//        System.out.println("[ArrayListStoryService] getArrayListTheory() — отправляем теорию по ArrayList для chatId=" + chatId);
+//        String theoryText = ArrayListStory.getArrayListInfo(chatId);
+//        if (theoryText == null || theoryText.trim().isEmpty()) {
+//            System.err.println("Попытка отправить пустую теорию по ArrayList для chatId=" + chatId + "! Сообщение не будет отправлено.");
+//            return null;
+//        }
+//        SendMessage theory = new SendMessage();
+//        theory.setParseMode("Markdown");
+//        theory.setText(theoryText);
+//        theory.setChatId(chatId);
+//        return theory;
+//    }
 
     /**
      * Отправляет фото по ArrayList (карточка)
@@ -68,18 +68,7 @@ public class ArrayListStoryService {
         return PhotoReam.getArrayListTheoryPhoto(chatId);
     }
 
-    /**
-     * Отправляет фото Python (пасхалка)
-     * @param chatId — ID чата Telegram
-     * @return SendPhoto с фото Python
-     */
-    public SendPhoto getPythonPhoto(Long chatId) {
-        System.out.println("[ArrayListStoryService] getPythonPhoto() — отправляем Python-фото для chatId=" + chatId);
-        return SendPhoto.builder()
-                .chatId(chatId)
-                .photo(new InputFile("https://ltdfoto.ru/images/2025/06/11/IMG_2314.jpg"))
-                .build();
-    }
+
 
     /**
      * Отправляет викторину по ArrayList (quiz)
@@ -127,56 +116,49 @@ public class ArrayListStoryService {
         return superPool;
     }
 
-    /**
-     * Планирует удаление сообщения через 50 секунд и отправляет новую теорию/викторину
-     * @param bot — TelegramLongPollingBot
-     * @param chatId — ID чата
-     * @param messageId — ID сообщения для удаления
-     */
-    public void scheduleMessageDeletion(TelegramLongPollingBot bot, Long chatId, Integer messageId) {
-        System.out.println("[ArrayListStoryService] scheduleMessageDeletion() — планируем удаление сообщения messageId=" + messageId + " для chatId=" + chatId);
-        scheduler.schedule(() -> {
-            try {
-                DeleteMessage deleteMessage = new DeleteMessage();
-                deleteMessage.setChatId(chatId.toString());
-                deleteMessage.setMessageId(messageId);
-                bot.execute(deleteMessage);
-                try {
 
-
-                    bot.execute(getArrayListQuiz(chatId));
-                    sendWithKeyboard(bot, chatId, "Хотите прочитать теорию о Arraylist?");
-                } catch (TelegramApiException e) {
-                    System.err.println("Метод встал и не работает ");
-                    e.printStackTrace();
-                }
-            } catch (TelegramApiException e) {
-                System.err.println("Ошибка удаления сообщения: " + e.getMessage());
-            }
-        }, 10, TimeUnit.SECONDS);
-    }
+//    public void scheduleMessageDeletion(TelegramLongPollingBot bot, Long chatId, Integer messageId) {
+//        System.out.println("[ArrayListStoryService] scheduleMessageDeletion() — планируем удаление сообщения messageId=" + messageId + " для chatId=" + chatId);
+//        scheduler.schedule(() -> {
+//            try {
+//                DeleteMessage deleteMessage = new DeleteMessage();
+//                deleteMessage.setChatId(chatId.toString());
+//                deleteMessage.setMessageId(messageId);
+//                bot.execute(deleteMessage);
+//                try {
+//                    bot.execute(getArrayListQuiz(chatId));
+//                    sendWithKeyboard(bot, chatId, "Хотите прочитать теорию о Arraylist?");
+//                } catch (TelegramApiException e) {
+//                    System.err.println("Метод встал и не работает ");
+//                    e.printStackTrace();
+//                }
+//            } catch (TelegramApiException e) {
+//                System.err.println("Ошибка удаления сообщения: " + e.getMessage());
+//            }
+//        }, 10, TimeUnit.SECONDS);
+//    }
 
     /**
      * Отправляет теорию и фото по ArrayList
      * @param bot — TelegramLongPollingBot
      * @param chatId — ID чата
      */
-    public void sendTheory(org.telegram.telegrambots.bots.TelegramLongPollingBot bot, Long chatId) {
-        System.out.println("[ArrayListStoryService] sendTheory() — отправляем теорию и фото по ArrayList для chatId=" + chatId);
-        SendMessage theory = getArrayListTheory(chatId);
-        SendPhoto sendPhoto = getArrayListPhotoTheory(chatId);
-        try {
-            bot.execute(sendPhoto);
-            if (theory != null && theory.getText() != null && !theory.getText().trim().isEmpty()) {
-                bot.execute(theory);
-            } else {
-                System.err.println("Попытка отправить пустую теорию по ArrayList для chatId=" + chatId + "! Сообщение не будет отправлено.");
-            }
-        } catch (TelegramApiException e) {
-            System.out.println("Улетел в эксепшн проблема с фото ");
-            e.printStackTrace();
-        }
-    }
+//    public void sendTheory (TelegramLongPollingBot bot, Long chatId) {
+//        System.out.println("[ArrayListStoryService] sendTheory() — отправляем теорию и фото по ArrayList для chatId=" + chatId);
+//        SendMessage theory = getArrayListTheory(chatId);
+//        SendPhoto sendPhoto = getArrayListPhotoTheory(chatId);
+//        try {
+//            bot.execute(sendPhoto);
+//            if (theory != null && theory.getText() != null && !theory.getText().trim().isEmpty()) {
+//                bot.execute(theory);
+//            } else {
+//                System.err.println("Попытка отправить пустую теорию по ArrayList для chatId=" + chatId + "! Сообщение не будет отправлено.");
+//            }
+//        } catch (TelegramApiException e) {
+//            System.out.println("Улетел в эксепшн проблема с фото ");
+//            e.printStackTrace();
+//        }
+//    }
 
     /**
      * Отправляет сообщение с клавиатурой (например, для выбора Да/Нет)
