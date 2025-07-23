@@ -1,6 +1,8 @@
 package org.example.bot;
 
 import lombok.RequiredArgsConstructor;
+import org.example.bot.KeyboardService.KeyboardReam;
+import org.example.bot.KeyboardService.KeyboardService;
 import org.example.model.entity.UserEntity;
 
 import org.example.service.PhotoService.PhotoReam;
@@ -85,7 +87,7 @@ public class CallbackQueryHandlerService {
                     try {
                         log.info(" [CallbackQueryHandlerService] - photoService.photoIteratorius() - вызвана отправка командора пользователю: {}" ,chatId);
                         bot.execute(photoReam.photoIteratorius(chatId)); //вызываем нашу фотку командора Итературиаса
-                        KeyboardService.gladiatorPlot(chatId);
+                        KeyboardReam.gladiatorPlot(chatId);
                     } catch (TelegramApiException e) {
                         log.error("Ошибка при отправке фото Итератуса: {}", e.getMessage());
                     }

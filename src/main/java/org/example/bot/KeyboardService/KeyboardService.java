@@ -1,4 +1,4 @@
-package org.example.bot;
+package org.example.bot.KeyboardService;
 
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -29,26 +29,7 @@ import org.slf4j.LoggerFactory;
 @Service
 public class KeyboardService  {
     private static final Logger log = LoggerFactory.getLogger(KeyboardService.class);
-    /**
-     * Клавиатура для старта (Да/Нет/Я изучаю пайтон)
-     * @return ReplyKeyboardMarkup — обычная клавиатура
-     *
-     * Пример:
-     *   message.setReplyMarkup(KeyboardService.getStartKeyboardStatic());
-     */
-    public static ReplyKeyboardMarkup getStartKeyboardStatic() {
-        log.info("[KeyboardService] getStartKeyboardStatic() — создаём стартовую клавиатуру.");
-        ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
-        keyboard.setResizeKeyboard(true);
-        keyboard.setOneTimeKeyboard(true);
 
-        KeyboardRow row = new KeyboardRow();
-        row.add(new KeyboardButton("Да"));
-        row.add(new KeyboardButton("Нет"));
-        row.add(new KeyboardButton("Я изучаю пайтон"));
-        keyboard.setKeyboard(List.of(row));
-        return keyboard;
-    }
 
     /**
      * Инлайн-клавиатура для создания персонажа
@@ -90,8 +71,6 @@ public class KeyboardService  {
      * Метод для удаления клавиатуры (пустая клавиатура)
      * @return ReplyKeyboardRemove — объект для удаления клавиатуры
      */
-
-
     public static  ReplyKeyboardRemove removeKeyboard() {
         return new ReplyKeyboardRemove(true);
     }
@@ -137,20 +116,7 @@ public class KeyboardService  {
         return markup;
     }
 
-    //заверешение 1 сюжетной ветки
-    public static ReplyKeyboardMarkup  gladiatorPlot(Long chatId){
-        log.info("gladiatorPlot() - cоздаем клавиатуру с кнопкой 'Принять доспехи'  'Я лучше пойду обновлю IDE' ");
-        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
-        replyKeyboardMarkup.setResizeKeyboard(true);
-        replyKeyboardMarkup.setOneTimeKeyboard(true);
 
-        KeyboardRow ready = new KeyboardRow();
-        ready.add(new KeyboardButton("Принять доспехи ⚔\uFE0F"));
-        ready.add(new KeyboardButton("Я лучше пойду обновлю IDE"));
-
-        replyKeyboardMarkup.setKeyboard(List.of(ready));
-        return replyKeyboardMarkup;
-    }
 
     //2 сюжетная линия
     public static ReplyKeyboardMarkup  userChoice(Long chatId){

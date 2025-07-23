@@ -4,17 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="работает">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayListStory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/service/PhotoService/PhotoReam.java" afterDir="false" />
+    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="вроде вссе как положено">
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/KeyboardService/KeyboardReam.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Service.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/CallbackQueryHandlerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/CallbackQueryHandlerService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/KeyboardService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/KeyboardService/KeyboardService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/MessageHandlerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/MessageHandlerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/model/entity/UserEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/model/entity/UserEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/model/personage/Personage3.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/model/personage/Personage3.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayListStory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayListStory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayListStoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayListStoryService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/PhotoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/PhotoService/PhotoStart.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/PhotoService/PhotoReam.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/PhotoService/PhotoReam.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/PhotoService/PhotoStart.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/PhotoService/PhotoStart.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/StoryStartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/StoryStartService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -275,7 +277,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753122297370</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="вроде вссе как положено">
+      <option name="closed" value="true" />
+      <created>1753208881385</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1753208881385</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -297,6 +307,7 @@
     <MESSAGE value=" 1." />
     <MESSAGE value="все рабоатет, теперь когда пользователь нажимает принять доспехи ему выпадает персонаж в доспехах, с обновленными статами а так-же идет сохранения в БД" />
     <MESSAGE value="работает" />
-    <option name="LAST_COMMIT_MESSAGE" value="работает" />
+    <MESSAGE value="вроде вссе как положено" />
+    <option name="LAST_COMMIT_MESSAGE" value="вроде вссе как положено" />
   </component>
 </project>

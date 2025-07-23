@@ -3,7 +3,9 @@ package org.example.service.PhotoService;
 import org.example.model.personage.Personage1;
 import org.example.model.personage.Personage2;
 import org.example.model.personage.Personage3;
-import org.example.bot.KeyboardService;
+import org.example.bot.KeyboardService.KeyboardService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
@@ -22,19 +24,44 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
  */
 @Service
 public class PhotoStart {
+    private static final Logger log = LoggerFactory.getLogger(PhotoStart.class);
+
+//    public SendPhoto getStartPhoto(Long chatId) {
+//        System.out.println("[PhotoService] getStartPhoto() — вызываем стартовую фотку. Если ты это читаешь, значит бот ещё жив.");
+//        return SendPhoto.builder()
+//                .chatId(chatId)
+//                .photo(new InputFile("https://ltdfoto.ru/image/soXapU"))
+//                .caption("Вот и ты здесь, новичок. \n" +
+//                        "Я — *Доктор БайтФордж* , архитектор программных миров и кузнец идей. \n"
+//                        + "Ты в мультивселенной по Java...\n" +
+//                        "Где каждая строка — это шаг,а баг — это урок.")
+//                .parseMode("Markdown")
+//                .build();
+//    }
 
     /**
-     * Стартовое фото с приветствием от БайтФордж
+     * Отправка стартового фото с приветствием от БайтФорджа
      *
-     * @param chatId — ID чата Telegram, куда отправлять фото
-     * @return SendPhoto — готовый объект для отправки
+     * @param chatId — ID чата Telegram
+     * @return SendPhoto — стартовая фотка
      * <p>
      * Пример:
-     * SendPhoto photo = photoService.getStartPhoto(123456789L);
+     * SendPhoto photo = storyStartService.photoStart(chatId);
      * bot.execute(photo);
+     *
+     *   /**
+     *      * Стартовое фото с приветствием от БайтФордж
+     *      *
+     *      * @param chatId — ID чата Telegram, куда отправлять фото
+     *      * @return SendPhoto — готовый объект для отправки
+     *      * <p>
+     *      * Пример:
+     *      * SendPhoto photo = photoService.getStartPhoto(123456789L);
+     *      * bot.execute(photo);
+     *
      */
-    public SendPhoto getStartPhoto(Long chatId) {
-        System.out.println("[PhotoService] getStartPhoto() — вызываем стартовую фотку. Если ты это читаешь, значит бот ещё жив.");
+    public static SendPhoto photoStart(Long chatId) {
+        log.info("photoStart() — отправляем стартовую фотку. Пользователь только что зашёл в мультивселенную.");
         return SendPhoto.builder()
                 .chatId(chatId)
                 .photo(new InputFile("https://ltdfoto.ru/image/soXapU"))
@@ -45,6 +72,7 @@ public class PhotoStart {
                 .parseMode("Markdown")
                 .build();
     }
+
 
 
     /**

@@ -1,6 +1,7 @@
 package org.example.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.bot.KeyboardService.KeyboardReam;
 import org.example.service.PhotoService.PhotoReam;
 import org.example.service.PhotoService.PhotoStart;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import org.example.bot.KeyboardService;
+import org.example.bot.KeyboardService.KeyboardService;
 
 /**
  * ArrayListStoryService — сервис для сюжетной линии по ArrayList.
@@ -43,6 +44,7 @@ public class ArrayListStoryService {
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final Map<Long, Integer> correctAnswers = new ConcurrentHashMap<>();
     private final PhotoStart photoStart;
+    private final PhotoReam photoReam;
 
     /**
      * Отправляет теорию по ArrayList в виде SendMessage
@@ -55,7 +57,7 @@ public class ArrayListStoryService {
      */
     public SendMessage getArrayListTheory(Long chatId) {
         System.out.println("[ArrayListStoryService] getArrayListTheory() — отправляем теорию по ArrayList для chatId=" + chatId);
-        String theoryText = getArrayListInfo(chatId);
+        String theoryText = ArrayListStory.getArrayListInfo(chatId);
         if (theoryText == null || theoryText.trim().isEmpty()) {
             System.err.println("Попытка отправить пустую теорию по ArrayList для chatId=" + chatId + "! Сообщение не будет отправлено.");
             return null;
@@ -65,85 +67,6 @@ public class ArrayListStoryService {
         theory.setText(theoryText);
         theory.setChatId(chatId);
         return theory;
-    }
-
-
-    /**
-     * Формирует текст теории по ArrayList (вынесено отдельно для переиспользования)
-     * @return String — текст теории
-     */
-    private static String formatArrayListInfo() {
-        StringBuilder sb = new StringBuilder();
-
-        // Пример экранирования
-        sb.append("ArrayList - это динамический массив, реализующий интерфейс List.\n");
-        sb.append("Он автоматически меняет свой размер на 50% - 100% при добавлении/удалении элементов,\n");
-        sb.append("но операции вставки/удаления в середине списка могут быть медленными\n");
-        sb.append("из-за необходимости копирования элементов.\n\n");
-
-        // Пример создания
-        sb.append("Пример создания:\n");
-        sb.append("```\n");
-        sb.append("ArrayList<String> box = new ArrayList<>();\n");
-        sb.append("```\n\n");
-
-        // Методы
-        sb.append("Основные методы:\n\n");
-
-        // add()
-        sb.append("add(E element) - Добавляет элемент в конец списка.\n");
-        sb.append("```\n");
-        sb.append("ArrayList<String> toys = new ArrayList<>();\n");
-        sb.append("toys.add(\"Машинка\"); // Добавили машинку в коробку\n");
-        sb.append("toys.add(\"Кукла\");   // Добавили куклу\n");
-        sb.append("```\n\n");
-
-        // get()
-        sb.append("get(int index) - Получает элемент по индексу.\n");
-        sb.append("```\n");
-        sb.append("String firstToy = toys.get(0); // Получаем первую игрушку (индекс 0)\n");
-        sb.append("System.out.println(firstToy);  // Выведет: Машинка\n");
-        sb.append("```\n\n");
-
-        // set()
-        sb.append("set(int index, E element) - Заменяет элемент.\n");
-        sb.append("```\n");
-        sb.append("toys.set(1, \"Робот\"); // Заменяем куклу на робота\n");
-        sb.append("```\n\n");
-
-        // remove()
-        sb.append("remove(int index) - Удаляет элемент по индексу.\n");
-        sb.append("```\n");
-        sb.append("toys.remove(0); // Удаляем машинку (индекс 0)\n");
-        sb.append("```\n\n");
-
-        // size()
-        sb.append("size() - Возвращает количество элементов.\n\n");
-        sb.append("```\n");
-        sb.append("int count = toys.size();\n");
-        sb.append("System.out.println(\"В коробке \" + count + \" игрушек\");\n");
-        sb.append("```\n\n");
-
-        // add(int index, E element)
-        sb.append("add(int index, E element) — вставка по индексу. \n");
-        sb.append("Позволяет вставить элемент не только в конец , но и в любое место списка.\n");
-        sb.append("Например, вставить \"Новую игрушку\" между \"Машинкой\" и \"Куклой\":\n");
-        sb.append("```\n");
-        sb.append("toys.add(1, \"Новая игрушка\"); // Теперь порядок: Машинка, Новая игрушка, Кукла. ");
-        sb.append("```\n\n");
-        sb.append("Однако вставка в середину/начало списка требует сдвига всех последующих элементов, что может быть медленным для больших списков!! \n");
-
-        //  System.out.println("Формируемая теория: " + sb.toString());
-
-        return sb.toString();
-    }
-
-    /**
-     * Получить теорию по ArrayList (для других сервисов)
-     * @return String — текст теории
-     */
-    public static String getArrayListInfo(Long chatId) {
-        return formatArrayListInfo();
     }
 
     /**
@@ -230,8 +153,8 @@ public class ArrayListStoryService {
                 deleteMessage.setMessageId(messageId);
                 bot.execute(deleteMessage);
                 try {
-                    SendPhoto sendPhoto = photoStart.getStartPhoto(chatId);
-                    bot.execute(sendPhoto);
+
+
                     bot.execute(getArrayListQuiz(chatId));
                     sendWithKeyboard(bot, chatId, "Хотите прочитать теорию о Arraylist?");
                 } catch (TelegramApiException e) {
@@ -279,7 +202,7 @@ public class ArrayListStoryService {
             return;
         }
         SendMessage message = new SendMessage(chatId.toString(), text);
-        message.setReplyMarkup(KeyboardService.getStartKeyboardStatic());
+        message.setReplyMarkup(KeyboardReam.getStartKeyboardStatic());
         try {
             bot.execute(message);
         } catch (TelegramApiException e) {

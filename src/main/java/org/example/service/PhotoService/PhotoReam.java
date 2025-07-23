@@ -1,6 +1,6 @@
 package org.example.service.PhotoService;
 
-import org.example.bot.KeyboardService;
+import org.example.bot.KeyboardService.KeyboardReam;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
@@ -9,7 +9,6 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 public class PhotoReam {
     /**
      * Фото с теорией по ArrayList
-     *
      * @param chatId — ID чата Telegram
      * @return SendPhoto — объект для отправки теории
      * <p>
@@ -74,9 +73,8 @@ public class PhotoReam {
                         "\n" +
                         "Держи доспехи — под размер твоего кода!")
                 .parseMode("Markdown")
-                .replyMarkup(KeyboardService.gladiatorPlot(chatId))
+                .replyMarkup(KeyboardReam.gladiatorPlot(chatId))
                 .build();
         return sendPhoto;
     }
-
 }

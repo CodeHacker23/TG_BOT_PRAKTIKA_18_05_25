@@ -1,5 +1,6 @@
 package org.example.service;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.example.MarkdownUtil;
 import org.example.model.entity.PersonageEntity;
@@ -11,19 +12,22 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.example.bot.KeyboardService;
+import org.example.bot.KeyboardService.KeyboardService;
 import org.example.model.personage.Personage1;
 import org.example.model.personage.Personage2;
 import org.example.model.personage.Personage3;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
 
 
 /**
@@ -57,28 +61,145 @@ public class StoryStartService {
     public final PhotoStart photoStart;
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private final PersonageRepository personageRepository;
+    private final PersonageService personageService;
+
+    // === Мапа для маршрутизации команд начальной сюжетной ветки ===
+    // Ключ — текст команды, значение — обработчик (BiConsumer<бот, сообщение>)
+    private final Map<String, BiConsumer<TelegramLongPollingBot, Message>> startCommands = new HashMap<>();
+
+    // === Инициализация мапы команд ===
+    @PostConstruct
+    public void init() {
+        // Приветствие
+        startCommands.put("/start", (bot, msg) -> handleStart(bot, msg.getChatId(), msg.getFrom().getId()));
+        // Кнопка "Создать персонажа"
+        startCommands.put("Создать персонажа", (bot, msg) -> handleCreatePersonage(bot, msg.getChatId(), msg.getFrom().getId()));
+        // Продолжить путь программиста
+        startCommands.put("✅ Продолжить путь программиста", (bot, msg) -> sendMsg(bot, ByteFordjProgrammer(msg.getChatId())));
+        // Какая?
+        startCommands.put("Какая?", (bot, msg) -> sendMsg(bot, sendWhich(msg.getChatId())));
+        // Я готов
+        startCommands.put("Я готов✅", (bot, msg) -> sendMsg(bot, ByteFordjParting(msg.getChatId())));
+        // Что будет со мной?
+        startCommands.put("❓ Но что будет со мной?", (bot, msg) -> sendMsg(bot, ByteFordjAnswerTwo(msg.getChatId())));
+        // Сбежать от компиляции — отправляем текст, а через 2 секунды фото с мемом
+        startCommands.put("❌ Сбежать от компиляции", (bot, msg) -> {
+            // 1. Сразу отправляем первое сообщение
+            sendMsg(bot, sendEscapeTwoText(msg.getChatId()));
+            // 2. Через 2 секунды отправляем фото с подписью 'Симуляция Sys.exit(0)...'
+            scheduler.schedule(() -> {
+                try {
+                    bot.execute(PhotoStart.photoJava6(msg.getChatId()));
+                } catch (TelegramApiException e) {
+                    log.error("Ошибка отправки фото 'Симуляция Sys.exit(0)': {}", e.getMessage());
+                }
+            }, 2, TimeUnit.SECONDS);
+        });
+        // Обновить IDE — отправляем два сообщения с задержкой и кнопкой
+        startCommands.put("Я лучше пойду обновлю IDE", (bot, msg) -> {
+            // 1. Сразу отправляем первое сообщение
+            sendMsg(bot, IDEtext(msg.getChatId()));
+            // 2. Через 2 секунды отправляем второе сообщение с кнопкой
+            scheduler.schedule(() -> {
+                sendMsg(bot, IDEtext2(msg.getChatId()));
+            }, 2, TimeUnit.SECONDS);
+        });
+        // Принять судьбу программиста
+        startCommands.put("✅ Принять судьбу программиста", (bot, msg) -> sendMsg(bot, ByteFordjProgrammer(msg.getChatId())));
+        // Вернуться и скомпилироваться
+        startCommands.put("\uD83D\uDCCE Вернуться и скомпилироваться", (bot, msg) -> sendMsg(bot, ByteFordjProgrammer(msg.getChatId())));
+        // К чёрту NetBeans. Я готов к Риму! — отправляем фото персонажа с обновлёнными характеристиками
+        startCommands.put("☕️ К чёрту NetBeans. Я готов к Риму!", (bot, msg) -> {
+            Long chatId = msg.getChatId();
+            Long userId = msg.getFrom().getId();
+            log.info("Пользователь выбрал 'К чёрту NetBeans. Я готов к Риму!' chatId={}, userId={}", chatId, userId);
+            UserEntity user = userService.getUserByTgId(userId);
+            if (user == null) {
+                sendMsg(bot, new SendMessage(chatId.toString(), "Ошибка: пользователь не найден!"));
+                return;
+            }
+            PersonageEntity personage = user.getPersonage();
+            if (personage == null) {
+                sendMsg(bot, new SendMessage(chatId.toString(), "Ошибка: персонаж не найден!"));
+                return;
+            }
+            // Определяем тип персонажа
+            String type = personage.getCharacterType();
+            // Сохраняем старое значение аналитики/коммуникаций/оптимизации
+            int oldAnalytics = personage.getAnalytics() != null ? personage.getAnalytics() : 0;
+            int oldCommunication = personage.getCommunication() != null ? personage.getCommunication() : 0;
+            int oldOptimization = personage.getOptimization() != null ? personage.getOptimization() : 0;
+            // Обновляем характеристики через personageService (рандом для аналитики)
+            personageService.updateStats(
+                    personage,
+                    1,      // levelDelta
+                    50,     // achievementDelta
+                    450.0,  // currencyDelta
+                    27,     // analyticsDelta (min)
+                    40,     // analyticsMax (max)
+                    true    // randomAnalytics
+            );
+            // Считаем дельту
+            int analyticsDelta = (personage.getAnalytics() != null ? personage.getAnalytics() : 0) - oldAnalytics;
+            int communicationDelta = (personage.getCommunication() != null ? personage.getCommunication() : 0) - oldCommunication;
+            int optimizationDelta = (personage.getOptimization() != null ? personage.getOptimization() : 0) - oldOptimization;
+            // Создаём объект нужного персонажа и заполняем его из сущности
+            try {
+                if ("Personage1".equals(type)) {
+                    Personage1 p1 = new Personage1();
+                    p1.fillFromEntity(personage);
+                    bot.execute(p1.getRomanArmorCard(chatId, analyticsDelta));
+                } else if ("Personage2".equals(type)) {
+                    Personage2 p2 = new Personage2();
+                    p2.fillFromEntity(personage);
+                    bot.execute(p2.getRomanFloy(chatId, communicationDelta));
+                } else if ("Personage3".equals(type)) {
+                    Personage3 p3 = new Personage3();
+                    p3.fillFromEntity(personage);
+                    bot.execute(p3.getRomanPersonage3(chatId, optimizationDelta));
+                } else {
+                    sendMsg(bot, new SendMessage(chatId.toString(), "Ошибка: неизвестный тип персонажа!"));
+                }
+            } catch (TelegramApiException e) {
+                log.error("Ошибка отправки фото персонажа для Рима: {}", e.getMessage());
+            }
+        });
+        // ... добавь остальные команды начальной ветки по аналогии
+    }
 
     /**
-     * Отправка стартового фото с приветствием от БайтФорджа
-     *
-     * @param chatId — ID чата Telegram
-     * @return SendPhoto — стартовая фотка
-     * <p>
-     * Пример:
-     * SendPhoto photo = storyStartService.photoStart(chatId);
-     * bot.execute(photo);
+     * Проверяет, может ли StoryStartService обработать данную команду
+     * @param text — текст сообщения пользователя
+     * @return true, если команда есть в Map
      */
-    public SendPhoto photoStart(Long chatId) {
-        log.info("photoStart() — отправляем стартовую фотку. Пользователь только что зашёл в мультивселенную.");
-        return SendPhoto.builder()
-                .chatId(chatId)
-                .photo(new InputFile("https://ltdfoto.ru/image/soXapU"))
-                .caption("Вот и ты здесь, новичок. \n" +
-                        "Я — *Доктор БайтФордж* , архитектор программных миров и кузнец идей. \n"
-                        + "Ты в мультивселенной по Java...\n" +
-                        "Где каждая строка — это шаг,а баг — это урок.")
-                .parseMode("Markdown")
-                .build();
+    public boolean canHandle(String text) {
+        return startCommands.containsKey(text);
+    }
+
+    /**
+     * Обрабатывает команду начальной сюжетной ветки через Map
+     * @param bot — TelegramLongPollingBot
+     * @param message — объект Message от Telegram
+     */
+    public void handle(TelegramLongPollingBot bot, org.telegram.telegrambots.meta.api.objects.Message message) {
+        String text = message.getText();
+        if (startCommands.containsKey(text)) {
+            log.info("StoryStartService: обработка команды '{}', chatId={}, userId={}", text, message.getChatId(), message.getFrom().getId());
+            startCommands.get(text).accept(bot, message);
+        } else {
+            log.warn("StoryStartService: команда '{}' не найдена в Map", text);
+        }
+    }
+
+    /**
+     * Вспомогательный метод для отправки сообщений с логированием ошибок
+     */
+    private void sendMsg(TelegramLongPollingBot bot, SendMessage msg) {
+        try {
+            bot.execute(msg);
+        } catch (TelegramApiException e) {
+            log.error("Ошибка отправки сообщения: {}", e.getMessage());
+        }
     }
 
     /**
@@ -97,7 +218,7 @@ public class StoryStartService {
         log.info("handleStart() — стартуем! userId={}", userId);
         // 1. Отправить фото-приветствие
         try {
-            SendPhoto photo = this.photoStart(chatId);
+            SendPhoto photo =   PhotoStart.photoStart(chatId);
             bot.execute(photo);
             log.info("handleStart() — стартовая фотка отправлена.");
         } catch (TelegramApiException e) {
@@ -117,6 +238,8 @@ public class StoryStartService {
             log.error("Ошибка отправки приветственного сообщения: " + e.getMessage());
         }
     }
+
+
 
     /**
      * Обработка нажатия на кнопку "Создать персонажа"
