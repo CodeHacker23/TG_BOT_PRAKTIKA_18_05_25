@@ -23,18 +23,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.example.bot.KeyboardService.KeyboardService;
 
-/**
- * ArrayListStoryService — сервис для сюжетной линии по ArrayList.
- * Здесь вся теория, фотки, викторины, удаление сообщений и прочий интерактив по ArrayList.
- *
- * Почему нельзя лепить всё в одном сервисе? Потому что если ты захочешь добавить LinkedListStoryService — твой код не должен превратиться в кашу.
- *
- * Пример расширения:
- *   - Хочешь сделать сюжет по LinkedList? Создай LinkedListStoryService по аналогии с этим классом.
- *   - Все методы для LinkedList — только туда!
- *
- * Юмор: если начнёшь копипастить методы между сервисами — Архитектор лично напишет тебе в Telegram.
- */
+
 @Service
 @RequiredArgsConstructor
 public class ArrayListStoryService {

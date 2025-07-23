@@ -30,6 +30,40 @@ public class PersonageService {
      * @param analyticsMax если randomAnalytics=true — это max, иначе игнорируется
      * @param randomAnalytics true — начислять аналитику рандомно
      */
+
+
+    /**
+     * === ИНСТРУКЦИЯ: Как рандомно обновлять характеристики для каждого типа персонажа ===
+     *
+     * 1. Для каждого типа персонажа (Personage1, Personage2, Personage3) есть свой уникальный параметр:
+     *    - Personage1: analytics (аналитика)
+     *    - Personage2: communication (коммуникации)
+     *    - Personage3: optimization (оптимизация)
+     *
+     * 2. Чтобы обновить нужный параметр рандомно, используй метод:
+     *    int delta = personageService.updateStatWithRandomDelta(personage, "имя_поля", min, max);
+     *    // Пример для Personage2:
+     *    int communicationDelta = personageService.updateStatWithRandomDelta(personage, "communication", 23, 39);
+     *
+     * 3. После этого communicationDelta будет содержать фактическую дельту, которую можно показать пользователю.
+     *
+     * 4. Для Personage1 и Personage3 аналогично:
+     *    int analyticsDelta = personageService.updateStatWithRandomDelta(personage, "analytics", 23, 39);
+     *    int optimizationDelta = personageService.updateStatWithRandomDelta(personage, "optimization", 23, 39);
+     *
+     * 5. Не забудь: если будешь обновлять не то поле — Архитектор лично напишет тебе в Telegram!
+     *
+     * === Пример в обработчике команды ===
+     *
+     * if ("Personage2".equals(type)) {
+     *     int communicationDelta = personageService.updateStatWithRandomDelta(personage, "communication", 23, 39);
+     *     // ... отправь фото с communicationDelta
+     * }
+     *
+     * === Чёрный юмор ===
+     * - Если ты обновишь аналитику у Personage3 — баги будут смеяться над тобой в логах.
+     * - Если забудешь логирование — NullPointerException найдёт тебя даже в отпуске.
+     */
     public void updateStats(PersonageEntity personage,
                             int levelDelta,
                             int achievementDelta,

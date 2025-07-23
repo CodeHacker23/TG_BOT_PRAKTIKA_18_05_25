@@ -4,19 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="вроде вссе как положено">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/KeyboardService/KeyboardReam.java" afterDir="false" />
+    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="Началась реализация сюжетной ветки Array, разгрузил класс MessageHandlerService, в осоенности кейсы разгрузил, далее планируется расширение сюжетной ветки и оптимизация кода">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Service.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/CallbackQueryHandlerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/CallbackQueryHandlerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/KeyboardService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/KeyboardService/KeyboardService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/MessageHandlerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/MessageHandlerService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/model/personage/Personage2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/model/personage/Personage2.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/model/personage/Personage3.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/model/personage/Personage3.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayListStory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayListStory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayListStoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayListStoryService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/PhotoService/PhotoReam.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/PhotoService/PhotoReam.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/PhotoService/PhotoStart.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/PhotoService/PhotoStart.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/PersonageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/PersonageService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/StoryStartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/StoryStartService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -285,7 +282,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753208881385</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Началась реализация сюжетной ветки Array, разгрузил класс MessageHandlerService, в осоенности кейсы разгрузил, далее планируется расширение сюжетной ветки и оптимизация кода">
+      <option name="closed" value="true" />
+      <created>1753261228294</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1753261228294</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -308,6 +313,7 @@
     <MESSAGE value="все рабоатет, теперь когда пользователь нажимает принять доспехи ему выпадает персонаж в доспехах, с обновленными статами а так-же идет сохранения в БД" />
     <MESSAGE value="работает" />
     <MESSAGE value="вроде вссе как положено" />
-    <option name="LAST_COMMIT_MESSAGE" value="вроде вссе как положено" />
+    <MESSAGE value="Началась реализация сюжетной ветки Array, разгрузил класс MessageHandlerService, в осоенности кейсы разгрузил, далее планируется расширение сюжетной ветки и оптимизация кода" />
+    <option name="LAST_COMMIT_MESSAGE" value="Началась реализация сюжетной ветки Array, разгрузил класс MessageHandlerService, в осоенности кейсы разгрузил, далее планируется расширение сюжетной ветки и оптимизация кода" />
   </component>
 </project>

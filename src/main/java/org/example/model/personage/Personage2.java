@@ -55,7 +55,8 @@ public class Personage2 extends PersonageBase {
         this.achievementPoints = entity.getAchievementPoints();
         this.currency = entity.getCurrency();
         this.status = entity.getStatus();
-        // Добавь уникальные поля Personage2, если есть
+        this.humor = entity.getHumor() != null ? entity.getHumor() : 0;
+        this.communication = entity.getCommunication() != null ? entity.getCommunication() : 0;
     }
 
     /**

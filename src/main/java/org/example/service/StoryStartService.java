@@ -3,6 +3,7 @@ package org.example.service;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.example.MarkdownUtil;
+import org.example.bot.Bot;
 import org.example.model.entity.PersonageEntity;
 import org.example.model.entity.UserEntity;
 import org.example.model.personage.PersonageBase;
@@ -66,6 +67,7 @@ public class StoryStartService {
     // === Мапа для маршрутизации команд начальной сюжетной ветки ===
     // Ключ — текст команды, значение — обработчик (BiConsumer<бот, сообщение>)
     private final Map<String, BiConsumer<TelegramLongPollingBot, Message>> startCommands = new HashMap<>();
+    // private final Bot bot; // УДАЛЕНО для устранения цикла
 
     // === Инициализация мапы команд ===
     @PostConstruct
@@ -104,10 +106,14 @@ public class StoryStartService {
                 sendMsg(bot, IDEtext2(msg.getChatId()));
             }, 2, TimeUnit.SECONDS);
         });
-        // Принять судьбу программиста
+
+        /**
+         * Принять судьбу программиста
+         */
         startCommands.put("✅ Принять судьбу программиста", (bot, msg) -> sendMsg(bot, ByteFordjProgrammer(msg.getChatId())));
         // Вернуться и скомпилироваться
         startCommands.put("\uD83D\uDCCE Вернуться и скомпилироваться", (bot, msg) -> sendMsg(bot, ByteFordjProgrammer(msg.getChatId())));
+
         // К чёрту NetBeans. Я готов к Риму! — отправляем фото персонажа с обновлёнными характеристиками
         startCommands.put("☕️ К чёрту NetBeans. Я готов к Риму!", (bot, msg) -> {
             Long chatId = msg.getChatId();
@@ -123,40 +129,56 @@ public class StoryStartService {
                 sendMsg(bot, new SendMessage(chatId.toString(), "Ошибка: персонаж не найден!"));
                 return;
             }
-            // Определяем тип персонажа
             String type = personage.getCharacterType();
-            // Сохраняем старое значение аналитики/коммуникаций/оптимизации
-            int oldAnalytics = personage.getAnalytics() != null ? personage.getAnalytics() : 0;
-            int oldCommunication = personage.getCommunication() != null ? personage.getCommunication() : 0;
-            int oldOptimization = personage.getOptimization() != null ? personage.getOptimization() : 0;
-            // Обновляем характеристики через personageService (рандом для аналитики)
-            personageService.updateStats(
-                    personage,
-                    1,      // levelDelta
-                    50,     // achievementDelta
-                    450.0,  // currencyDelta
-                    27,     // analyticsDelta (min)
-                    40,     // analyticsMax (max)
-                    true    // randomAnalytics
-            );
-            // Считаем дельту
-            int analyticsDelta = (personage.getAnalytics() != null ? personage.getAnalytics() : 0) - oldAnalytics;
-            int communicationDelta = (personage.getCommunication() != null ? personage.getCommunication() : 0) - oldCommunication;
-            int optimizationDelta = (personage.getOptimization() != null ? personage.getOptimization() : 0) - oldOptimization;
-            // Создаём объект нужного персонажа и заполняем его из сущности
             try {
                 if ("Personage1".equals(type)) {
+                    personageService.updateStats(personage, 1, 50, 450.0, 0, 0, false);
+                    int analyticsDelta = personageService.updateStatWithRandomDelta(personage, "analytics", 23, 39);
                     Personage1 p1 = new Personage1();
                     p1.fillFromEntity(personage);
                     bot.execute(p1.getRomanArmorCard(chatId, analyticsDelta));
+                    scheduler.schedule(() ->{
+                        try {
+                            log.info("[StoryStartService] ☕\uFE0F К чёрту NetBeans. Я готов к Риму!\"   Запущено смс от Итераториуса о враге Array");
+                            bot.execute(ArrayListStory.ReamIteratorius(chatId));
+                        } catch (TelegramApiException e) {
+                            log.error("[StoryStartService] ☕\uFE0F К чёрту NetBeans. Я готов к Риму!\"   -- Сообшение о фраге Array не отправлено ");
+                            throw new RuntimeException(e);
+                        }
+
+                    },4,TimeUnit.SECONDS);
                 } else if ("Personage2".equals(type)) {
+                    personageService.updateStats(personage, 1, 50, 450.0, 0, 0, false);
+                    int communicationDelta = personageService.updateStatWithRandomDelta(personage, "communication", 23, 39);
                     Personage2 p2 = new Personage2();
                     p2.fillFromEntity(personage);
                     bot.execute(p2.getRomanFloy(chatId, communicationDelta));
+                    scheduler.schedule(() ->{
+                        try {
+                            log.info("[StoryStartService] ☕\uFE0F К чёрту NetBeans. Я готов к Риму!\"   Запущено смс от Итераториуса о враге Array");
+                            bot.execute(ArrayListStory.ReamIteratorius(chatId));
+                        } catch (TelegramApiException e) {
+                            log.error("[StoryStartService] ☕\uFE0F К чёрту NetBeans. Я готов к Риму!\"   -- Сообшение о фраге Array не отправлено ");
+                            throw new RuntimeException(e);
+                        }
+
+                    },4,TimeUnit.SECONDS);
                 } else if ("Personage3".equals(type)) {
+                    personageService.updateStats(personage, 1, 50, 450.0, 0, 0, false);
+                    int optimizationDelta = personageService.updateStatWithRandomDelta(personage, "optimization", 23, 39);
                     Personage3 p3 = new Personage3();
                     p3.fillFromEntity(personage);
                     bot.execute(p3.getRomanPersonage3(chatId, optimizationDelta));
+                    scheduler.schedule(() ->{
+                        try {
+                            log.info("[StoryStartService] ☕\uFE0F К чёрту NetBeans. Я готов к Риму!\"   Запущено смс от Итераториуса о враге Array");
+                            bot.execute(ArrayListStory.ReamIteratorius(chatId));
+                        } catch (TelegramApiException e) {
+                            log.error("[StoryStartService] ☕\uFE0F К чёрту NetBeans. Я готов к Риму!\"   -- Сообшение о фраге Array не отправлено ");
+                            throw new RuntimeException(e);
+                        }
+
+                    },4,TimeUnit.SECONDS);
                 } else {
                     sendMsg(bot, new SendMessage(chatId.toString(), "Ошибка: неизвестный тип персонажа!"));
                 }
@@ -164,11 +186,89 @@ public class StoryStartService {
                 log.error("Ошибка отправки фото персонажа для Рима: {}", e.getMessage());
             }
         });
+
+        //обработка кнопки принять доспехи
+        startCommands.put("Принять доспехи ⚔\uFE0F", (bot, msg) -> {
+            Long chatId = msg.getChatId();
+            Long userId = msg.getFrom().getId();
+            log.info("Пользователь выбрал 'К чёрту NetBeans. Я готов к Риму!' chatId={}, userId={}", chatId, userId);
+            UserEntity user = userService.getUserByTgId(userId);
+            if (user == null) {
+                sendMsg(bot, new SendMessage(chatId.toString(), "Ошибка: пользователь не найден!"));
+                return;
+            }
+            PersonageEntity personage = user.getPersonage();
+            if (personage == null) {
+                sendMsg(bot, new SendMessage(chatId.toString(), "Ошибка: персонаж не найден!"));
+                return;
+            }
+            String type = personage.getCharacterType();
+            try {
+                if ("Personage1".equals(type)) {
+                    personageService.updateStats(personage, 1, 50, 450.0, 0, 0, false);
+                    int analyticsDelta = personageService.updateStatWithRandomDelta(personage, "analytics", 23, 39);
+                    Personage1 p1 = new Personage1();
+                    p1.fillFromEntity(personage);
+                    bot.execute(p1.getRomanArmorCard(chatId, analyticsDelta));
+                    scheduler.schedule(() ->{
+                        try {
+                            log.info("[StoryStartService] 'startCommands.put(\"Принять доспехи ⚔\\uFE0F\'  Запущено смс от Итераториуса о враге Array");
+                            bot.execute(ArrayListStory.ReamIteratorius(chatId));
+                        } catch (TelegramApiException e) {
+                            log.error("[StoryStartService] 'startCommands.put(\"Принять доспехи ⚔\\uFE0F\' -- Сообшение о фраге Array не отправлено ");
+                            throw new RuntimeException(e);
+                        }
+
+                    },4,TimeUnit.SECONDS);
+                } else if ("Personage2".equals(type)) {
+                    personageService.updateStats(personage, 1, 50, 450.0, 0, 0, false);
+                    int communicationDelta = personageService.updateStatWithRandomDelta(personage, "communication", 23, 39);
+                    Personage2 p2 = new Personage2();
+                    p2.fillFromEntity(personage);
+                    bot.execute(p2.getRomanFloy(chatId, communicationDelta));
+                    scheduler.schedule(() ->{
+                        try {
+                            log.info("[StoryStartService] 'startCommands.put(\"Принять доспехи ⚔\\uFE0F\'  Запущено смс от Итераториуса о враге Array");
+                            bot.execute(ArrayListStory.ReamIteratorius(chatId));
+                        } catch (TelegramApiException e) {
+                            log.error("[StoryStartService] 'startCommands.put(\"Принять доспехи ⚔\\uFE0F\' -- Сообшение о фраге Array не отправлено ");
+                            throw new RuntimeException(e);
+                        }
+
+                    },4,TimeUnit.SECONDS);
+                } else if ("Personage3".equals(type)) {
+                    personageService.updateStats(personage, 1, 50, 450.0, 0, 0, false);
+                    int optimizationDelta = personageService.updateStatWithRandomDelta(personage, "optimization", 23, 39);
+                    Personage3 p3 = new Personage3();
+                    p3.fillFromEntity(personage);
+                    bot.execute(p3.getRomanPersonage3(chatId, optimizationDelta));
+                    scheduler.schedule(() ->{
+                        try {
+                            log.info("[StoryStartService] 'startCommands.put(\"Принять доспехи ⚔\\uFE0F\'  Запущено смс от Итераториуса о враге Array");
+                            bot.execute(ArrayListStory.ReamIteratorius(chatId));
+                        } catch (TelegramApiException e) {
+                            log.error("[StoryStartService] 'startCommands.put(\"Принять доспехи ⚔\\uFE0F\' -- Сообшение о фраге Array не отправлено ");
+                            throw new RuntimeException(e);
+                        }
+
+                    },4,TimeUnit.SECONDS);
+
+
+                } else {
+                    sendMsg(bot, new SendMessage(chatId.toString(), "Ошибка: неизвестный тип персонажа!"));
+                }
+            } catch (TelegramApiException e) {
+                log.error("Ошибка отправки фото персонажа для Рима: {}", e.getMessage());
+            }
+
+        });
+
         // ... добавь остальные команды начальной ветки по аналогии
     }
 
     /**
      * Проверяет, может ли StoryStartService обработать данную команду
+     *
      * @param text — текст сообщения пользователя
      * @return true, если команда есть в Map
      */
@@ -178,7 +278,8 @@ public class StoryStartService {
 
     /**
      * Обрабатывает команду начальной сюжетной ветки через Map
-     * @param bot — TelegramLongPollingBot
+     *
+     * @param bot     — TelegramLongPollingBot
      * @param message — объект Message от Telegram
      */
     public void handle(TelegramLongPollingBot bot, org.telegram.telegrambots.meta.api.objects.Message message) {
@@ -218,7 +319,7 @@ public class StoryStartService {
         log.info("handleStart() — стартуем! userId={}", userId);
         // 1. Отправить фото-приветствие
         try {
-            SendPhoto photo =   PhotoStart.photoStart(chatId);
+            SendPhoto photo = PhotoStart.photoStart(chatId);
             bot.execute(photo);
             log.info("handleStart() — стартовая фотка отправлена.");
         } catch (TelegramApiException e) {
@@ -238,7 +339,6 @@ public class StoryStartService {
             log.error("Ошибка отправки приветственного сообщения: " + e.getMessage());
         }
     }
-
 
 
     /**
@@ -377,8 +477,9 @@ public class StoryStartService {
 
     /**
      * Преобразует PersonageBase в PersonageEntity и привязывает к пользователю
-     * @param base — базовый персонаж (Personage1, 2, 3)
-     * @param user — пользователь
+     *
+     * @param base          — базовый персонаж (Personage1, 2, 3)
+     * @param user          — пользователь
      * @param characterName — имя персонажа
      * @return PersonageEntity с заполненными полями
      */
@@ -544,7 +645,6 @@ public class StoryStartService {
         sendMessage.setReplyMarkup(KeyboardService.KeyboardIDE(finalChatId1));
         return sendMessage;
     }
-
 
 
     // Если добавишь новый метод без комментария — Доктор БайтФордж лично напишет тебе в Telegram.

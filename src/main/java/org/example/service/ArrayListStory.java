@@ -1,14 +1,85 @@
 package org.example.service;
 
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
+import org.example.bot.KeyboardService.KeyboardReam;
 import org.example.repository.PersonageRepository;
 import org.example.service.PhotoService.PhotoStart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.function.BiConsumer;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+/**
+ * ArrayListStoryService — сервис для сюжетной линии по ArrayList.
+ * Здесь вся теория, фотки, викторины, удаление сообщений и прочий интерактив по ArrayList.
+ * <p>
+ * === ИНСТРУКЦИЯ ДЛЯ ЧАЙНИКОВ (и не только) ===
+ * <p>
+ * Как сделать красивую маршрутизацию команд (без кейсов и if-else), как в StoryStartService:
+ * <p>
+ * 1. Создай Map<String, BiConsumer<TelegramLongPollingBot, Message>> arrayListCommands = new HashMap<>();
+ * // Ключ — команда/кнопка, значение — обработчик
+ * <p>
+ * 2. В @PostConstruct (или конструкторе) заполни эту Map:
+ * arrayListCommands.put("/ArrayList", (bot, msg) -> sendTheory(bot, msg.getChatId()));
+ * arrayListCommands.put("Да", (bot, msg) -> sendTheory(bot, msg.getChatId()));
+ * arrayListCommands.put("Нет", (bot, msg) -> sendQuiz(bot, msg.getChatId()));
+ * // ... и так далее для всех команд ветки ArrayList
+ * <p>
+ * 3. Сделай методы:
+ * public boolean canHandle(String text) { return arrayListCommands.containsKey(text); }
+ * public void handle(TelegramLongPollingBot bot, Message message) {
+ * String text = message.getText();
+ * if (arrayListCommands.containsKey(text)) {
+ * log.info("ArrayListStoryService: обработка команды '{}', chatId={}, userId={}", text, message.getChatId(), message.getFrom().getId());
+ * arrayListCommands.get(text).accept(bot, message);
+ * } else {
+ * log.warn("ArrayListStoryService: команда '{}' не найдена в Map", text);
+ * }
+ * }
+ * <p>
+ * 4. В MessageHandlerService добавь делегирование:
+ * if (arrayListStoryService.canHandle(text)) {
+ * arrayListStoryService.handle(bot, message);
+ * return;
+ * }
+ * <p>
+ * 5. PROFIT! Теперь твоя ветка не превратится в лапшу, а Архитектор не придёт ночью.
+ * <p>
+ * === ЧЁРНЫЙ ЮМОР ===
+ * - Если ты добавишь 100 if-ов — твой проект станет дипломом по SpaghettiCode.
+ * - Если забудешь логирование — баги будут прятаться в твоём коде, как NullPointerException в try/catch.
+ * - Если не добавишь комментарии — Архитектор лично напишет тебе в Telegram (и не только).
+ * <p>
+ * === ПРИМЕРЫ ===
+ * // В Map:
+ * arrayListCommands.put("/ArrayList", (bot, msg) -> sendTheory(bot, msg.getChatId()));
+ * arrayListCommands.put("Да", (bot, msg) -> sendTheory(bot, msg.getChatId()));
+ * arrayListCommands.put("Нет", (bot, msg) -> sendQuiz(bot, msg.getChatId()));
+ * <p>
+ * // В MessageHandlerService:
+ * if (arrayListStoryService.canHandle(text)) {
+ * arrayListStoryService.handle(bot, message);
+ * return;
+ * }
+ * <p>
+ * // В каждом обработчике — логируй, иначе баги будут жить вечно!
+ * <p>
+ * Удачи! Если что-то не работает — смотри логи, пей чай и не забывай про дебаг.
+ */
+
+@RequiredArgsConstructor
+@Service
 public class ArrayListStory { //наша ветка по сюжетке Array
     private static final Logger log = LoggerFactory.getLogger(StoryStartService.class);
     // Сервис с методами для отправки фото и теории (название "Service" — это боль, не повторяй так)
@@ -20,45 +91,63 @@ public class ArrayListStory { //наша ветка по сюжетке Array
     public final PhotoStart photoStart;
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private final PersonageRepository personageRepository;
+    private final Map<String, BiConsumer<TelegramLongPollingBot, Message>> CommandsReam = new HashMap<>();
 
-    public ArrayListStory(org.example.Service service, PersonageCreationService personageCreationService, UserService userService, PhotoStart photoStart, PersonageRepository personageRepository) {
-        this.service = service;
-        this.personageCreationService = personageCreationService;
-        this.userService = userService;
-        this.photoStart = photoStart;
-        this.personageRepository = personageRepository;
+
+
+    @PostConstruct
+    public void initReam() {
+        CommandsReam.put("📜 Получить боевой свиток", (bot, msg) -> {
+            String theory = getArrayListInfo(msg.getChatId());
+            log.info("[ArrayListStory] theory='{}'", theory);
+            if (theory == null || theory.trim().isEmpty()) {
+                log.error("[ArrayListStory] Теория пуста, сообщение не будет отправлено!");
+                return;
+            }
+            SendMessage sendMessage = new SendMessage(msg.getChatId().toString(), theory);
+            sendMessage.setParseMode("Markdown");
+            try {
+                bot.execute(sendMessage);
+            } catch (TelegramApiException e) {
+                log.error("[ArrayListStory] -📜 Получить боевой свиток  ");
+                System.err.println("Ошибка отправки боевого свитка: " + e.getMessage());
+            }
+        });
+
+
     }
+
 
     /**
      * Предупреждающее смс от Итераториуса
+     *
      * @param chatId
      * @return sendMessage
-     *
      */
-    public static SendMessage ReamIteratorius(Long chatId){
+    public static SendMessage ReamIteratorius(Long chatId) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setText("*Итераториус* \n\n" +
-                "⚔\uFE0F Твоя первая цель — ArrayList.\n" +
+                "⚔\uFE0F Твоя первая цель — ArrayList.\n\n" +
                 "Не дай простоте тебя обмануть.\n" +
                 "Он вроде как списочек…\n" +
                 "Но стоит переполнить — и тебя отбрасывает в древнюю арену newCapacity().");
         sendMessage.setParseMode("Markdown");
+        sendMessage.setReplyMarkup(KeyboardReam.BattleList(chatId));
         return sendMessage;
     }
 
 
-
-
     /**
      * Формирует текст теории по ArrayList (вынесено отдельно для переиспользования)
+     *
      * @return String — текст теории
      */
     private static String formatArrayListInfo() {
         StringBuilder sb = new StringBuilder();
 
         // Пример экранирования
-        sb.append("\uD83E\uDDE0 *Внимание: свиток самоуничтожится через 20 секунд. Успей зацепить главное!*");
+        sb.append("\uD83E\uDDE0 *Внимание: свиток самоуничтожится через 20 секунд. Успей зацепить главное!*\n\n");
         sb.append("ArrayList - это динамический массив, реализующий интерфейс List.\n");
         sb.append("Он автоматически меняет свой размер на 50 - 100% при добавлении/удалении элементов,\n");
         sb.append("но операции вставки/удаления в середине списка могут быть медленными\n");
@@ -123,12 +212,25 @@ public class ArrayListStory { //наша ветка по сюжетке Array
 
     /**
      * Получить теорию по ArrayList (для других сервисов)
+     *
      * @return String — текст теории
      */
     public static String getArrayListInfo(Long chatId) {
         return formatArrayListInfo();
     }
 
+    public boolean canHandle(String text) {
+        return CommandsReam.containsKey(text);
+    }
 
+    public void handle(TelegramLongPollingBot bot, Message message) {
+        String text = message.getText();
+        if (CommandsReam.containsKey(text)) {
+            log.info("[ArrayListStory] обработка команды '{}', chatId={}, userId={}", text, message.getChatId(), message.getFrom().getId());
+            CommandsReam.get(text).accept(bot, message);
+        } else {
+            log.warn("[ArrayListStory] команда '{}' не найдена в Map", text);
+        }
+    }
 
 }
