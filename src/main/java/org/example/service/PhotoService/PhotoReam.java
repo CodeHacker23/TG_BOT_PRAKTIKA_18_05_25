@@ -77,4 +77,26 @@ public class PhotoReam {
                 .build();
         return sendPhoto;
     }
+
+    /**
+     * Наша фотка первого отрицательного персонажа и его характеристики.
+     * @param chatId
+     * @return
+     */
+    public static SendPhoto photoArray(Long chatId){
+        System.out.println("[PhotoService] photoArray() — отправляем фото ARRAY.");
+        SendPhoto sendPhoto = SendPhoto.builder()
+                .chatId(chatId)
+                .photo(new InputFile("https://ltdfoto.ru/image/vAKfQG"))
+                .caption("*Имя:* Аррейн\n" +
+                        "*Звание:* Призрачный Легат Коллекций\n" +
+                        "*Тип:* Упорядоченный, но импульсивный.\n" +
+                        "*Специализация:* _не известно_\n" + //Быстрый доступ, капризная вставка
+                        "*Слабость:* _не известно_ \n" + //Вставка в начало
+                        "*Артефакт:* _не известно_") // FragmentOf.java
+                .parseMode("Markdown")
+                .build();
+        return sendPhoto;
+    }
+
 }
