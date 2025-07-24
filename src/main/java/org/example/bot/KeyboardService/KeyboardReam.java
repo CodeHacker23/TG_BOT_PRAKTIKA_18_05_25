@@ -35,7 +35,7 @@ public class KeyboardReam {
      *   message.setReplyMarkup(KeyboardService.getStartKeyboardStatic());
      */
     public static ReplyKeyboardMarkup getStartKeyboardStatic() {
-        log.info("[KeyboardService] getStartKeyboardStatic() — создаём стартовую клавиатуру.");
+        log.info("[KeyboardService] getStartKeyboardStatic() — создаём стартовую клавиатуру. для chatId  ");
         ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
         keyboard.setResizeKeyboard(true);
         keyboard.setOneTimeKeyboard(true);
@@ -54,7 +54,7 @@ public class KeyboardReam {
      * @return replyKeyboardMarkup
      */
     public static ReplyKeyboardMarkup  gladiatorPlot(Long chatId){
-        log.info("gladiatorPlot() - cоздаем клавиатуру с кнопкой 'Принять доспехи'  'Я лучше пойду обновлю IDE' ");
+        log.info("gladiatorPlot() - cоздаем клавиатуру с кнопкой 'Принять доспехи'  'Я лучше пойду обновлю IDE' для chatId = {}", chatId);
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         replyKeyboardMarkup.setResizeKeyboard(true);
         replyKeyboardMarkup.setOneTimeKeyboard(true);
@@ -73,7 +73,7 @@ public class KeyboardReam {
      * @return replyKeyboardMarkup
      */
     public static ReplyKeyboardMarkup BattleList(Long chatId){
-        log.info("BattleList() - cоздаем клавиатуру с кнопкой 'Получить боевой свиток'");
+        log.info("BattleList() - cоздаем клавиатуру с кнопкой 'Получить боевой свиток' для chatId = {}", chatId);
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         replyKeyboardMarkup.setResizeKeyboard(true);
         replyKeyboardMarkup.setOneTimeKeyboard(true);
@@ -84,5 +84,25 @@ public class KeyboardReam {
         return replyKeyboardMarkup;
     }
 
+    /**
+     * Кнопки на ответ атаки Арейна, 3 варианта (try-catch,Уклониться,вставкой в начало)
+     * @param chatId
+     * @return
+     */
+    public static ReplyKeyboardMarkup BattlArreyn(Long chatId){
+        log.info("BattlArreyn() - cоздаем клавиатуру с кнопками 'Блокировать (try-catch)',' Уклониться и проанализировать', '\uD83D\uDEA8 Отразить вставкой в начало' для chatId = {}", chatId);
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
+
+        KeyboardRow row = new KeyboardRow();
+        row.add(new KeyboardButton("\uD83D\uDEE1 Блокировать (try-catch)"));//создание нашей кнопки
+        row.add(new KeyboardButton("\uD83D\uDD0D Уклониться и проанализировать"));//создание нашей кнопки
+        row.add(new KeyboardButton("\uD83D\uDEA8 Отразить вставкой в начало"));//создание нашей кнопки
+
+
+        replyKeyboardMarkup.setKeyboard(List.of(row));
+        return replyKeyboardMarkup;
+    }
 
 }

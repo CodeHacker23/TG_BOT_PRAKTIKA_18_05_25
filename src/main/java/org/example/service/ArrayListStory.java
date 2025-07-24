@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.example.bot.KeyboardService.KeyboardReam;
 import org.example.repository.PersonageRepository;
+import org.example.service.PhotoService.PhotoReam;
 import org.example.service.PhotoService.PhotoStart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +20,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
+
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import static org.example.bot.KeyboardService.KeyboardReam.BattlArreyn;
+import static org.example.service.PhotoService.PhotoReam.photoArray;
 
 /**
  * ArrayListStoryService — сервис для сюжетной линии по ArrayList.
@@ -125,6 +131,27 @@ public class ArrayListStory { //наша ветка по сюжетке Array
         return sendMessage;
     }
 
+    /**
+     * Итераториус предупреждает что вышел Аррейн
+     *
+     * @param chatId
+     * @return
+     */
+    public static SendMessage ReamIteratorius2(Long chatId) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setText("*Итераториус* \n\n" +
+                "\uD83D\uDDE1Внимание!\n" +
+                "Первый противник приближается...\n" +
+                "Это он...\n\n" +
+                "*Aррейн* — коварный и быстрый.\n" +
+                "Он дублирует элементы. Он путает порядок.\n" +
+                "И он ненавидит..._(обращение прервано...)_");
+        sendMessage.setParseMode("Markdown");
+        return sendMessage;
+    }
+
+
 
     /**
      * Формирует текст теории по ArrayList (вынесено отдельно для переиспользования)
@@ -199,8 +226,45 @@ public class ArrayListStory { //наша ветка по сюжетке Array
     }
 
     /**
-     * Планирует удаление сообщения через 4 секунды и отправляет клавиатуру
-     * @param bot — TelegramLongPollingBot
+     * Арейн говорит свои слова и предстовляется
+     * @param chatId
+     * @return
+     */
+    public SendMessage messageArrayen(Long chatId){
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setParseMode("Markdown");
+        sendMessage.setText("*Аррейн*\n\n" +
+                "Я не против, если ты добавишь (Е element) в конец.\n" +
+                "Но попробуй вставить в индекс 0 — и ты узнаешь, что такое боль....\"");
+        return sendMessage;
+    }
+
+    /**
+     * Арейн атакует !!
+     * @param chatId
+     * @return
+     */
+    public static SendMessage ARREINAtacka(Long chatId) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setParseMode("Markdown");
+        sendMessage.setText("\uD83D\uDCA5 Аррейн бросает в тебя виртуальный элемент с индексом 0!\n\n" +
+                "\uD83E\uDDE0 *Итераториус* (шепчет):\n" +
+                "У тебя есть доля секунды. Реагируй!\n\n " +
+                " ⚔\uFE0F Тебе доступны действия: ⚔\uFE0F ");
+        sendMessage.setReplyMarkup(BattlArreyn(chatId));
+        // кнопки добавить
+        sendMessage.setParseMode("Markdown");
+        return sendMessage;
+    }
+
+
+
+    /**
+     * Планирует удаление сообщения через 20 секунды и отправляет клавиатуру
+     *
+     * @param bot    — TelegramLongPollingBot
      * @param chatId — ID чата
      */
     public void sendTheoryWithAutoDelete(TelegramLongPollingBot bot, Long chatId) {
@@ -219,15 +283,37 @@ public class ArrayListStory { //наша ветка по сюжетке Array
                     deleteMessage.setMessageId(messageId);
                     bot.execute(deleteMessage);
                     log.info("[ArrayListStory] Удаление сообщения выполнено, messageId={}", messageId);
-                    arrayListStoryService.sendWithKeyboard(bot, chatId, "Хотите прочитать теорию о Arraylist?");
+                    bot.execute(ReamIteratorius2(chatId));
+                    scheduler.schedule(() -> {
+                        try {
+                            log.info("[ArrayListStory] - Отправлено фото Айрена для chatId ={}", chatId);
+                            bot.execute(PhotoReam.photoArray(chatId));//TODO отправялем нашу фотку врага
+                            bot.execute(messageArrayen(chatId));
+                            scheduler.schedule(() -> {
+                                try {
+                                    log.info("[ArrayListStory] - Отправлена атака Айрена для chatId ={}", chatId);
+                                    bot.execute(ArrayListStory.ARREINAtacka(chatId));
+                                } catch (TelegramApiException e) {
+                                    log.error("[ArrayListStory] - Ошибка отправки атаки Айрена для chatId ={}", chatId);
+                                }
+                            },2,TimeUnit.SECONDS);
+                        } catch (TelegramApiException e) {
+                            log.error("[ArrayListStory] sendTheoryWithAutoDelete Фото Айрена не отправлено для chatId = {}", chatId);
+                        }
+
+                    }, 3, TimeUnit.SECONDS);
+
+                    // arrayListStoryService.sendWithKeyboard(bot, chatId, "Хотите прочитать теорию о Arraylist?"); старые кнопки
                 } catch (Exception e) {
                     log.error("[ArrayListStory] Ошибка при удалении сообщения или отправке клавиатуры", e);
                 }
-            }, 4, java.util.concurrent.TimeUnit.SECONDS);
+            }, 20, java.util.concurrent.TimeUnit.SECONDS);
         } catch (Exception e) {
             log.error("[ArrayListStory] Ошибка при отправке теории", e);
         }
     }
+
+
 
     public boolean canHandle(String text) {
         return CommandsReam.containsKey(text);
