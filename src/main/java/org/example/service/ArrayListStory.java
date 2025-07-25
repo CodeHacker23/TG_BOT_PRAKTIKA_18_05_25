@@ -232,10 +232,7 @@ public class ArrayListStory { //наша ветка по сюжетке Array
 
     public static SendMessage ArenaNewCapacityRound1(Long chatId, UserService userService) {
         SendMessage sendMessage = new SendMessage();
-        // Отключаем Markdown-разметку, чтобы не было ошибок Telegram
-        // sendMessage.setParseMode("Markdown");
-        // Можно явно указать null, но по умолчанию будет PlainText
-        sendMessage.setParseMode(null);
+        sendMessage.setParseMode("Markdown");
         sendMessage.setChatId(chatId);
 
         // Получаем пользователя и персонажа
@@ -250,7 +247,7 @@ public class ArrayListStory { //наша ветка по сюжетке Array
         String statsLine = buildStatsLine(entity);
 
         sendMessage.setText(
-            "Раунд 1 — 'Код под давлением'\n\n" +
+            "*Раунд 1 — 'Код под давлением'*\n\n" +
             "Твои статы:\n" +
             statsLine
         );
