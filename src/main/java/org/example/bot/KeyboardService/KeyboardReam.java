@@ -96,9 +96,14 @@ public class KeyboardReam {
         replyKeyboardMarkup.setOneTimeKeyboard(true);
 
         KeyboardRow row = new KeyboardRow();
-        row.add(new KeyboardButton("\uD83D\uDEE1 Блокировать (try-catch)"));//создание нашей кнопки
-        row.add(new KeyboardButton("\uD83D\uDD0D Уклониться и проанализировать"));//создание нашей кнопки
-        row.add(new KeyboardButton("\uD83D\uDEA8 Отразить вставкой в начало"));//создание нашей кнопки
+        row.add(new KeyboardButton("\uD83D\uDEE1 Блокировать \n" +
+                " (try-catch)"));//создание нашей кнопки
+        row.add(new KeyboardButton("\uD83D\uDD0D Уклониться \n" +
+                " и \n" +
+                "проанализировать"));//создание нашей кнопки
+        row.add(new KeyboardButton("\uD83D\uDEA8 Отразить \n" +
+                "вставкой \n" +
+                " в начало"));//создание нашей кнопки
 
 
         replyKeyboardMarkup.setKeyboard(List.of(row));

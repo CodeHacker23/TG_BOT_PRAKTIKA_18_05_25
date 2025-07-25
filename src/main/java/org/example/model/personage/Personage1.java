@@ -151,6 +151,14 @@ public class Personage1 extends PersonageBase {
             .build();
     }
 
+    @Override
+    public void levelUp() {
+        int exp = 38 + (int)(Math.random() * (55 - 38 + 1));
+        int cash = 200 + (int)(Math.random() * (350 - 200 + 1));
+        this.achievementPoints += exp;
+        this.currency += cash;
+    }
+
 
 }
  
