@@ -31,7 +31,7 @@ public class MarkdownUtil {
             System.out.println("[MarkdownUtil] escapeMarkdownV2() — входной текст null, возвращаем null");
             return null;
         }
-        // Экранируем все спецсимволы по очереди
+        // Экранируем все спецсимволы по очереди, кроме |
         String result = text.replace("_", "\\_")
                 .replace("*", "\\*")
                 .replace("[", "\\[")
@@ -45,7 +45,7 @@ public class MarkdownUtil {
                 .replace("+", "\\+")
                 .replace("-", "\\-")
                 .replace("=", "\\=")
-                .replace("|", "\\|")
+                // .replace("|", "\\|") // pipe больше не экранируем!
                 .replace("{", "\\{")
                 .replace("}", "\\}")
                 .replace(".", "\\.")

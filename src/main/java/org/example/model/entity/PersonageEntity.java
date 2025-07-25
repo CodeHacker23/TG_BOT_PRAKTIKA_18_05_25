@@ -151,6 +151,54 @@ public class PersonageEntity {
     }
     // ... по аналогии можно добавить для других ключевых полей ...
 
+    /**
+     * Преобразовать PersonageEntity в соответствующий наследник PersonageBase
+     */
+    public org.example.model.personage.PersonageBase toPersonageBase() {
+        switch (this.characterType) {
+            case "Personage1":
+                org.example.model.personage.Personage1 p1 = new org.example.model.personage.Personage1();
+                p1.fillFromEntity(this);
+                return p1;
+            case "Personage2":
+                org.example.model.personage.Personage2 p2 = new org.example.model.personage.Personage2();
+                p2.fillFromEntity(this);
+                return p2;
+            case "Personage3":
+                org.example.model.personage.Personage3 p3 = new org.example.model.personage.Personage3();
+                p3.fillFromEntity(this);
+                return p3;
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * Обновить поля PersonageEntity из PersonageBase
+     */
+    public void updateFromBase(org.example.model.personage.PersonageBase base) {
+        if (base == null) return;
+        this.name = base.getName();
+        this.level = base.getLevel();
+        this.energy = base.getEnergy();
+        this.achievementPoints = base.getAchievementPoints();
+        this.currency = base.getCurrency();
+        this.status = base.getStatus();
+        // Уникальные поля
+        if (base instanceof org.example.model.personage.Personage1) {
+            this.deadlineResistance = ((org.example.model.personage.Personage1) base).getDeadlineResistance();
+            this.analytics = ((org.example.model.personage.Personage1) base).getAnalytics();
+        }
+        if (base instanceof org.example.model.personage.Personage2) {
+            this.humor = ((org.example.model.personage.Personage2) base).getHumor();
+            this.communication = ((org.example.model.personage.Personage2) base).getCommunication();
+        }
+        if (base instanceof org.example.model.personage.Personage3) {
+            this.codeAccuracy = ((org.example.model.personage.Personage3) base).getCodeAccuracy();
+            this.optimization = ((org.example.model.personage.Personage3) base).getOptimization();
+        }
+    }
+
     @Override
     public String toString() {
         return "PersonageEntity{" +

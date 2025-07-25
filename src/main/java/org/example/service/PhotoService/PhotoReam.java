@@ -89,6 +89,7 @@ public class PhotoReam {
                 .chatId(chatId)
                 .photo(new InputFile("https://ltdfoto.ru/image/vAKfQG"))
                 .caption("*Имя:* Аррейн\n" +
+                        "*XP* - 150\n" +
                         "*Звание:* Призрачный Легат Коллекций\n" +
                         "*Тип:* Упорядоченный, но импульсивный.\n" +
                         "*Специализация:* _не известно_\n" + //Быстрый доступ, капризная вставка

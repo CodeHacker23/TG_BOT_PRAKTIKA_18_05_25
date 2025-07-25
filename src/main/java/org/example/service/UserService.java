@@ -88,6 +88,20 @@ public class UserService {
         userRepository.save(user);
     }
 
+    /**
+     * Повысить базовые статы персонажа пользователя по Telegram ID
+     */
+    public void levelUpUserPersonage(Long tgId) {
+        UserEntity user = getUserByTgId(tgId);
+        if (user == null || user.getPersonage() == null) return;
+        org.example.model.entity.PersonageEntity entity = user.getPersonage();
+        org.example.model.personage.PersonageBase base = entity.toPersonageBase();
+        if (base == null) return;
+        base.levelUp();
+        entity.updateFromBase(base);
+        saveUser(user);
+    }
+
     // Если добавишь новый метод без комментария — Архитектор лично напишет тебе в Telegram.
 }
 

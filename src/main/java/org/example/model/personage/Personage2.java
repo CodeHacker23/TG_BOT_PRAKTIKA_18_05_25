@@ -154,6 +154,14 @@ public class Personage2 extends PersonageBase {
         return communication;
     }
 
+    @Override
+    public void levelUp() {
+        int exp = 38 + (int)(Math.random() * (55 - 38 + 1));
+        int cash = 200 + (int)(Math.random() * (350 - 200 + 1));
+        this.achievementPoints += exp;
+        this.currency += cash;
+    }
+
     // --- Советы по расширению ---
     // 1. Все уникальные свойства (например, юмор, коммуникации) — только здесь.
     // 2. Не копипасть! Если логика повторяется — выноси в базу.
