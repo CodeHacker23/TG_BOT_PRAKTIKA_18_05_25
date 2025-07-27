@@ -3,11 +3,11 @@ package org.example.service;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.example.MarkdownUtil;
-import org.example.bot.Bot;
 import org.example.model.entity.PersonageEntity;
 import org.example.model.entity.UserEntity;
 import org.example.model.personage.PersonageBase;
 import org.example.repository.PersonageRepository;
+import org.example.service.ArrayList.ArrayListStory;
 import org.example.service.PhotoService.PhotoStart;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -29,6 +29,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
+
+
 
 
 /**
@@ -63,6 +65,7 @@ public class StoryStartService {
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private final PersonageRepository personageRepository;
     private final PersonageService personageService;
+    private final ArrayListStory arrayListStory;
 
     // === Мапа для маршрутизации команд начальной сюжетной ветки ===
     // Ключ — текст команды, значение — обработчик (BiConsumer<бот, сообщение>)
@@ -137,15 +140,14 @@ public class StoryStartService {
                     Personage1 p1 = new Personage1();
                     p1.fillFromEntity(personage);
                     bot.execute(p1.getRomanArmorCard(chatId, analyticsDelta));
-                    scheduler.schedule(() ->{
+                    // Отправляем сообщение от Итераториуса через 4 секунды
+                    scheduler.schedule(()->{
                         try {
-                            log.info("[StoryStartService] ☕\uFE0F К чёрту NetBeans. Я готов к Риму!\"   Запущено смс от Итераториуса о враге Array");
-                            bot.execute(ArrayListStory.ReamIteratorius(chatId));
-                        } catch (TelegramApiException e) {
-                            log.error("[StoryStartService] ☕\uFE0F К чёрту NetBeans. Я готов к Риму!\"   -- Сообшение о фраге Array не отправлено ");
-                            throw new RuntimeException(e);
+                            // Отправляем сообщение от Итераториуса с кнопкой "📜 Получить боевой свиток"
+                            bot.execute(arrayListStory.sendIteratoriusMessage(chatId));
+                        } catch (Exception e) {
+                            log.error("Ошибка отправки сообщения от Итераториуса для chatId={}", chatId, e);
                         }
-
                     },4,TimeUnit.SECONDS);
                 } else if ("Personage2".equals(type)) {
                     personageService.updateStats(personage, 1, 50, 450.0, 0, 0, false);
@@ -153,15 +155,14 @@ public class StoryStartService {
                     Personage2 p2 = new Personage2();
                     p2.fillFromEntity(personage);
                     bot.execute(p2.getRomanFloy(chatId, communicationDelta));
-                    scheduler.schedule(() ->{
+                    // Отправляем сообщение от Итераториуса через 4 секунды
+                    scheduler.schedule(()->{
                         try {
-                            log.info("[StoryStartService] ☕\uFE0F К чёрту NetBeans. Я готов к Риму!\"   Запущено смс от Итераториуса о враге Array");
-                            bot.execute(ArrayListStory.ReamIteratorius(chatId));
-                        } catch (TelegramApiException e) {
-                            log.error("[StoryStartService] ☕\uFE0F К чёрту NetBeans. Я готов к Риму!\"   -- Сообшение о фраге Array не отправлено ");
-                            throw new RuntimeException(e);
+                            // Отправляем сообщение от Итераториуса с кнопкой "📜 Получить боевой свиток"
+                            bot.execute(arrayListStory.sendIteratoriusMessage(chatId));
+                        } catch (Exception e) {
+                            log.error("Ошибка отправки сообщения от Итераториуса для chatId={}", chatId, e);
                         }
-
                     },4,TimeUnit.SECONDS);
                 } else if ("Personage3".equals(type)) {
                     personageService.updateStats(personage, 1, 50, 450.0, 0, 0, false);
@@ -169,16 +170,16 @@ public class StoryStartService {
                     Personage3 p3 = new Personage3();
                     p3.fillFromEntity(personage);
                     bot.execute(p3.getRomanPersonage3(chatId, optimizationDelta));
-                    scheduler.schedule(() ->{
+                    // Отправляем сообщение от Итераториуса через 4 секунды
+                    scheduler.schedule(()->{
                         try {
-                            log.info("[StoryStartService] ☕\uFE0F К чёрту NetBeans. Я готов к Риму!\"   Запущено смс от Итераториуса о враге Array");
-                            bot.execute(ArrayListStory.ReamIteratorius(chatId));
-                        } catch (TelegramApiException e) {
-                            log.error("[StoryStartService] ☕\uFE0F К чёрту NetBeans. Я готов к Риму!\"   -- Сообшение о фраге Array не отправлено ");
-                            throw new RuntimeException(e);
+                            // Отправляем сообщение от Итераториуса с кнопкой "📜 Получить боевой свиток"
+                            bot.execute(arrayListStory.sendIteratoriusMessage(chatId));
+                        } catch (Exception e) {
+                            log.error("Ошибка отправки сообщения от Итераториуса для chatId={}", chatId, e);
                         }
-
                     },4,TimeUnit.SECONDS);
+
                 } else {
                     sendMsg(bot, new SendMessage(chatId.toString(), "Ошибка: неизвестный тип персонажа!"));
                 }
@@ -210,15 +211,14 @@ public class StoryStartService {
                     Personage1 p1 = new Personage1();
                     p1.fillFromEntity(personage);
                     bot.execute(p1.getRomanArmorCard(chatId, analyticsDelta));
-                    scheduler.schedule(() ->{
+                    // Отправляем сообщение от Итераториуса через 4 секунды
+                    scheduler.schedule(()->{
                         try {
-                            log.info("[StoryStartService] 'startCommands.put(\"Принять доспехи ⚔\\uFE0F\'  Запущено смс от Итераториуса о враге Array");
-                            bot.execute(ArrayListStory.ReamIteratorius(chatId));
-                        } catch (TelegramApiException e) {
-                            log.error("[StoryStartService] 'startCommands.put(\"Принять доспехи ⚔\\uFE0F\' -- Сообшение о фраге Array не отправлено ");
-                            throw new RuntimeException(e);
+                            // Отправляем сообщение от Итераториуса с кнопкой "📜 Получить боевой свиток"
+                            bot.execute(arrayListStory.sendIteratoriusMessage(chatId));
+                        } catch (Exception e) {
+                            log.error("Ошибка отправки сообщения от Итераториуса для chatId={}", chatId, e);
                         }
-
                     },4,TimeUnit.SECONDS);
                 } else if ("Personage2".equals(type)) {
                     personageService.updateStats(personage, 1, 50, 450.0, 0, 0, false);
@@ -226,15 +226,14 @@ public class StoryStartService {
                     Personage2 p2 = new Personage2();
                     p2.fillFromEntity(personage);
                     bot.execute(p2.getRomanFloy(chatId, communicationDelta));
-                    scheduler.schedule(() ->{
+                    // Отправляем сообщение от Итераториуса через 4 секунды
+                    scheduler.schedule(()->{
                         try {
-                            log.info("[StoryStartService] 'startCommands.put(\"Принять доспехи ⚔\\uFE0F\'  Запущено смс от Итераториуса о враге Array");
-                            bot.execute(ArrayListStory.ReamIteratorius(chatId));
-                        } catch (TelegramApiException e) {
-                            log.error("[StoryStartService] 'startCommands.put(\"Принять доспехи ⚔\\uFE0F\' -- Сообшение о фраге Array не отправлено ");
-                            throw new RuntimeException(e);
+                            // Отправляем сообщение от Итераториуса с кнопкой "📜 Получить боевой свиток"
+                            bot.execute(arrayListStory.sendIteratoriusMessage(chatId));
+                        } catch (Exception e) {
+                            log.error("Ошибка отправки сообщения от Итераториуса для chatId={}", chatId, e);
                         }
-
                     },4,TimeUnit.SECONDS);
                 } else if ("Personage3".equals(type)) {
                     personageService.updateStats(personage, 1, 50, 450.0, 0, 0, false);
@@ -242,15 +241,14 @@ public class StoryStartService {
                     Personage3 p3 = new Personage3();
                     p3.fillFromEntity(personage);
                     bot.execute(p3.getRomanPersonage3(chatId, optimizationDelta));
-                    scheduler.schedule(() ->{
+                    // Отправляем сообщение от Итераториуса через 4 секунды
+                    scheduler.schedule(()->{
                         try {
-                            log.info("[StoryStartService] 'startCommands.put(\"Принять доспехи ⚔\\uFE0F\'  Запущено смс от Итераториуса о враге Array");
-                            bot.execute(ArrayListStory.ReamIteratorius(chatId));
-                        } catch (TelegramApiException e) {
-                            log.error("[StoryStartService] 'startCommands.put(\"Принять доспехи ⚔\\uFE0F\' -- Сообшение о фраге Array не отправлено ");
-                            throw new RuntimeException(e);
+                            // Отправляем сообщение от Итераториуса с кнопкой "📜 Получить боевой свиток"
+                            bot.execute(arrayListStory.sendIteratoriusMessage(chatId));
+                        } catch (Exception e) {
+                            log.error("Ошибка отправки сообщения от Итераториуса для chatId={}", chatId, e);
                         }
-
                     },4,TimeUnit.SECONDS);
 
 

@@ -2,10 +2,7 @@ package org.example.bot;
 
 import lombok.RequiredArgsConstructor;
 
-import org.example.bot.KeyboardService.KeyboardService;
-import org.example.model.entity.PersonageEntity;
 import org.example.service.*;
-import org.example.service.PhotoService.PhotoStart;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -17,7 +14,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +25,7 @@ import org.example.model.personage.Personage2;
 import org.example.model.personage.Personage3;
 import org.example.service.PersonageService;
 import org.example.service.StoryStartService;
-import org.example.service.ArrayListStory;
+import org.example.service.ArrayList.ArrayListStory;
 
 /**
  * Главный обработчик всех входящих сообщений пользователя (кроме /start и создания персонажа).

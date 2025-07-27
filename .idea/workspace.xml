@@ -4,9 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment=" Добавлена дальнейшая сюжетная линия Array, в дальнейшем нужно будет разгрузить класс ArrayListStory,он слишком большой. так-же сделалаи вывод статы пероснажа, ссылаясь на бд.">
+    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment=" Добавлена дальнейшая сюжетная линия Array, в дальнейшем нужно будет разгрузить класс ArrayListStory,он слишком большой. так-же сделалаи вывод статы пероснажа, ссылаясь на бд. чуток добавили эстетичности что бы к этому потом не возвращаться">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Service.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayListStory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayListStory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/MessageHandlerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/MessageHandlerService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayListStory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListStory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/StoryStartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/StoryStartService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -129,7 +133,7 @@
       <workItem from="1752688642599" duration="3328000" />
       <workItem from="1752729749021" duration="13921000" />
       <workItem from="1753082241027" duration="323000" />
-      <workItem from="1753307326154" duration="38747000" />
+      <workItem from="1753307326154" duration="48023000" />
     </task>
     <task id="LOCAL-00001" summary="по идеи всеработает как нужн, на команде старт отправляется фото с текстом, затем отправялется сообщение с кнопкой (создать персонажа) кнопка кликабельна, после кнопки отправляется персонаж с характеристиками и фото. все соеденяется с БД2">
       <option name="closed" value="true" />
@@ -315,7 +319,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753471062240</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary=" Добавлена дальнейшая сюжетная линия Array, в дальнейшем нужно будет разгрузить класс ArrayListStory,он слишком большой. так-же сделалаи вывод статы пероснажа, ссылаясь на бд. чуток добавили эстетичности что бы к этому потом не возвращаться">
+      <option name="closed" value="true" />
+      <created>1753471545883</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1753471545883</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -343,6 +355,7 @@
     <MESSAGE value=" и так мы добились того что бы теория удалилась после отправки, вышли кнопки (да\нет\ я изучаю пайтон) вроде чуток востановили поток, нужно будет доработать сюжетную линию по ArrayListStory" />
     <MESSAGE value=" сделали далее сюжет по Array, вышел наш протвинки, подошел к сюжетке 1 раунду, кнопки пока что не обработаны, но все же успех есть, все работает и запускается, все тип топ" />
     <MESSAGE value=" Добавлена дальнейшая сюжетная линия Array, в дальнейшем нужно будет разгрузить класс ArrayListStory,он слишком большой. так-же сделалаи вывод статы пероснажа, ссылаясь на бд." />
-    <option name="LAST_COMMIT_MESSAGE" value=" Добавлена дальнейшая сюжетная линия Array, в дальнейшем нужно будет разгрузить класс ArrayListStory,он слишком большой. так-же сделалаи вывод статы пероснажа, ссылаясь на бд." />
+    <MESSAGE value=" Добавлена дальнейшая сюжетная линия Array, в дальнейшем нужно будет разгрузить класс ArrayListStory,он слишком большой. так-же сделалаи вывод статы пероснажа, ссылаясь на бд. чуток добавили эстетичности что бы к этому потом не возвращаться" />
+    <option name="LAST_COMMIT_MESSAGE" value=" Добавлена дальнейшая сюжетная линия Array, в дальнейшем нужно будет разгрузить класс ArrayListStory,он слишком большой. так-же сделалаи вывод статы пероснажа, ссылаясь на бд. чуток добавили эстетичности что бы к этому потом не возвращаться" />
   </component>
 </project>
