@@ -124,6 +124,8 @@ public class MessageHandlerService {
      *                messageHandlerService.handleMessage(bot, message);
      */
     public void handleMessage(TelegramLongPollingBot bot, Message message) throws TelegramApiException {
+        log.info("MessageHandlerService.handleMessage() — ВХОД В МЕТОД");
+        
         String text = message.getText();
         Long chatId = message.getChatId();
         Long userId = message.getFrom().getId();
@@ -137,14 +139,19 @@ public class MessageHandlerService {
         }
 
         // 2. Ветка ArrayList (и другие коллекции)
+        log.info("MessageHandlerService: Проверяем canHandle для ArrayListStory с текстом '{}'", text);
         if (arrayListStory.canHandle(text)) {
             log.info("MessageHandlerService: делегируем команду '{}' в ArrayListStory", text);
             arrayListStory.handle(bot, message);
             return;
+        } else {
+            log.warn("MessageHandlerService: ArrayListStory не может обработать команду '{}'", text);
         }
 
         // 3. Остальные команды (например, processCommand)
         // Удалить метод processCommand полностью
+        
+        log.info("MessageHandlerService.handleMessage() — ВЫХОД ИЗ МЕТОДА");
     }
 
 
