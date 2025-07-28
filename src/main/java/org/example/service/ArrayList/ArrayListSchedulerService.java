@@ -14,6 +14,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.Map;
 
 /**
  * ArrayListSchedulerService — сервис для управления планировщиком задач в изучении ArrayList.
@@ -202,11 +203,15 @@ public class ArrayListSchedulerService {
             int expReward = battleService.generateRandomReward(60, 85);
             int cashReward = battleService.generateRandomReward(250, 350);
             
-            // Обрабатываем награды в базе данных
-            battleService.processAnalysisRewards(chatId, expReward, cashReward);
+            // Создаем и применяем награды
+            Map<String, Integer> rewards = Map.of(
+                "achievement_points", expReward,
+                "currency", cashReward
+            );
+            battleService.applyStatChanges(chatId, rewards);
             
             // Создаем сообщение с результатом
-            SendMessage sendMessage = battleService.BattleResultIteratorius(chatId, expReward, cashReward);
+            SendMessage sendMessage = battleService.createAnalysisResultMessage(chatId, expReward, cashReward);
             
             try {
                 bot.execute(sendMessage);
@@ -234,6 +239,8 @@ public class ArrayListSchedulerService {
                 log.info("ArrayListSchedulerService: Результат 'Вставить в начало' отправлен для chatId={}", chatId);
             } catch (TelegramApiException e) {
                 log.error("ArrayListSchedulerService: Ошибка отправки результата 'Вставить в начало' для chatId={}", chatId, e);
+            } catch (Exception e) {
+                log.error("ArrayListSchedulerService: Неожиданная ошибка при отправке результата 'Вставить в начало' для chatId={}", chatId, e);
             }
         }, 3, TimeUnit.SECONDS);
     }

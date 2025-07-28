@@ -4,12 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="сделали обработку кнопки анализировать">
+    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="сделали обработку кнопки  вставка в начало">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DIALOG_GUIDE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PERSONAGE_MANUAL.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PROJECT_MANUAL.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/STORY_DIAGRAMS.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/STORY_MANUAL.md" beforeDir="false" afterPath="$PROJECT_DIR$/STORY_MANUAL.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListBattleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListBattleService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListSchedulerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListSchedulerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListStory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListStory.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -132,7 +136,7 @@
       <workItem from="1752688642599" duration="3328000" />
       <workItem from="1752729749021" duration="13921000" />
       <workItem from="1753082241027" duration="323000" />
-      <workItem from="1753307326154" duration="71522000" />
+      <workItem from="1753307326154" duration="72703000" />
     </task>
     <task id="LOCAL-00001" summary="по идеи всеработает как нужн, на команде старт отправляется фото с текстом, затем отправялется сообщение с кнопкой (создать персонажа) кнопка кликабельна, после кнопки отправляется персонаж с характеристиками и фото. все соеденяется с БД2">
       <option name="closed" value="true" />
@@ -350,14 +354,21 @@
       <option name="project" value="LOCAL" />
       <updated>1753650570545</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="сделали обработку кнопки  вставка в начало">
+      <option name="closed" value="true" />
+      <created>1753696811630</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1753696811630</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="по идеи всеработает как нужн, на команде старт отправляется фото с текстом, затем отправялется сообщение с кнопкой (создать персонажа) кнопка кликабельна, после кнопки отправляется персонаж с характеристиками и фото. все соеденяется с БД" />
     <MESSAGE value="по идеи всеработает как нужн, на команде старт отправляется фото с текстом, затем отправялется сообщение с кнопкой (создать персонажа) кнопка кликабельна, после кнопки отправляется персонаж с характеристиками и фото. все соеденяется с БД1" />
     <MESSAGE value="по идеи всеработает как нужн, на команде старт отправляется фото с текстом, затем отправялется сообщение с кнопкой (создать персонажа) кнопка кликабельна, после кнопки отправляется персонаж с характеристиками и фото. все соеденяется с БД2" />
     <MESSAGE value="Сделал, что бы пользователь задавал имя своему персонажа, так-же сохраняется  все в БД, прикручено было состояние пользователя, что бы бот понимал что он ждет имя от пользоавтеля а не абы чего" />
@@ -382,6 +393,7 @@
     <MESSAGE value="Сделали рефакторинг класса ArrayListStory, ранее у меня в классе было слишком многов сего, сейчас это все разбито по классам и в одной только папке что очень удобно." />
     <MESSAGE value=" создан мануал по сюжетке" />
     <MESSAGE value="сделали обработку кнопки анализировать" />
-    <option name="LAST_COMMIT_MESSAGE" value="сделали обработку кнопки анализировать" />
+    <MESSAGE value="сделали обработку кнопки  вставка в начало" />
+    <option name="LAST_COMMIT_MESSAGE" value="сделали обработку кнопки  вставка в начало" />
   </component>
 </project>
