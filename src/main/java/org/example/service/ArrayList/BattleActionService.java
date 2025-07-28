@@ -41,79 +41,7 @@ public class BattleActionService {
     private final StatService statService;
     private final MessageService messageService;
 
-    /**
-     * Обрабатывает действие "Блокировать (try-catch)" пользователя.
-     * 
-     * @param bot — TelegramLongPollingBot для отправки сообщений
-     * @param chatId — ID чата пользователя
-     */
-    public void processTryCatchAction(TelegramLongPollingBot bot, Long chatId) {
-        log.info("BattleActionService: Обработка действия try-catch для chatId={}", chatId);
 
-        try {
-            // Отправляем сообщение о защите
-            SendMessage defenseMessage = messageService.createTryCatchDefenseMessage(chatId);
-            bot.execute(defenseMessage);
-            log.debug("BattleActionService: Сообщение о защите отправлено");
-
-            // Генерируем и применяем награды
-            Map<String, Integer> rewards = statService.generateStandardRewards();
-            statService.applyStatChanges(chatId, rewards);
-            
-            log.info("BattleActionService: Действие try-catch обработано для chatId={}", chatId);
-            
-        } catch (TelegramApiException e) {
-            log.error("BattleActionService: Ошибка отправки сообщения о защите для chatId={}", chatId, e);
-        }
-    }
-
-    /**
-     * Обрабатывает действие "Анализировать" пользователя.
-     * 
-     * @param bot — TelegramLongPollingBot для отправки сообщений
-     * @param chatId — ID чата пользователя
-     */
-    public void processAnalysisAction(TelegramLongPollingBot bot, Long chatId) {
-        log.info("BattleActionService: Обработка действия анализа для chatId={}", chatId);
-
-        try {
-            // Отправляем сообщение об анализе
-            SendMessage analysisMessage = messageService.createAnalysisMessage(chatId);
-            bot.execute(analysisMessage);
-            log.debug("BattleActionService: Сообщение об анализе отправлено");
-
-            // Генерируем и применяем награды
-            Map<String, Integer> rewards = statService.generateStandardRewards();
-            statService.applyStatChanges(chatId, rewards);
-            
-            log.info("BattleActionService: Действие анализа обработано для chatId={}", chatId);
-            
-        } catch (TelegramApiException e) {
-            log.error("BattleActionService: Ошибка отправки сообщения об анализе для chatId={}", chatId, e);
-        }
-    }
-
-    /**
-     * Обрабатывает действие "Вставить в начало" пользователя.
-     * 
-     * @param bot — TelegramLongPollingBot для отправки сообщений
-     * @param chatId — ID чата пользователя
-     */
-    public void processInsertBeginningAction(TelegramLongPollingBot bot, Long chatId) {
-        log.info("BattleActionService: Обработка действия вставки в начало для chatId={}", chatId);
-
-        try {
-            // Отправляем сообщение о вставке
-            SendMessage insertMessage = messageService.createInsertBeginningMessage(chatId);
-            bot.execute(insertMessage);
-            log.debug("BattleActionService: Сообщение о вставке отправлено");
-            
-            log.info("BattleActionService: Действие вставки в начало обработано для chatId={}", chatId);
-            
-        } catch (TelegramApiException e) {
-            log.error("BattleActionService: Ошибка отправки сообщения о вставке для chatId={}", chatId, e);
-        }
-    }
 
     /**
      * Проверяет, может ли пользователь участвовать в бою.

@@ -42,40 +42,19 @@ public class ArrayListBattleService {
     private final StatService statService;
     private final MessageService messageService;
 
-    // ========== БОЕВЫЕ ДЕЙСТВИЯ ==========
 
-    /**
-     * Обрабатывает действие "Блокировать (try-catch)".
-     * 
-     * @param bot — TelegramLongPollingBot для отправки сообщений
-     * @param chatId — ID чата пользователя
-     */
-    public void processTryCatchAction(TelegramLongPollingBot bot, Long chatId) {
-        log.info("ArrayListBattleService: Делегируем обработку try-catch для chatId={}", chatId);
-        battleActionService.processTryCatchAction(bot, chatId);
-    }
 
-    /**
-     * Обрабатывает действие "Анализировать".
-     * 
-     * @param bot — TelegramLongPollingBot для отправки сообщений
-     * @param chatId — ID чата пользователя
-     */
-    public void processAnalysisAction(TelegramLongPollingBot bot, Long chatId) {
-        log.info("ArrayListBattleService: Делегируем обработку анализа для chatId={}", chatId);
-        battleActionService.processAnalysisAction(bot, chatId);
-    }
 
-    /**
-     * Обрабатывает действие "Вставить в начало".
-     * 
-     * @param bot — TelegramLongPollingBot для отправки сообщений
-     * @param chatId — ID чата пользователя
-     */
-    public void processInsertBeginningAction(TelegramLongPollingBot bot, Long chatId) {
-        log.info("ArrayListBattleService: Делегируем обработку вставки в начало для chatId={}", chatId);
-        battleActionService.processInsertBeginningAction(bot, chatId);
-    }
+
+
+
+
+
+
+
+
+
+
 
     // ========== СОЗДАНИЕ СООБЩЕНИЙ ==========
 
@@ -161,6 +140,17 @@ public class ArrayListBattleService {
         return messageService.createAttackMessage(chatId);
     }
 
+    /**
+     * Создает сообщение о завершении раунда 1.
+     * 
+     * @param chatId — ID чата пользователя
+     * @return SendMessage — сообщение о завершении раунда
+     */
+    public SendMessage createEndOfRoundOneMessage(Long chatId) {
+        log.debug("ArrayListBattleService: Делегируем создание сообщения о завершении раунда 1 для chatId={}", chatId);
+        return messageService.endOfRoundOne(chatId);
+    }
+
     // ========== РАБОТА СО СТАТАМИ ==========
 
     /**
@@ -224,56 +214,5 @@ public class ArrayListBattleService {
         return battleActionService.getBattleStats(chatId);
     }
 
-    // ========== КОМПАТИБИЛЬНОСТЬ ==========
 
-    /**
-     * @deprecated Используйте processTryCatchAction вместо этого метода
-     */
-    @Deprecated
-    public void processTryCatchAction(TelegramLongPollingBot bot, Long chatId, boolean deprecated) {
-        log.warn("ArrayListBattleService: Используется устаревший метод processTryCatchAction");
-        processTryCatchAction(bot, chatId);
-    }
-
-    /**
-     * @deprecated Используйте createBattleResultMessage вместо этого метода
-     */
-    @Deprecated
-    public SendMessage BattleResultIteratorius(Long chatId, int expReward, int cashReward) {
-        log.warn("ArrayListBattleService: Используется устаревший метод BattleResultIteratorius");
-        return createAnalysisResultMessage(chatId, expReward, cashReward);
-    }
-
-    /**
-     * @deprecated Используйте createInsertBeginningMessage вместо этого метода
-     */
-    @Deprecated
-    public SendMessage InsertBeginning(Long chatId) {
-        log.warn("ArrayListBattleService: Используется устаревший метод InsertBeginning");
-        return createInsertBeginningMessage(chatId);
-    }
-
-    /**
-     * @deprecated Используйте createInsertBeginningResultMessage вместо этого метода
-     */
-    @Deprecated
-    public SendMessage BattleResultInsertBeginning(Long chatId, int expReward, int cashReward) {
-        log.warn("ArrayListBattleService: Используется устаревший метод BattleResultInsertBeginning");
-        
-        // Генерируем кастомные изменения статов
-        Map<String, Integer> statChanges = statService.generateCustomStatChanges();
-        
-        // Добавляем индивидуальный стат для персонажа
-        var user = userService.getUserByTgId(chatId);
-        if (user != null && user.getPersonage() != null) {
-            String characterType = user.getPersonage().getCharacterType();
-            String individualStat = statService.getIndividualStatForCharacter(characterType);
-            statChanges.put(individualStat, statService.generateRandomReward(15, 25));
-        }
-        
-        // Применяем изменения
-        statService.applyStatChanges(chatId, statChanges);
-        
-        return createInsertBeginningResultMessage(chatId, statChanges);
-    }
 }
