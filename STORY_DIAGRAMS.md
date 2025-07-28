@@ -302,11 +302,11 @@ graph LR
     B -->|Кастомная| D[Деньги - Опыт +]
     B -->|Индивидуальная| E[Спец. стат +]
     
-    C --> F[generateStandardRewards()]
-    D --> G[generateCustomStatChanges()]
-    E --> H[getIndividualStatForCharacter()]
+    C --> F[generateStandardRewards]
+    D --> G[generateCustomStatChanges]
+    E --> H[getIndividualStatForCharacter]
     
-    F --> I[applyStatChanges()]
+    F --> I[applyStatChanges]
     G --> I
     H --> I
     

@@ -53,7 +53,8 @@ public class ArrayListSchedulerService {
 
     private final UserService userService;
     private final ArrayListTheoryService theoryService;
-    private final ArrayListBattleService battleService;
+    private final StatService statService;
+    private final MessageService messageService;
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     /**
@@ -164,7 +165,7 @@ public class ArrayListSchedulerService {
                             bot.execute(roundMessage);
                             scheduler.schedule(() -> {
                                 // Отправляем атаку противника
-                                SendMessage attackMessage = battleService.createAttackMessage(chatId);
+                                SendMessage attackMessage = messageService.createAttackMessage(chatId);
                                 try {
                                     bot.execute(attackMessage);
                                 } catch (TelegramApiException e) {
@@ -189,61 +190,7 @@ public class ArrayListSchedulerService {
         }
     }
 
-    /**
-     * Отправляет ответ Итераториуса на действие анализа через 3 секунды.
-     * 
-     * @param bot — TelegramLongPollingBot для отправки сообщений
-     * @param chatId — ID чата пользователя
-     */
-    public void answerIteratoriys(TelegramLongPollingBot bot, Long chatId) {
-        scheduler.schedule(() -> {
-            log.info("ArrayListSchedulerService: Отправка ответа Итераториуса для chatId={}", chatId);
-            
-            // Генерируем случайные награды
-            int expReward = battleService.generateRandomReward(60, 85);
-            int cashReward = battleService.generateRandomReward(250, 350);
-            
-            // Создаем и применяем награды
-            Map<String, Integer> rewards = Map.of(
-                "achievement_points", expReward,
-                "currency", cashReward
-            );
-            battleService.applyStatChanges(chatId, rewards);
-            
-            // Создаем сообщение с результатом
-            SendMessage sendMessage = battleService.createAnalysisResultMessage(chatId, expReward, cashReward);
-            
-            try {
-                bot.execute(sendMessage);
-                log.debug("ArrayListSchedulerService: Ответ Итераториуса отправлен");
-            } catch (TelegramApiException e) {
-                log.error("ArrayListSchedulerService: Ошибка отправки ответа Итераториуса для chatId={}", chatId, e);
-            }
-        }, 3, TimeUnit.SECONDS);
-    }
 
-    /**
-     * Отправляет результат "Вставить в начало" от Итераториуса через 3 секунды.
-     * 
-     * @param bot — TelegramLongPollingBot для отправки сообщений
-     * @param chatId — ID чата пользователя
-     */
-    public void sendInsertBeginningResult(TelegramLongPollingBot bot, Long chatId) {
-        scheduler.schedule(() -> {
-            log.info("ArrayListSchedulerService: Отправка результата 'Вставить в начало' для chatId={}", chatId);
-
-            try {
-                // Создаем сообщение с результатом и изменениями статов
-                SendMessage resultMessage = battleService.BattleResultInsertBeginning(chatId, 0, 0);
-                bot.execute(resultMessage);
-                log.info("ArrayListSchedulerService: Результат 'Вставить в начало' отправлен для chatId={}", chatId);
-            } catch (TelegramApiException e) {
-                log.error("ArrayListSchedulerService: Ошибка отправки результата 'Вставить в начало' для chatId={}", chatId, e);
-            } catch (Exception e) {
-                log.error("ArrayListSchedulerService: Неожиданная ошибка при отправке результата 'Вставить в начало' для chatId={}", chatId, e);
-            }
-        }, 3, TimeUnit.SECONDS);
-    }
 
     /**
      * Планирует выполнение события через заданное количество секунд.
@@ -320,6 +267,8 @@ public class ArrayListSchedulerService {
             }
         }, delaySeconds, TimeUnit.SECONDS);
     }
+
+
 
     /**
      * Создает последовательность событий с заданными интервалами.

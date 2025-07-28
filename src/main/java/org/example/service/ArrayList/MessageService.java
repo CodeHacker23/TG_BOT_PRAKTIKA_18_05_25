@@ -2,6 +2,7 @@ package org.example.service.ArrayList;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.bot.KeyboardService.KeyboardReam;
 import org.example.model.entity.PersonageEntity;
 import org.example.model.entity.UserEntity;
 import org.example.service.UserService;
@@ -27,9 +28,9 @@ import java.util.Map;
  * Автор: Архитектор (который знает, что сообщения без логики — это просто текст)
  * <p>
  * Пример использования:
- * 
+ *
  * @Autowired private MessageService messageService;
- * 
+ * <p>
  * SendMessage result = messageService.createBattleResult(chatId, expReward, cashReward);
  */
 @Slf4j
@@ -42,66 +43,65 @@ public class MessageService {
 
     /**
      * Создает сообщение о попытке защиты try-catch.
-     * 
+     *
      * @param chatId — ID чата пользователя
      * @return SendMessage — сообщение о защите
      */
     public SendMessage createTryCatchDefenseMessage(Long chatId) {
         log.debug("MessageService: Создание сообщения о защите try-catch для chatId={}", chatId);
-        
+
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setParseMode("Markdown");
         sendMessage.setText("🛡 Блокировать \n" +
-                "(try-catch) - у меня была уже простроена.\n" +
-                "Нанесен урон Айрену 100(-50)\n\n" +
-                "Ты строишь стену из\n" +
+                "*Нанесен урон Айрену 100(-50)*\n\n" +
+                "_Ты строишь стену из_\n" +
                 "``` try { ... } catch (...) { ... } ```\n" +
-                "но Аррейон не из тех, кто уважает чужие перехваты.\n\n" +
+                "_но Аррейон не из тех, кто уважает чужие перехваты._\n\n" +
                 "Аррейон выносит с ноги твою защиту, как баги выносят прод после пятничного рефактора.\n\n" +
-                "Ошибка: \n" +
-                "ArrayIndexOutOfBoundsException\n" +
-                "прорывает блок, словно нож сквозь масло.");
-        
+                "*Ошибка:*\n" +
+                "```ArrayIndexOutOfBoundsException```\n" +
+                "прорывает блок, словно нож сквозь масло.\n\n" +
+                "\uD83D\uDC1E*Получен БАГ* - Ошибка ушла в отпуск, но обещала вернуться к дедлайну.");
+
         log.debug("MessageService: Сообщение о защите try-catch создано");
         return sendMessage;
     }
 
     /**
      * Создает сообщение с результатом боя.
-     * 
-     * @param chatId — ID чата пользователя
-     * @param expReward — награда за опыт
+     *
+     * @param chatId     — ID чата пользователя
+     * @param expReward  — награда за опыт
      * @param cashReward — награда за деньги
      * @return SendMessage — сообщение с результатом
      */
     public SendMessage createBattleResultMessage(Long chatId, int expReward, int cashReward) {
         log.debug("MessageService: Создание результата боя для chatId={}", chatId);
-        
+
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setParseMode("Markdown");
         sendMessage.setText("*Итераториус:*\n\n" +
                 "Молодец, конечно… Только try-catch не вечен.\n" +
                 "Не всё в жизни ловится на костыли.\n" +
-                "Следующий ход — только защита или анализ. Атаковать нельзя.\n\n" +
                 "*Навык повышен:*\n" +
                 "  +" + expReward + " ⭐️ к Очкам Достижения\n" +
                 "  +" + cashReward + " 💲 к Деньгам.");
-        
+
         log.debug("MessageService: Результат боя создан");
         return sendMessage;
     }
 
     /**
      * Создает сообщение о попытке анализа.
-     * 
+     *
      * @param chatId — ID чата пользователя
      * @return SendMessage — сообщение об анализе
      */
     public SendMessage createAnalysisMessage(Long chatId) {
         log.debug("MessageService: Создание сообщения об анализе для chatId={}", chatId);
-        
+
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setParseMode("Markdown");
@@ -109,70 +109,71 @@ public class MessageService {
                 "Ты сканируешь память — мозг работает на пределе.\n" +
                 "*ArrayList — это просто массив.*\n" +
                 "*Вставка в начало? Сдвиг, тормоза, страдания. Ты этого хочешь?!*");
-        
+
         log.debug("MessageService: Сообщение об анализе создано");
         return sendMessage;
     }
 
     /**
      * Создает сообщение с результатом анализа.
-     * 
-     * @param chatId — ID чата пользователя
-     * @param expReward — награда за опыт
+     *
+     * @param chatId     — ID чата пользователя
+     * @param expReward  — награда за опыт
      * @param cashReward — награда за деньги
      * @return SendMessage — сообщение с результатом анализа
      */
     public SendMessage createAnalysisResultMessage(Long chatId, int expReward, int cashReward) {
         log.debug("MessageService: Создание результата анализа для chatId={}", chatId);
-        
+
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setParseMode("Markdown");
         sendMessage.setText("*Итераториус:*\n\n" +
                 "Вот это подход! Учиться через боль — зато запомнишь на всю жизнь.\n" +
                 "Только не забывай, что в пятницу прод лучше не трогать.\n\n" +
-                "Видно, что ты читал JavaDoc, а не только переписывал код с StackOverflow.\n\n" +
+                "_Видно, что ты читал JavaDoc, а не только переписывал код с StackOverflow._\n\n" +
+
                 "*Навык повышен:*\n" +
                 "  +" + expReward + " ⭐️ к Очкам Достижения\n" +
                 "  +" + cashReward + " 💲 к Деньгам.");
-        
+
         log.debug("MessageService: Результат анализа создан");
         return sendMessage;
     }
 
     /**
      * Создает сообщение о попытке вставки в начало.
-     * 
+     *
      * @param chatId — ID чата пользователя
      * @return SendMessage — сообщение о вставке
      */
     public SendMessage createInsertBeginningMessage(Long chatId) {
         log.debug("MessageService: Создание сообщения о вставке в начало для chatId={}", chatId);
-        
+
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setParseMode("Markdown");
-        sendMessage.setText("🚨 Вставить в начало — ва-банк!\n" +
-                "🔥 Аррейн получает урон 100(-50) — начинается частичный resize()\n\n" +
+        sendMessage.setText("🚨 *Вставить в начало — ва-банк!*\n" +
+                "🔥 _Аррейн получает урон 100(-50) — начинается частичный resize()_\n\n" +
                 "Ты швыряешь элемент в начало списка — как камень в стеклянную крышу офиса.\n\n" +
-                "АРРЕЙОН (звереет):\n" +
+                "*АРРЕЙОН (звереет):*\n" +
                 "«Ты что, совсем страх потерял?! Я ТАК не работаю! Сейчас будет больно — тебе, мне и твоему менеджеру.»\n\n" +
-                "Массив трещит, но урон наносишь ты");
-        
+                "_Массив трещит, но урон наносишь ты_");
+
         log.debug("MessageService: Сообщение о вставке в начало создано");
         return sendMessage;
     }
 
     /**
      * Создает сообщение с результатом вставки в начало.
-     * 
-     * @param chatId — ID чата пользователя
+     *
+     * @param chatId      — ID чата пользователя
      * @param statChanges — изменения статов
      * @return SendMessage — сообщение с результатом
      */
     public SendMessage createInsertBeginningResultMessage(Long chatId, Map<String, Integer> statChanges) {
         log.debug("MessageService: Создание результата вставки в начало для chatId={}", chatId);
-        
+
         UserEntity user = userService.getUserByTgId(chatId);
         if (user == null || user.getPersonage() == null) {
             log.warn("MessageService: Пользователь или персонаж не найден для chatId={}", chatId);
@@ -182,13 +183,13 @@ public class MessageService {
         PersonageEntity entity = user.getPersonage();
         String characterType = entity.getCharacterType();
         String individualStat = statService.getIndividualStatForCharacter(characterType);
-        
-        int achievementChange = statChanges.get("achievement_points");
-        int moneyChange = statChanges.get("money");
-        int individualChange = statChanges.get(individualStat);
-        
+
+        int achievementChange = statChanges.getOrDefault("achievement_points", 0);
+        int moneyChange = statChanges.getOrDefault("money", 0);
+        int individualChange = statChanges.getOrDefault(individualStat, 0);
+
         String individualStatInfo = statService.getStatDisplayInfo(individualStat);
-        
+
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setParseMode("Markdown");
@@ -198,22 +199,22 @@ public class MessageService {
                 "*Навык повышен:*\n" +
                 " +" + achievementChange + " ⭐️ к Очкам Достижения\n" +
                 " -" + Math.abs(moneyChange) + " 💲 к Деньгам (за психотерапевта позже)\n" +
-                " +" + individualChange + " " + individualStatInfo);
-        
-        log.debug("MessageService: Результат вставки в начало создан для chatId={}, тип персонажа: {}, индивидуальный стат: {}", 
+                " +" + individualChange + " " + individualStatInfo + "\n"
+        );
+        log.debug("MessageService: Результат вставки в начало создан для chatId={}, тип персонажа: {}, индивидуальный стат: {}",
                 chatId, characterType, individualStat);
         return sendMessage;
     }
 
     /**
      * Создает сообщение с атакой.
-     * 
+     *
      * @param chatId — ID чата пользователя
      * @return SendMessage — сообщение с атакой
      */
     public SendMessage createAttackMessage(Long chatId) {
         log.debug("MessageService: Создание сообщения с атакой для chatId={}", chatId);
-        
+
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setParseMode("Markdown");
@@ -221,7 +222,24 @@ public class MessageService {
                 "🧠 Итераториус (шепчет):\n" +
                 "У тебя есть доля секунды. Реагируй!");
         
+        // Добавляем клавиатуру с кнопками боевых действий
+        sendMessage.setReplyMarkup(KeyboardReam.BattlArreyn(chatId));
+
         log.debug("MessageService: Сообщение с атакой создано");
         return sendMessage;
     }
-} 
+
+
+    public SendMessage endOfRoundOne(Long chatId) {
+        log.debug("MessageService: Создание сообщения с завершением раунда 1 для chatId={}", chatId);
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setParseMode("Markdown");
+        sendMessage.setText("⏳ Раунд 1 завершён\n" +
+                "*Итераториус* хмурится, а где-то в логе мелькает баг из его прошлого проекта... \n\n" +
+                "_Аррейон всё ещё стоит.\n" +
+                "Но его структура… дала трещину._");
+        return sendMessage;
+
+    }
+}

@@ -106,6 +106,7 @@ public class StatService {
 
             switch (statName) {
                 case "money":
+                case "currency":
                     Double currentCurrency = entity.getCurrency();
                     entity.setCurrency((currentCurrency != null ? currentCurrency : 0.0) + change);
                     log.debug("StatService: Изменены деньги на {} для chatId={}", change, chatId);

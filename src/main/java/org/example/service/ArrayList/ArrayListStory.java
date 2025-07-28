@@ -2,6 +2,7 @@ package org.example.service.ArrayList;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.example.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
 /**
@@ -54,6 +56,9 @@ public class ArrayListStory {
     private final ArrayListTheoryService theoryService;
     private final ArrayListBattleService battleService;
     private final ArrayListSchedulerService schedulerService;
+    private final MessageService messageService;
+    private final StatService statService;
+    private final UserService userService;
 
     // Карта команд для маршрутизации
     private final Map<String, BiConsumer<TelegramLongPollingBot, Message>> commandsMap = new HashMap<>();
@@ -87,34 +92,144 @@ public class ArrayListStory {
         // Команда для боевого действия try-catch
         commandsMap.put("\uD83D\uDEE1 Блокировать \n (try-catch)", (bot, msg) -> {
             log.info("ArrayListStory: Обработка команды '🛡 Блокировать (try-catch)' для chatId={}", msg.getChatId());
-            battleService.processTryCatchAction(bot, msg.getChatId());
+            try {
+                // 1. Отправляем сообщение о защите
+                SendMessage defenseMessage = messageService.createTryCatchDefenseMessage(msg.getChatId());
+                bot.execute(defenseMessage);
+
+                // 2. Через 5 секунды отправляем результат от Итераториуса
+                schedulerService.scheduleEvent(bot, msg.getChatId(), () -> {
+                    try {
+                        // Генерируем награды
+                        int expReward = statService.generateRandomReward(50, 70);
+                        int cashReward = statService.generateRandomReward(200, 300);
+
+                        // Применяем награды
+                        Map<String, Integer> rewards = Map.of(
+                                "achievement_points", expReward,
+                                "currency", cashReward
+                        );
+                        statService.applyStatChanges(msg.getChatId(), rewards);
+
+                        // Отправляем результат
+                        SendMessage resultMessage = messageService.createBattleResultMessage(msg.getChatId(), expReward, cashReward);
+                        bot.execute(resultMessage);
+
+                        // 3. Еще через 4 секунды отправляем завершение раунда
+                        schedulerService.scheduleEvent(bot, msg.getChatId(), () -> {
+                            try {
+                                SendMessage endRoundMessage = messageService.endOfRoundOne(msg.getChatId());
+                                bot.execute(endRoundMessage);
+                            } catch (TelegramApiException e) {
+                                log.error("ArrayListStory: Ошибка отправки завершения раунда для chatId={}", msg.getChatId(), e);
+                            }
+                        }, 4);
+
+                    } catch (TelegramApiException e) {
+                        log.error("ArrayListStory: Ошибка отправки результата try-catch для chatId={}", msg.getChatId(), e);
+                    }
+                }, 5);
+
+            } catch (TelegramApiException e) {
+                log.error("ArrayListStory: Ошибка отправки сообщения о защите для chatId={}", msg.getChatId(), e);
+            }
         });
 
         // Команда для боевого действия Анализировать
         commandsMap.put("\uD83D\uDD0D Уклониться \n и \nпроанализировать", (bot, msg) -> {
             log.info("ArrayListStory: Обработка команды '🔍 Уклониться и проанализировать' для chatId={}", msg.getChatId());
-            battleService.processAnalysisAction(bot, msg.getChatId());
-            schedulerService.answerIteratoriys(bot, msg.getChatId());
+
+            try {
+                // 1. Отправляем сообщение об анализе
+                SendMessage analysisMessage = messageService.createAnalysisMessage(msg.getChatId());
+                bot.execute(analysisMessage);
+
+                // 2. Через 3 секунды отправляем результат от Итераториуса
+                schedulerService.scheduleEvent(bot, msg.getChatId(), () -> {
+                    try {
+                        // Генерируем награды
+                        int expReward = statService.generateRandomReward(60, 85);
+                        int cashReward = statService.generateRandomReward(250, 350);
+
+                        // Применяем награды
+                        Map<String, Integer> rewards = Map.of(
+                                "achievement_points", expReward,
+                                "currency", cashReward
+                        );
+                        statService.applyStatChanges(msg.getChatId(), rewards);
+
+                        // Отправляем результат
+                        SendMessage resultMessage = messageService.createAnalysisResultMessage(msg.getChatId(), expReward, cashReward);
+                        bot.execute(resultMessage);
+
+                        // 3. Еще через 3 секунды отправляем завершение раунда
+                        schedulerService.scheduleEvent(bot, msg.getChatId(), () -> {
+                            try {
+                                SendMessage endRoundMessage = messageService.endOfRoundOne(msg.getChatId());
+                                bot.execute(endRoundMessage);
+                            } catch (TelegramApiException e) {
+                                log.error("ArrayListStory: Ошибка отправки завершения раунда для chatId={}", msg.getChatId(), e);
+                            }
+                        }, 5);
+
+                    } catch (TelegramApiException e) {
+                        log.error("ArrayListStory: Ошибка отправки результата анализа для chatId={}", msg.getChatId(), e);
+                    }
+                },4);
+
+            } catch (TelegramApiException e) {
+                log.error("ArrayListStory: Ошибка отправки сообщения об анализе для chatId={}", msg.getChatId(), e);
+            }
         });
 
         commandsMap.put("\uD83D\uDEA8 Отразить \n" +
                 "вставкой \n" +
-                " в начало",( bot, msg)->{
+                " в начало", (bot, msg) -> {
             log.info("ArrayListStory: Обработка команды 'Отразить' для chatId={}", msg.getChatId());
-            
+
             try {
-                // Отправляем первое сообщение
-                SendMessage firstMessage = battleService.InsertBeginning(msg.getChatId());
-                bot.execute(firstMessage);
-                log.info("ArrayListStory: Первое сообщение отправлено для chatId={}", msg.getChatId());
-                
-                // Через 3 секунды отправляем сообщение от Итераториуса с изменениями статов
-                schedulerService.sendInsertBeginningResult(bot, msg.getChatId());
+                // 1. Отправляем сообщение о вставке
+                SendMessage insertMessage = messageService.createInsertBeginningMessage(msg.getChatId());
+                bot.execute(insertMessage);
+
+                // 2. Через 3 секунды отправляем результат от Итераториуса
+                schedulerService.scheduleEvent(bot, msg.getChatId(), () -> {
+                    try {
+                        // Генерируем изменения статов для вставки в начало
+                        Map<String, Integer> statChanges = statService.generateCustomStatChanges();
+                        var user = userService.getUserByTgId(msg.getChatId());
+                        if (user != null && user.getPersonage() != null) {
+                            String characterType = user.getPersonage().getCharacterType();
+                            String individualStat = statService.getIndividualStatForCharacter(characterType);
+                            statChanges.put(individualStat, statService.generateRandomReward(15, 25));
+                        }
+
+                        // Применяем изменения статов
+                        statService.applyStatChanges(msg.getChatId(), statChanges);
+
+                        // Отправляем результат
+                        SendMessage resultMessage = messageService.createInsertBeginningResultMessage(msg.getChatId(), statChanges);
+                        bot.execute(resultMessage);
+
+                        // 3. Еще через 3 секунды отправляем завершение раунда
+                        schedulerService.scheduleEvent(bot, msg.getChatId(), () -> {
+                            try {
+                                SendMessage endRoundMessage = messageService.endOfRoundOne(msg.getChatId());
+                                bot.execute(endRoundMessage);
+                            } catch (TelegramApiException e) {
+                                log.error("ArrayListStory: Ошибка отправки завершения раунда для chatId={}", msg.getChatId(), e);
+                            }
+                        }, 4);
+
+                    } catch (TelegramApiException e) {
+                        log.error("ArrayListStory: Ошибка отправки результата вставки для chatId={}", msg.getChatId(), e);
+                    }
+                }, 5);
+
             } catch (TelegramApiException e) {
-                log.error("ArrayListStory: Ошибка отправки первого сообщения для chatId={}", msg.getChatId(), e);
+                log.error("ArrayListStory: Ошибка отправки сообщения о вставке для chatId={}", msg.getChatId(), e);
             }
         });
-
 
 
         log.info("ArrayListStory: Карта команд инициализирована, количество команд: {}", commandsMap.size());
@@ -138,13 +253,13 @@ public class ArrayListStory {
     public boolean canHandle(String text) {
         boolean canHandle = commandsMap.containsKey(text);
         log.info("ArrayListStory: Проверка команды '{}' - canHandle: {}", text, canHandle);
-        
+
         // Дополнительное логирование для отладки
         if (!canHandle) {
-            log.warn("ArrayListStory: Команда '{}' не найдена в карте. Доступные команды: {}", 
+            log.warn("ArrayListStory: Команда '{}' не найдена в карте. Доступные команды: {}",
                     text, commandsMap.keySet());
         }
-        
+
         return canHandle;
     }
 

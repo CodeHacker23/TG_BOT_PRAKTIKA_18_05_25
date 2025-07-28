@@ -340,8 +340,27 @@ public class ArrayListTheoryService {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setParseMode("Markdown");
         sendMessage.setChatId(chatId);
-        sendMessage.setText(" \uD83D\uDCDC Раунд 2 — *'На грани слома'* ");
-        
+        UserEntity user = userService.getUserByTgId(chatId);
+
+        // Получаем пользователя и персонажа проверяем что он не null
+        if(user == null || user.getPersonage() == null){
+            log.warn("ArrayListTheoryService: Пользователь или персонаж не найден для раунда 2 для chatId={}", chatId);
+            sendMessage.setText("Ошибка: персонаж не найден.");
+            return sendMessage;
+        }
+        //получаем нашего персонажа из БД
+        PersonageEntity entity = user.getPersonage();
+
+        // Формируем строку статов
+        String statsLine = buildStatsLine(entity);
+        // Получаем пользователя и персонажа
+
+
+        sendMessage.setText(
+                "*Раунд 2 — *'На грани слома'* " +
+                        statsLine
+        );
+
         log.debug("ArrayListTheoryService: Сообщение о раунде 2 создано");
         return sendMessage;
     }

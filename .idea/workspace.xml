@@ -4,16 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="сделали обработку кнопки  вставка в начало">
+    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="мануалы от рефакторины">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DIALOG_GUIDE.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PERSONAGE_MANUAL.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PROJECT_MANUAL.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/STORY_DIAGRAMS.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/STORY_MANUAL.md" beforeDir="false" afterPath="$PROJECT_DIR$/STORY_MANUAL.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/STORY_DIAGRAMS.md" beforeDir="false" afterPath="$PROJECT_DIR$/STORY_DIAGRAMS.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListBattleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListBattleService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListSchedulerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListSchedulerService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListStory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListStory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListTheoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListTheoryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/BattleActionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/BattleActionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/MessageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/MessageService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -136,7 +136,7 @@
       <workItem from="1752688642599" duration="3328000" />
       <workItem from="1752729749021" duration="13921000" />
       <workItem from="1753082241027" duration="323000" />
-      <workItem from="1753307326154" duration="72703000" />
+      <workItem from="1753307326154" duration="84603000" />
     </task>
     <task id="LOCAL-00001" summary="по идеи всеработает как нужн, на команде старт отправляется фото с текстом, затем отправялется сообщение с кнопкой (создать персонажа) кнопка кликабельна, после кнопки отправляется персонаж с характеристиками и фото. все соеденяется с БД2">
       <option name="closed" value="true" />
@@ -362,14 +362,21 @@
       <option name="project" value="LOCAL" />
       <updated>1753696811630</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="мануалы от рефакторины">
+      <option name="closed" value="true" />
+      <created>1753698450974</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1753698450974</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="по идеи всеработает как нужн, на команде старт отправляется фото с текстом, затем отправялется сообщение с кнопкой (создать персонажа) кнопка кликабельна, после кнопки отправляется персонаж с характеристиками и фото. все соеденяется с БД1" />
     <MESSAGE value="по идеи всеработает как нужн, на команде старт отправляется фото с текстом, затем отправялется сообщение с кнопкой (создать персонажа) кнопка кликабельна, после кнопки отправляется персонаж с характеристиками и фото. все соеденяется с БД2" />
     <MESSAGE value="Сделал, что бы пользователь задавал имя своему персонажа, так-же сохраняется  все в БД, прикручено было состояние пользователя, что бы бот понимал что он ждет имя от пользоавтеля а не абы чего" />
     <MESSAGE value=" Сделал так что бы пользователь когда ввел имя, ему выпадал рандомно персонаж, либо Флоу(это красный) либо синий это Кодыч, будет еще третий персонаж, и с регистриацией закончено, можно отвести душеньку чуть чуть выпить водочки стопок 10 и пойти делать сюжетную линию по Linked" />
@@ -394,6 +401,7 @@
     <MESSAGE value=" создан мануал по сюжетке" />
     <MESSAGE value="сделали обработку кнопки анализировать" />
     <MESSAGE value="сделали обработку кнопки  вставка в начало" />
-    <option name="LAST_COMMIT_MESSAGE" value="сделали обработку кнопки  вставка в начало" />
+    <MESSAGE value="мануалы от рефакторины" />
+    <option name="LAST_COMMIT_MESSAGE" value="мануалы от рефакторины" />
   </component>
 </project>
