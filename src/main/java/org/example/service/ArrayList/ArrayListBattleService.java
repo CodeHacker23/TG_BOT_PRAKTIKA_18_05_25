@@ -14,6 +14,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * ArrayListBattleService — сервис для управления боевой системой в изучении ArrayList.
@@ -109,7 +111,7 @@ public class ArrayListBattleService {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setParseMode("Markdown");
-        sendMessage.setText("Нанесен урон Айрену 100(-50)\n\n" +
+        sendMessage.setText("*Нанесен урон Аррейну 100(-50)*\n\n" +
                 "_Ты строишь стену из_\n" +
                 "```try { ... } catch (...) { ... } ```\n" +
                 "_но Аррейн не из тех, кто уважает чужие перехваты._\n\n" +
@@ -172,6 +174,17 @@ public class ArrayListBattleService {
                 log.error("ArrayListBattleService: Ошибка отправки результата боя для chatId={}", chatId, e);
             }
         }, 4, TimeUnit.SECONDS);
+    }
+
+
+    /**
+     * Обработка индивидуальных парметоров
+     * @param chatId
+     * @param bot
+     */
+    public void processBattleRewardsSpecial(Long chatId, TelegramLongPollingBot bot){
+        log.warn("ArrayListBattleService: [processBattleRewardsSpecial] Пользователь или персонаж не найден для chatId={}", chatId);
+
     }
 
     /**
@@ -402,6 +415,121 @@ public class ArrayListBattleService {
     }
 
     /**
+     * Обрабатывает кастомные изменения статов персонажа.
+     * 
+     * Этот метод применяет изменения к различным характеристикам персонажа:
+     * - Может уменьшать деньги (отрицательные значения)
+     * - Может увеличивать другие статы (положительные значения)
+     * - Сохраняет все изменения в базе данных
+     * 
+     * @param chatId — ID чата пользователя
+     * @param statChanges — Map с изменениями статов
+     * 
+     * Пример использования:
+     * Map<String, Integer> changes = generateCustomStatChanges();
+     * processCustomRewards(chatId, changes);
+     */
+    public void processCustomRewards(Long chatId, Map<String, Integer> statChanges) {
+        log.debug("ArrayListBattleService: Обработка кастомных изменений статов для chatId={}, изменения: {}", 
+                chatId, statChanges);
+
+        // Получаем пользователя и персонажа
+        UserEntity user = userService.getUserByTgId(chatId);
+        if (user == null || user.getPersonage() == null) {
+            log.warn("ArrayListBattleService: Пользователь или персонаж не найден для chatId={}", chatId);
+            return;
+        }
+
+        PersonageEntity entity = user.getPersonage();
+
+        // Применяем изменения к статам
+        for (Map.Entry<String, Integer> entry : statChanges.entrySet()) {
+            String statName = entry.getKey();
+            Integer change = entry.getValue();
+
+            switch (statName) {
+                case "money":
+                    Double currentCurrency = entity.getCurrency();
+                    entity.setCurrency((currentCurrency != null ? currentCurrency : 0.0) + change);
+                    log.debug("ArrayListBattleService: Изменены деньги на {} для chatId={}", change, chatId);
+                    break;
+                case "analytics":
+                    Integer currentAnalytics = entity.getAnalytics();
+                    entity.setAnalytics((currentAnalytics != null ? currentAnalytics : 0) + change);
+                    log.debug("ArrayListBattleService: Изменена аналитика на {} для chatId={}", change, chatId);
+                    break;
+                case "optimization":
+                    Integer currentOptimization = entity.getOptimization();
+                    entity.setOptimization((currentOptimization != null ? currentOptimization : 0) + change);
+                    log.debug("ArrayListBattleService: Изменена оптимизация на {} для chatId={}", change, chatId);
+                    break;
+                case "code_accuracy":
+                    Integer currentCodeAccuracy = entity.getCodeAccuracy();
+                    entity.setCodeAccuracy((currentCodeAccuracy != null ? currentCodeAccuracy : 0) + change);
+                    log.debug("ArrayListBattleService: Изменена точность кода на {} для chatId={}", change, chatId);
+                    break;
+                case "communication":
+                    Integer currentCommunication = entity.getCommunication();
+                    entity.setCommunication((currentCommunication != null ? currentCommunication : 0) + change);
+                    log.debug("ArrayListBattleService: Изменена коммуникация на {} для chatId={}", change, chatId);
+                    break;
+                case "humor":
+                    Integer currentHumor = entity.getHumor();
+                    entity.setHumor((currentHumor != null ? currentHumor : 0) + change);
+                    log.debug("ArrayListBattleService: Изменен юмор на {} для chatId={}", change, chatId);
+                    break;
+                case "achievement_points":
+                    Integer currentAchievementPoints = entity.getAchievementPoints();
+                    entity.setAchievementPoints((currentAchievementPoints != null ? currentAchievementPoints : 0) + change);
+                    log.debug("ArrayListBattleService: Изменены очки достижения на {} для chatId={}", change, chatId);
+                    break;
+                default:
+                    log.warn("ArrayListBattleService: Неизвестный стат '{}' для chatId={}", statName, chatId);
+            }
+        }
+
+        // Сохраняем изменения в БД
+        userService.saveUser(user);
+
+        log.info("ArrayListBattleService: Кастомные изменения статов применены для chatId={}", chatId);
+    }
+
+    /**
+     * Генерирует изменения статов для персонажа.
+     * 
+     * Этот метод создает Map с изменениями различных характеристик персонажа:
+     * - Деньги могут уменьшаться (отрицательные значения)
+     * - Другие статы увеличиваются (положительные значения)
+     * - Каждый вызов генерирует случайные значения в заданных диапазонах
+     * 
+     * @return Map<String, Integer> — карта изменений статов
+     * 
+     * Пример возвращаемого значения:
+     * {
+     *   "money": -95,        // Уменьшаем деньги на 95
+     *   "analytics": +18,    // Увеличиваем аналитику на 18
+     *   "optimization": +12, // Увеличиваем оптимизацию на 12
+     *   "code_accuracy": +8  // Увеличиваем точность кода на 8
+     * }
+     */
+    public Map<String, Integer> generateCustomStatChanges() {
+        Map<String, Integer> changes = new HashMap<>();
+        
+        // Уменьшаем деньги (отрицательное значение)
+        changes.put("money", -generateRandomReward(80, 120));
+        
+        // Увеличиваем различные статы (положительные значения)
+        changes.put("analytics", generateRandomReward(15, 25));
+        changes.put("optimization", generateRandomReward(10, 20));
+        changes.put("code_accuracy", generateRandomReward(8, 15));
+        changes.put("communication", generateRandomReward(5, 12));
+        changes.put("humor", generateRandomReward(3, 8));
+        
+        log.debug("ArrayListBattleService: Сгенерированы изменения статов: {}", changes);
+        return changes;
+    }
+
+    /**
      * Создает сообщение с результатом анализа от Итераториуса.
      * 
      * @param chatId — ID чата пользователя
@@ -429,4 +557,141 @@ public class ArrayListBattleService {
 
 
 
+
+
+
+    /**
+     * Отправялем ответ на кнопку вставить в начало
+     * @param chatId
+     * @return
+     */
+    public SendMessage InsertBeginning(Long chatId ){
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setParseMode("Markdown");
+        sendMessage.setText("*\uD83D\uDEA8 Вставить в начало — ва-банк!*\n" +
+                "\uD83D\uDD25 Аррейн получает урон 100(-50) — начинается частичный resize()\n" +
+                "\n" +
+                "Ты швыряешь элемент в начало списка — как камень в стеклянную крышу офиса.\n" +
+                "\n" +
+                "*АРРЕЙОН (звереет):*\n" +
+                "«Ты что, совсем страх потерял?! Я ТАК не работаю! Сейчас будет больно — тебе, мне и твоему менеджеру.»\n" +
+                "\n" +
+                "_Массив трещит, но урон  наносишь ты_");
+        return sendMessage;
+    }
+
+        /**
+     * Создает сообщение с результатом "Вставить в начало" от Итераториуса.
+     * 
+     * Этот метод применяет изменения статов:
+     * - Уменьшает деньги на фиксированную сумму (150-200)
+     * - Увеличивает очки достижения
+     * - Увеличивает один индивидуальный параметр в зависимости от типа персонажа
+     * - Сохраняет изменения в базе данных
+     *
+     * @param chatId — ID чата пользователя
+     * @param expReward — награда за опыт (не используется, оставлен для совместимости)
+     * @param cashReward — награда за деньги (не используется, оставлен для совместимости)
+     * @return SendMessage — сообщение с результатом изменений
+     */
+    public SendMessage BattleResultInsertBeginning(Long chatId, int expReward, int cashReward){
+        log.info("ArrayListBattleService: [BattleResultInsertBeginning] создание изменений статов для chatId={}", chatId);
+        
+        try {
+            // Получаем пользователя и персонажа
+            UserEntity user = userService.getUserByTgId(chatId);
+            if (user == null || user.getPersonage() == null) {
+                log.warn("ArrayListBattleService: Пользователь или персонаж не найден для chatId={}", chatId);
+                return new SendMessage(chatId.toString(), "Ошибка: персонаж не найден");
+            }
+
+            PersonageEntity entity = user.getPersonage();
+            log.info("ArrayListBattleService: Персонаж найден: {}", entity.getCharacterType());
+            
+            // Создаем изменения статов
+            Map<String, Integer> statChanges = new HashMap<>();
+            
+            // Уменьшаем деньги на фиксированную сумму (150-200)
+            int moneyChange = -generateRandomReward(150, 200);
+            statChanges.put("money", moneyChange);
+            log.info("ArrayListBattleService: Сгенерировано изменение денег: {}", moneyChange);
+            
+            // Увеличиваем очки достижения
+            int achievementChange = generateRandomReward(30, 50);
+            statChanges.put("achievement_points", achievementChange);
+            log.info("ArrayListBattleService: Сгенерировано изменение очков достижения: {}", achievementChange);
+            
+            // Увеличиваем один индивидуальный параметр в зависимости от типа персонажа
+            String characterType = entity.getCharacterType();
+            String individualStat = getIndividualStatForCharacter(characterType);
+            int individualChange = generateRandomReward(15, 25);
+            statChanges.put(individualStat, individualChange);
+            log.info("ArrayListBattleService: Сгенерировано изменение индивидуального стата {}: {}", individualStat, individualChange);
+            
+            // Применяем изменения к персонажу
+            processCustomRewards(chatId, statChanges);
+            log.info("ArrayListBattleService: Изменения применены к персонажу");
+            
+            // Создаем сообщение с результатом
+            SendMessage sendMessage = new SendMessage();
+            sendMessage.setChatId(chatId);
+            sendMessage.setParseMode("Markdown");
+            
+            // Определяем эмодзи и название в зависимости от типа персонажа
+            String individualStatInfo = "";
+            switch (individualStat) {
+                case "analytics":
+                    individualStatInfo = "📊 к Аналитике";
+                    break;
+                case "optimization":
+                    individualStatInfo = "⚙️ к Оптимизации";
+                    break;
+                case "code_accuracy":
+                    individualStatInfo = "🎯 к Точности кода";
+                    break;
+                case "communication":
+                    individualStatInfo = "💬 к Коммуникации";
+                    break;
+                default:
+                    individualStatInfo = "📊 к Аналитике";
+            }
+            
+            sendMessage.setText("*Итераториус:*\n\n" +
+                    "Смело, но немного безрассудно. Главное, чтобы прод это не увидел.\n" +
+                    "Иногда даже идиотизм — это стратегия.\n\n" +
+                    "*Навык повышен:*\n" +
+                    " +" + achievementChange + " ⭐️ к Очкам Достижения\n" +
+                    " -" + Math.abs(moneyChange) + " 💲 к Деньгам (за психотерапевта позже)\n" +
+                    " +" + individualChange + " " + individualStatInfo);
+            
+            log.info("ArrayListBattleService: [BattleResultInsertBeginning] сообщение создано для chatId={}, тип персонажа: {}, индивидуальный стат: {}", 
+                    chatId, characterType, individualStat);
+            return sendMessage;
+            
+        } catch (Exception e) {
+            log.error("ArrayListBattleService: Ошибка в BattleResultInsertBeginning для chatId={}", chatId, e);
+            return new SendMessage(chatId.toString(), "Ошибка: не удалось создать сообщение");
+        }
+    }
+
+    /**
+     * Получает индивидуальный стат для конкретного типа персонажа.
+     * 
+     * @param characterType — тип персонажа
+     * @return String — название индивидуального стата
+     */
+    private String getIndividualStatForCharacter(String characterType) {
+        switch (characterType) {
+            case "Personage1":
+                return "analytics"; // Аналитика для Personage1
+            case "Personage2":
+                return "communication"; // Коммуникация для Personage2
+            case "Personage3":
+                return "code_accuracy"; // Точность кода для Personage3
+            default:
+                log.warn("ArrayListBattleService: Неизвестный тип персонажа: {}", characterType);
+                return "analytics"; // По умолчанию аналитика
+        }
+    }
 }

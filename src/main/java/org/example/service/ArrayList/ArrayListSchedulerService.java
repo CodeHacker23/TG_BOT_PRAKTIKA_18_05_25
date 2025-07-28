@@ -199,8 +199,8 @@ public class ArrayListSchedulerService {
             log.info("ArrayListSchedulerService: Отправка ответа Итераториуса для chatId={}", chatId);
             
             // Генерируем случайные награды
-            int expReward = battleService.generateRandomReward(45, 55);
-            int cashReward = battleService.generateRandomReward(180, 220);
+            int expReward = battleService.generateRandomReward(60, 85);
+            int cashReward = battleService.generateRandomReward(250, 350);
             
             // Обрабатываем награды в базе данных
             battleService.processAnalysisRewards(chatId, expReward, cashReward);
@@ -213,6 +213,27 @@ public class ArrayListSchedulerService {
                 log.debug("ArrayListSchedulerService: Ответ Итераториуса отправлен");
             } catch (TelegramApiException e) {
                 log.error("ArrayListSchedulerService: Ошибка отправки ответа Итераториуса для chatId={}", chatId, e);
+            }
+        }, 3, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Отправляет результат "Вставить в начало" от Итераториуса через 3 секунды.
+     * 
+     * @param bot — TelegramLongPollingBot для отправки сообщений
+     * @param chatId — ID чата пользователя
+     */
+    public void sendInsertBeginningResult(TelegramLongPollingBot bot, Long chatId) {
+        scheduler.schedule(() -> {
+            log.info("ArrayListSchedulerService: Отправка результата 'Вставить в начало' для chatId={}", chatId);
+
+            try {
+                // Создаем сообщение с результатом и изменениями статов
+                SendMessage resultMessage = battleService.BattleResultInsertBeginning(chatId, 0, 0);
+                bot.execute(resultMessage);
+                log.info("ArrayListSchedulerService: Результат 'Вставить в начало' отправлен для chatId={}", chatId);
+            } catch (TelegramApiException e) {
+                log.error("ArrayListSchedulerService: Ошибка отправки результата 'Вставить в начало' для chatId={}", chatId, e);
             }
         }, 3, TimeUnit.SECONDS);
     }
