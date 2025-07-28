@@ -9,6 +9,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -94,6 +95,24 @@ public class ArrayListStory {
             log.info("ArrayListStory: Обработка команды '🔍 Уклониться и проанализировать' для chatId={}", msg.getChatId());
             battleService.processAnalysisAction(bot, msg.getChatId());
             schedulerService.answerIteratoriys(bot, msg.getChatId());
+        });
+
+        commandsMap.put("\uD83D\uDEA8 Отразить \n" +
+                "вставкой \n" +
+                " в начало",( bot, msg)->{
+            log.info("ArrayListStory: Обработка команды 'Отразить' для chatId={}", msg.getChatId());
+            
+            try {
+                // Отправляем первое сообщение
+                SendMessage firstMessage = battleService.InsertBeginning(msg.getChatId());
+                bot.execute(firstMessage);
+                log.info("ArrayListStory: Первое сообщение отправлено для chatId={}", msg.getChatId());
+                
+                // Через 3 секунды отправляем сообщение от Итераториуса с изменениями статов
+                schedulerService.sendInsertBeginningResult(bot, msg.getChatId());
+            } catch (TelegramApiException e) {
+                log.error("ArrayListStory: Ошибка отправки первого сообщения для chatId={}", msg.getChatId(), e);
+            }
         });
 
 
