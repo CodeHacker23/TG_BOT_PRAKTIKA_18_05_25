@@ -1,841 +1,656 @@
-# PROJECT_MANUAL.md
-
-## 1. Многопоточность в проекте: ScheduledExecutorService, потоки и как не словить дедлок
+# 🚀 ПОЛНЫЙ МАНУАЛ ПРОЕКТА TELEGRAM-БОТА
 
 ---
 
-### Зачем вообще нужна многопоточность в Telegram-боте?
+## 📋 СОДЕРЖАНИЕ
 
-- **Асинхронные задачи:**  
-  Например, отправка напоминаний, периодическая очистка данных, “ожидание” между действиями пользователя, таймеры для квестов.
-- **Параллельная обработка:**  
-  Если бот обслуживает много пользователей, потоки позволяют не блокировать всех из-за одного тормозящего запроса.
-- **Планирование событий:**  
-  Например, “через 5 минут после создания персонажа отправить подсказку”.
-
----
-
-### Как это делается в Java/Spring?
-
-#### ScheduledExecutorService — твой друг и потенциальный источник бессонных ночей
-
-```java
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-// Создаём пул из 2 потоков (можно больше, если ты любишь жить опасно)
-ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
-
-// Запланировать задачу через 5 секунд
-scheduler.schedule(() -> {
-    System.out.println("Время вышло! Персонаж устал ждать.");
-}, 5, TimeUnit.SECONDS);
-
-// Периодическая задача (каждые 10 минут)
-scheduler.scheduleAtFixedRate(() -> {
-    System.out.println("Проверяем, не заскучал ли кто-нибудь...");
-}, 0, 10, TimeUnit.MINUTES);
-```
+1. [Обзор проекта](#обзор-проекта)
+2. [Технологический стек](#технологический-стек)
+3. [Архитектура системы](#архитектура-системы)
+4. [Структура проекта](#структура-проекта)
+5. [Основные компоненты](#основные-компоненты)
+6. [База данных](#база-данных)
+7. [Развертывание](#развертывание)
+8. [Разработка](#разработка)
 
 ---
 
-#### Как это выглядит в Spring?
+## 🎯 ОБЗОР ПРОЕКТА
 
-- Можно создать бин с помощью `@Bean` и внедрять его в сервисы.
-- Можно использовать `@Scheduled` (Spring Boot) для периодических задач (но для этого нужен отдельный конфиг).
+### Концепция
+**Telegram-бот для изучения Java коллекций** через интерактивную RPG-игру в стиле древнего Рима. Пользователи создают персонажей-программистов и сражаются с коллекциями, изучая их особенности через игровой процесс.
 
-```java
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
+### Основные возможности:
+- ✅ **Создание персонажей** — три уникальных типа программистов
+- ✅ **Интерактивное обучение** — изучение ArrayList через боевую систему
+- ✅ **Система наград** — развитие персонажей через игровой процесс
+- ✅ **Диалоги и сюжет** — погружение в мир программирования
+- ✅ **Статистика и прогресс** — отслеживание развития персонажа
 
-@Service
-public class ReminderService {
-    // Каждые 10 минут
-    @Scheduled(fixedRate = 600_000)
-    public void sendReminders() {
-        System.out.println("Пора напомнить пользователям, что баги сами себя не найдут!");
-    }
-}
-```
-> **Внимание:** чтобы заработало, нужно включить аннотацию `@EnableScheduling` в конфиге.
+### Целевая аудитория:
+- Начинающие программисты
+- Студенты, изучающие Java
+- Любители геймификации обучения
 
 ---
 
-### Типичные грабли и чёрный юмор
+## 🛠️ ТЕХНОЛОГИЧЕСКИЙ СТЕК
 
-- **Дедлоки:**  
-  Если два потока ждут друг друга — поздравляю, ты только что написал distributed deadlock simulator.
-- **Гонки потоков:**  
-  Когда два потока одновременно меняют одного пользователя — результат может быть неожиданным, как баг в пятницу вечером.
-- **Пул потоков:**  
-  Если сделать пул из одного потока — всё будет работать, но очень медленно. Если из тысячи — твой сервер уйдёт в отпуск.
-- **Не забывай завершать пул:**  
-  `scheduler.shutdown();` — иначе твой бот будет жить в памяти вечно, как баги в старом коде.
+### Основные технологии:
 
----
+#### 1. **Java 24**
+- Современная версия Java
+- Использование новейших возможностей языка
+- Высокая производительность
 
-### Где это может пригодиться в твоём проекте?
+#### 2. **Spring Boot 3.5.0**
+- Современный фреймворк для разработки
+- Автоконфигурация и упрощенная разработка
+- Встроенная поддержка веб-приложений
 
-- **Таймеры для квестов:**  
-  Например, если пользователь не ответил в течение 5 минут — отправить ему “пинок”.
-- **Плановые рассылки:**  
-  Поздравления с праздниками, напоминания о дедлайнах, массовые уведомления.
-- **Очистка устаревших данных:**  
-  Например, удалять неактивных пользователей раз в сутки.
+#### 3. **Telegram Bots API 6.9.7.1**
+- Официальная библиотека для Telegram Bot API
+- Поддержка всех возможностей Telegram
+- Стабильная и надежная работа
 
----
+#### 4. **PostgreSQL + JPA/Hibernate**
+- Надежная реляционная база данных
+- ORM для удобной работы с данными
+- Поддержка сложных запросов
 
-### Пример из жизни проекта
+#### 5. **Lombok**
+- Уменьшение boilerplate кода
+- Автоматическая генерация методов
+- Улучшение читаемости кода
 
-> “Пользователь создал персонажа, но не ввёл имя? Через 2 минуты отправь ему мем про прокрастинацию!”
+#### 6. **SLF4J**
+- Современная система логирования
+- Гибкая настройка уровней логирования
+- Высокая производительность
 
-```java
-scheduler.schedule(() -> {
-    bot.execute(new SendMessage(chatId, "Ты ещё тут? Персонаж ждёт имя, а ты — вдохновения."));
-}, 2, TimeUnit.MINUTES);
-```
+### Дополнительные технологии:
 
----
+#### 7. **ScheduledExecutorService**
+- Планирование отложенных задач
+- Асинхронное выполнение операций
+- Управление таймерами и событиями
 
-**Если хочешь — могу показать, как внедрить это в твой проект на практике.**
-
----
-
-## 2. Spring, DI и аннотации: магия, которая работает (пока ты не лезешь руками)
-
----
-
-### Что такое Spring и зачем он вообще нужен?
-
-- **Spring** — это фреймворк, который берёт на себя всю рутину по созданию, связыванию и управлению объектами (бинами).
-- **DI (Dependency Injection, внедрение зависимостей)** — это когда ты не создаёшь объекты руками через `new`, а просто говоришь: “Spring, дай мне сервис!” — и он даёт (или не даёт, если ты накосячил с аннотациями).
-- **Зачем?** Чтобы твой код был тестируемым, расширяемым и не превращался в “God Object” с кучей new внутри.
+#### 8. **Maven**
+- Управление зависимостями
+- Сборка проекта
+- Управление жизненным циклом
 
 ---
 
-### Как это выглядит в коде?
+## 🏗️ АРХИТЕКТУРА СИСТЕМЫ
 
-```java
-@Service // Говорим Spring: “Это сервис, управляй им!”
-@RequiredArgsConstructor // Ломбук: “Сгенерируй конструктор для final-полей”
-public class UserService {
-    private final UserRepository userRepository; // Spring сам внедрит бин UserRepository
-}
-```
-
-- **@Service** — помечает класс как сервис (бин), который Spring будет создавать и внедрять.
-- **@Component** — то же самое, но более общий случай (можно для любого класса).
-- **@Repository** — для классов, которые работают с БД.
-- **@Controller** — для веб-контроллеров (в боте не используется, но вдруг пригодится).
-- **@Autowired** — если хочешь внедрять зависимости не через конструктор, а через поле (но лучше через конструктор, иначе Архитектор будет ругаться).
-- **@RequiredArgsConstructor** — от Lombok, генерирует конструктор для всех final-полей (и Spring сам всё внедрит).
-
----
-
-### Как Spring решает, что и когда создавать?
-
-- При запуске приложения Spring сканирует все классы с нужными аннотациями и создаёт для них “бины” (экземпляры).
-- Если твой сервис зависит от другого сервиса — Spring сам найдёт нужный бин и подставит его в конструктор.
-- Если где-то не хватает бина — приложение не стартует, а ты получаешь ошибку “No qualifying bean of type...”.
-
----
-
-### Жизненный цикл бина (на пальцах)
-
-1. **Spring находит класс с @Service/@Component**
-2. **Создаёт экземпляр (бин)**
-3. **Внедряет зависимости (через конструктор, поле или сеттер)**
-4. **Вызывает методы жизненного цикла (если есть)**
-5. **Отдаёт бин всем, кто его просит**
-6. **Когда приложение завершается — уничтожает бин**
-
----
-
-### Пример из проекта
-
-```java
-@Service
-@RequiredArgsConstructor
-public class StoryStartService {
-    private final UserService userService; // Spring сам внедрит бин UserService
-    // ...
-}
-```
-
-- Ты нигде не пишешь `new UserService()` — Spring сам всё сделает.
-- Если забудешь аннотацию — бин не создастся, и всё упадёт с ошибкой.
-
----
-
-### Схема (Mermaid UML)
+### Общая архитектура:
 
 ```mermaid
-classDiagram
-    class Bot
-    class StoryStartService
-    class UserService
-    class UserRepository
-    Bot --> StoryStartService : использует
-    StoryStartService --> UserService : использует
-    UserService --> UserRepository : использует
-```
-
----
-
-### Типичные грабли и чёрный юмор
-
-- **Забыл аннотацию @Service/@Component** — бин не создаётся, приложение падает, ты ищешь ошибку 2 часа.
-- **Два одинаковых бина** — Spring не знает, какой выбрать, и кидает “NoUniqueBeanDefinitionException”.
-- **Внедряешь через поле, а не через конструктор** — тестировать сложно, Архитектор негодует.
-- **Циклическая зависимость** — сервис А зависит от Б, а Б — от А. Spring впадает в ступор и падает.
-
----
-
-### FAQ
-
-- **Q: Можно ли создавать сервисы руками через new?**
-  - A: Можно, но тогда Spring не будет управлять этим объектом, и DI работать не будет. Не делай так.
-- **Q: Можно ли внедрять бин в static-поле?**
-  - A: Нет. Spring не умеет внедрять зависимости в static.
-- **Q: Как протестировать сервис?**
-  - A: Используй @MockBean или подставь мок руками, если тестируешь без Spring.
-
----
-
-_Дальше будет: архитектура, UML, FAQ, SQL — всё с примерами, схемами и юмором._ 
-
----
-
-## 3. Архитектура проекта: слои, связи и почему "всё в одном классе" — это путь в ад
-
----
-
-### Зачем вообще нужна архитектура?
-
-- Чтобы твой проект не превратился в SpaghettiCode, где никто не понимает, что происходит (даже ты через неделю).
-- Чтобы можно было легко добавлять новые фичи, не боясь, что всё сломается.
-- Чтобы баги не размножались быстрее, чем студенты на халявной пицце.
-
----
-
-### Классическая слоистая архитектура (и почему она работает)
-
-1. **Контроллеры (Bot)**
-   - Принимают входящие сообщения/команды от Telegram
-   - Ничего не знают о бизнес-логике, просто маршрутизируют запросы
-2. **Сервисы (Service, StoryStartService, UserService, PersonageCreationService и др.)**
-   - Вся бизнес-логика, правила, проверки, создание персонажей, обработка команд
-   - Если логика сложная — выноси в отдельный сервис, не бойся длинных названий
-3. **Репозитории (UserRepository)**
-   - Работа с базой данных: сохранить, найти, удалить пользователя
-   - Не должно быть никакой логики, кроме CRUD (Create, Read, Update, Delete)
-4. **Модели (UserEntity, PersonageBase, Personage1/2/3)**
-   - Просто данные, никакой логики (ну, кроме геттеров/сеттеров и toString)
-
----
-
-### Как это выглядит в твоём проекте
-
-```mermaid
-flowchart TD
-    subgraph Telegram
-        U[Пользователь]
+graph TB
+    subgraph "Telegram Layer"
+        A[Telegram Bot API]
+        B[Bot.java]
     end
-    U -->|/start, текст, кнопки| Bot
-    Bot -->|делегирует| StoryStartService
-    Bot -->|делегирует| MessageHandlerService
-    StoryStartService -->|создаёт| PersonageCreationService
-    StoryStartService -->|работает с| UserService
-    UserService -->|работает с| UserRepository
-    PersonageCreationService -->|работает с| UserService
-    UserRepository -->|читает/пишет| DB[(База данных)]
+    
+    subgraph "Application Layer"
+        C[MessageHandlerService]
+        D[StoryStartService]
+        E[ArrayListStory]
+        F[Service.java]
+    end
+    
+    subgraph "Business Logic Layer"
+        G[UserService]
+        H[PersonageService]
+        I[BattleActionService]
+        J[MessageService]
+        K[StatService]
+        L[ArrayListSchedulerService]
+        M[ArrayListTheoryService]
+    end
+    
+    subgraph "Data Layer"
+        N[UserRepository]
+        O[PersonageRepository]
+        P[(PostgreSQL)]
+    end
+    
+    A --> B
+    B --> C
+    C --> D
+    C --> E
+    C --> F
+    
+    D --> G
+    D --> H
+    E --> I
+    E --> J
+    E --> K
+    E --> L
+    E --> M
+    
+    G --> N
+    H --> O
+    N --> P
+    O --> P
+    
+    style A fill:#ff9999
+    style B fill:#99ccff
+    style C fill:#99ccff
+    style D fill:#99ff99
+    style E fill:#ffcc99
+    style F fill:#cc99ff
+    style G fill:#99ccff
+    style H fill:#99ccff
+    style I fill:#99ff99
+    style J fill:#99ff99
+    style K fill:#99ff99
+    style L fill:#99ff99
+    style M fill:#99ff99
+    style N fill:#ffcc99
+    style O fill:#ffcc99
+    style P fill:#cccccc
+```
+
+### Принципы архитектуры:
+
+#### 1. **Модульность**
+- Каждый компонент отвечает за свою область
+- Четкое разделение ответственности
+- Легкое тестирование и поддержка
+
+#### 2. **Масштабируемость**
+- Легкое добавление новых функций
+- Расширяемая архитектура
+- Поддержка новых типов персонажей
+
+#### 3. **Читаемость**
+- Понятная структура кода
+- Подробные комментарии
+- Следование принципам SOLID
+
+#### 4. **Производительность**
+- Эффективная обработка сообщений
+- Оптимизированные запросы к БД
+- Асинхронное выполнение задач
+
+---
+
+## 📁 СТРУКТУРА ПРОЕКТА
+
+### Основные пакеты:
+
+```
+src/main/java/org/example/
+├── App.java                          # Точка входа приложения
+├── Config.java                       # Конфигурация приложения
+├── MarkdownUtil.java                 # Утилиты для Markdown
+├── Service.java                      # Общие сервисы
+│
+├── bot/                              # Telegram Bot компоненты
+│   ├── Bot.java                     # Основной класс бота
+│   ├── MessageHandlerService.java    # Обработчик сообщений
+│   ├── CallbackQueryHandlerService.java # Обработчик callback
+│   └── KeyboardService/              # Клавиатуры
+│       ├── KeyboardReam.java        # Создание клавиатур
+│       └── KeyboardService.java     # Сервис клавиатур
+│
+├── model/                            # Модели данных
+│   ├── entity/                       # JPA сущности
+│   │   ├── UserEntity.java          # Пользователи
+│   │   └── PersonageEntity.java     # Персонажи
+│   └── personage/                    # Классы персонажей
+│       ├── PersonageBase.java       # Базовый класс
+│       ├── Personage1.java          # Аналитик
+│       ├── Personage2.java          # Коммуникатор
+│       └── Personage3.java          # Оптимизатор
+│
+├── repository/                       # Репозитории
+│   ├── UserRepository.java          # Репозиторий пользователей
+│   └── PersonageRepository.java     # Репозиторий персонажей
+│
+└── service/                          # Бизнес-логика
+    ├── StoryStartService.java        # Создание персонажей
+    ├── UserService.java             # Управление пользователями
+    ├── PersonageService.java        # Управление персонажами
+    ├── PersonageCreationService.java # Создание персонажей
+    ├── ArrayListStoryService.java   # Устаревший сервис
+    ├── PhotoService/                 # Работа с фото
+    │   ├── PhotoReam.java          # Создание фото
+    │   └── PhotoStart.java         # Начальные фото
+    └── ArrayList/                   # ArrayList функциональность
+        ├── ArrayListStory.java      # Фасад ArrayList
+        ├── BattleActionService.java # Боевые действия
+        ├── MessageService.java      # Создание сообщений
+        ├── StatService.java         # Управление статами
+        ├── ArrayListSchedulerService.java # Планировщик
+        └── ArrayListTheoryService.java # Теория и диалоги
+```
+
+### Ключевые файлы:
+
+#### 1. **App.java** — Точка входа
+```java
+@SpringBootApplication
+public class App {
+    public static void main(String[] args) {
+        SpringApplication.run(App.class, args);
+    }
+}
+```
+
+#### 2. **Bot.java** — Основной класс бота
+```java
+@Component
+public class Bot extends TelegramLongPollingBot {
+    @Override
+    public void onUpdateReceived(Update update) {
+        // Обработка обновлений от Telegram
+    }
+}
+```
+
+#### 3. **MessageHandlerService.java** — Маршрутизация
+```java
+@Service
+public class MessageHandlerService {
+    public void handleMessage(TelegramLongPollingBot bot, Message message) {
+        // Маршрутизация сообщений к соответствующим сервисам
+    }
+}
 ```
 
 ---
 
-### Почему "всё в одном классе" — это плохо?
+## 🔧 ОСНОВНЫЕ КОМПОНЕНТЫ
 
-- Ты не сможешь протестировать отдельные части (а значит, баги будут жить вечно)
-- Любое изменение превращается в минное поле: поменял одно — сломалось другое
-- Новые разработчики будут плакать и уходить в отпуск
-- Архитектор будет ругаться, а заказчик — платить меньше
+### 1. 🎮 StoryStartService
+**Назначение:** Создание персонажей и начальная сюжетная линия
 
----
+**Ключевые методы:**
+```java
+// Обработка команды /start
+public void handleStart(TelegramLongPollingBot bot, Message message)
 
-### Как добавлять новые фичи без боли?
+// Создание персонажа
+private void createPersonage(TelegramLongPollingBot bot, Long chatId, String characterType)
 
-- **Новая команда?** — Добавь метод в Bot, делегируй в новый сервис
-- **Новая бизнес-логика?** — Создай отдельный сервис, не бойся длинных названий
-- **Новая сущность?** — Добавь модель и репозиторий, не пихай всё в UserEntity
+// Диалоги БайтФорджа
+public static SendMessage ByteFordjProgrammer(Long chatId)
+public static SendMessage sendWhich(Long chatId)
+public static SendMessage ByteFordjParting(Long chatId)
+```
 
----
+### 2. ⚔️ ArrayListStory (фасад)
+**Назначение:** Маршрутизация команд ArrayList
 
-### Типичные грабли и чёрный юмор
+**Ключевые методы:**
+```java
+// Обработка сообщений
+public void handleMessage(TelegramLongPollingBot bot, Message message)
 
-- **Всё в одном классе:** “Зато быстро!” — через месяц: “Почему всё падает, а багов больше, чем кода?”
-- **Сервис знает про базу напрямую:** — “Я просто сохранил тут…” — через неделю: “А почему у меня NullPointerException?”
-- **Копипаста логики:** — “Ну я просто скопировал метод…” — через релиз: “Почему баги размножаются?”
+// Маршрутизация команд
+private void initializeCommands()
+```
 
----
+### 3. 📊 StatService
+**Назначение:** Управление статами персонажей
 
-### FAQ по архитектуре
+**Ключевые методы:**
+```java
+// Генерация случайных наград
+public int generateRandomReward(int min, int max)
 
-- **Q: Можно ли объединить сервис и репозиторий?**
-  - A: Можно, если хочешь страдать. Не делай так.
-- **Q: Можно ли хранить бизнес-логику в Bot?**
-  - A: Только если ты любишь дебажить по ночам.
-- **Q: Как понять, что пора выносить логику в отдельный сервис?**
-  - A: Если метод стал длиннее экрана — пора.
+// Применение изменений к персонажу
+public void applyStatChanges(Long chatId, Map<String, Integer> changes)
 
----
+// Определение индивидуальных статов
+public String getIndividualStatForCharacter(String characterType)
+```
 
-_Дальше будет: UML (диаграммы классов и взаимодействий), FAQ, SQL — всё с примерами, схемами и юмором._ 
+### 4. 💬 MessageService
+**Назначение:** Создание сообщений
 
----
+**Ключевые методы:**
+```java
+// Создание боевых сообщений
+public SendMessage createTryCatchDefenseMessage(Long chatId)
+public SendMessage createAnalysisMessage(Long chatId)
+public SendMessage createInsertBeginningMessage(Long chatId)
 
-## 4. UML: диаграммы классов и взаимодействий (чтобы не заблудиться в своём же коде)
+// Создание сообщений с результатами
+public SendMessage createTryCatchResultMessage(Long chatId, Map<String, Integer> rewards)
+public SendMessage createAnalysisResultMessage(Long chatId, int expReward, int cashReward)
+public SendMessage createInsertBeginningResultMessage(Long chatId, Map<String, Integer> statChanges)
+```
 
----
+### 5. ⚔️ BattleActionService
+**Назначение:** Обработка боевых действий
 
-### Зачем нужны UML-диаграммы?
+**Ключевые методы:**
+```java
+// Обработка боевых действий
+public void processTryCatchAction(TelegramLongPollingBot bot, Long chatId)
+public void processAnalysisAction(TelegramLongPollingBot bot, Long chatId)
+public void processInsertBeginningAction(TelegramLongPollingBot bot, Long chatId)
 
-- Чтобы быстро понять, кто с кем и как связан (и кто кого использует)
-- Чтобы объяснить новичку, как работает проект, не тратя 2 часа на “ну тут всё просто…”
-- Чтобы самому не забыть, что ты тут понаписал
+// Проверки возможности участия
+public boolean canParticipateInBattle(Long chatId)
+public Map<String, Object> getBattleStats(Long chatId)
+```
 
----
+### 6. ⏰ ArrayListSchedulerService
+**Назначение:** Планирование событий
 
-### Диаграмма классов (Class Diagram)
+**Ключевые методы:**
+```java
+// Отложенные события
+public void sendInsertBeginningResult(TelegramLongPollingBot bot, Long chatId)
+public void answerIteratoriys(TelegramLongPollingBot bot, Long chatId)
 
-```mermaid
-classDiagram
-    class Bot {
-        +onUpdateReceived(Update)
-        +getBotUsername()
-        +getBotToken()
-    }
-    class StoryStartService {
-        +photoStart(Long)
-        +handleStart(...)
-        +handleCreatePersonage(...)
-        +handleCharacterNameInput(...)
-    }
-    class UserService {
-        +saveUser(UserEntity)
-        +getUserById(Long)
-        +getUserByTgId(Long)
-        +assignPersonageToUser(Long, PersonageBase)
-    }
-    class PersonageCreationService {
-        +hasCharacter(UserEntity)
-        +startCharacterCreation(UserEntity)
-        +handleCreatePersonageRequest(Long)
-    }
-    class UserRepository
-    class UserEntity
-    class PersonageBase
-    class Personage1
-    class Personage2
-    class Personage3
+// Автоматическое удаление сообщений
+public void sendTheoryWithAutoDelete(TelegramLongPollingBot bot, Long chatId)
+```
 
-    Bot --> StoryStartService : использует
-    Bot --> UserService : использует
-    Bot --> MessageHandlerService : использует
-    StoryStartService --> UserService : использует
-    StoryStartService --> PersonageCreationService : использует
-    UserService --> UserRepository : использует
-    PersonageCreationService --> UserService : использует
-    Personage1 --|> PersonageBase
-    Personage2 --|> PersonageBase
-    Personage3 --|> PersonageBase
-    UserEntity --> PersonageBase : (логика, не связь)
+### 7. 📚 ArrayListTheoryService
+**Назначение:** Теория и диалоги
+
+**Ключевые методы:**
+```java
+// Теория ArrayList
+public String formatArrayListInfo()
+
+// Диалоги персонажей
+public SendMessage createEnemyWarningMessage(Long chatId)
+public SendMessage createEnemyIntroductionMessage(Long chatId)
+public SendMessage createEnemyAttackMessage(Long chatId)
 ```
 
 ---
 
-### Диаграмма взаимодействий (Sequence Diagram)
+## 🗄️ БАЗА ДАННЫХ
 
-> “Пользователь создаёт персонажа”
+### Схема базы данных:
 
-```mermaid
-sequenceDiagram
-    participant U as Пользователь
-    participant B as Bot
-    participant S as StoryStartService
-    participant PCS as PersonageCreationService
-    participant US as UserService
-    participant DB as БД
-
-    U->>B: Нажимает “Создать персонажа”
-    B->>S: handleCreatePersonage(...)
-    S->>PCS: handleCreatePersonageRequest(userId)
-    PCS->>US: getUserByTgId(userId)
-    US->>DB: SELECT * FROM users WHERE tg_id = ?
-    DB-->>US: UserEntity
-    US-->>PCS: UserEntity
-    PCS-->>S: CharacterCreationResult
-    S->>B: (отправить сообщение/ожидать имя)
-    U->>B: Вводит имя
-    B->>S: handleCharacterNameInput(...)
-    S->>US: saveUser(...)
-    US->>DB: UPDATE users ...
-    S->>B: (отправить карточку персонажа)
-```
-
----
-
-### Как читать эти схемы?
-
-- **classDiagram** — показывает, кто кого использует, кто от кого наследуется, какие методы есть у классов
-- **sequenceDiagram** — показывает, кто с кем общается при выполнении сценария (например, создание персонажа)
-
----
-
-### Юмор и грабли
-
-- Если твоя схема похожа на паутину — пора делать рефакторинг
-- Если не можешь объяснить схему за 2 минуты — ты её не понимаешь
-- Если в sequenceDiagram больше 10 стрелок подряд — возможно, ты пишешь новый Hibernate
-
----
-
-_Дальше будет: FAQ (типовые вопросы, грабли, советы) и SQL — всё с примерами, схемами и юмором._ 
-
----
-
-## 5. FAQ: типовые вопросы, грабли, советы (и немного чёрного юмора)
-
----
-
-### 1. Почему бот не отвечает на /start?
-- **Проверь логи:** Скорее всего, не сработал StoryStartService или не внедрился бин.
-- **Проверь аннотации:** Забыл @Service или @Component? Spring не простит.
-- **Проверь токен:** Если токен неправильный — Telegram молчит, а ты ищешь баги не там.
-
----
-
-### 2. Почему не создаётся персонаж?
-- **Пользователь уже есть в базе:** Бот не даст создать второго персонажа (жизнь — не RPG).
-- **Проверь состояние пользователя:** Должно быть "AWAITING_CHARACTER_NAME" для ввода имени.
-- **Проверь PersonageCreationService:** Логика создания и проверки персонажа именно там.
-
----
-
-### 3. Как добавить нового персонажа?
-- Создай новый класс, наследник PersonageBase (например, Personage4).
-- Добавь методы для карточки (getSendPhotoTheory и т.д.).
-- Обнови логику случайного выбора персонажа (getRandomPersonage).
-- Не забудь добавить обработку в PhotoService и StoryStartService.
-
----
-
-### 4. Как добавить новую команду?
-- Добавь обработку команды в Bot.onUpdateReceived.
-- Делегируй логику в отдельный сервис (не пихай всё в Bot).
-- Добавь кнопки в KeyboardService, если нужно.
-
----
-
-### 5. Как не угробить базу?
-- Не делай update/delete без where (иначе “прощай, данные!”).
-- Делаешь миграции — делай бэкап.
-- Не храни пароли в открытом виде (даже если это тестовый проект).
-
----
-
-### 6. Как тестировать сервисы?
-- Используй @MockBean или Mockito для подмены зависимостей.
-- Не тестируй всё через Bot — тестируй сервисы отдельно.
-- Пиши unit-тесты для бизнес-логики, а не только для “прошёл ли апдейт”.
-
----
-
-### 7. Почему всё сломалось после “маленького” рефакторинга?
-- Потому что “маленький” рефакторинг — это миф.
-- Пиши тесты, делай коммиты почаще, не бойся откатывать изменения.
-
----
-
-### 8. Как понять, что пора делать рефакторинг?
-- Если метод не помещается на экран — пора.
-- Если ты боишься трогать старый код — пора.
-- Если баги размножаются быстрее, чем ты их чинишь — пора.
-
----
-
-### 9. Как объяснить новичку, как работает проект?
-- Покажи ему этот файл (и схему выше).
-- Пусть сначала попробует добавить новую команду или персонажа.
-- Если не справился — пусть читает комментарии и логи (и не стесняется спрашивать).
-
----
-
-### 10. Как не сойти с ума?
-- Пиши комментарии (даже если кажется, что всё понятно).
-- Не бойся спрашивать и гуглить (StackOverflow — твой друг).
-- Помни: даже Архитектор когда-то был джуном.
-
----
-
-_Дальше будет: SQL (структуры таблиц, примеры запросов, советы по работе с БД)._ 
-
----
-
-## 6. SQL: структура таблиц, примеры запросов, советы по работе с БД
-
----
-
-### Пример структуры таблицы пользователей (UserEntity)
-
+#### Таблица USERS:
 ```sql
 CREATE TABLE users (
-    id BIGSERIAL PRIMARY KEY, -- внутренний ID
-    tg_id BIGINT UNIQUE NOT NULL, -- Telegram user ID
-    character_type VARCHAR(32), -- тип персонажа (Personage1, Personage2, ...)
-    character_name VARCHAR(64), -- имя персонажа
-    state VARCHAR(32), -- состояние (например, AWAITING_CHARACTER_NAME)
-    energy INT, -- энергия персонажа
-    -- добавляй новые поля, если нужно
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    tg_id BIGINT UNIQUE NOT NULL,
+    username VARCHAR(255),
+    current_story VARCHAR(255),
+    passed_array_list BOOLEAN DEFAULT FALSE,
+    state VARCHAR(255)
 );
 ```
 
----
-
-### Примеры SQL-запросов
-
-- **Добавить пользователя:**
-  ```sql
-  INSERT INTO users (tg_id, character_type, character_name, state, energy)
-  VALUES (123456789, 'Personage1', 'Вася', NULL, 8);
-  ```
-
-- **Получить пользователя по tg_id:**
-  ```sql
-  SELECT * FROM users WHERE tg_id = 123456789;
-  ```
-
-- **Обновить энергию персонажа:**
-  ```sql
-  UPDATE users SET energy = 10 WHERE tg_id = 123456789;
-  ```
-
-- **Удалить пользователя:**
-  ```sql
-  DELETE FROM users WHERE tg_id = 123456789;
-  ```
-
-- **Очистить всю таблицу (ОСТОРОЖНО!):**
-  ```sql
-  TRUNCATE TABLE users;
-  ```
-
----
-
-### Советы по работе с БД (и немного чёрного юмора)
-
-- **Делай бэкапы!** — “Я случайно удалил таблицу…” — “Ну, теперь у тебя чистый проект!”
-- **Не делай update/delete без where** — иначе “прощай, данные!”
-- **Добавляй индексы по tg_id** — иначе поиск будет медленным, как дедлайн в пятницу
-- **Не храни пароли в открытом виде** — даже если это тестовый проект
-- **Проверяй миграции на тестовой базе** — иначе сюрпризы будут не только у пользователей
-
----
-
-### Как добавить новое поле в таблицу?
-
+#### Таблица PERSONAGES:
 ```sql
-ALTER TABLE users ADD COLUMN coins INT DEFAULT 0;
-```
-- Не забудь обновить UserEntity и все сервисы, которые работают с этим полем!
-
----
-
-### Как сделать дамп и восстановить базу (PostgreSQL)?
-
-- **Сделать дамп:**
-  ```bash
-  pg_dump -U username -d dbname > backup.sql
-  ```
-- **Восстановить из дампа:**
-  ```bash
-  psql -U username -d dbname < backup.sql
-  ```
-
----
-
-### Грабли и мемы
-
-- “Я думал, что TRUNCATE — это как SELECT…” — теперь ты знаешь, что такое боль
-- “Я забыл where, но это же dev-база…” — теперь у тебя нет dev-базы
-- “Я не делал бэкап, потому что всё работало…” — теперь у тебя есть опыт
-
----
-
-_На этом блок по теории и практике закончен. Если хочешь — могу добавить примеры миграций, схемы для других сущностей или советы по оптимизации!_ 
-
----
-
-## 7. Практические наработки: отправка сообщений, викторины, расширение сюжета, миграции, оптимизация
-
----
-
-### 1. Как отправлять сообщения пользователю в боте
-
-**Текстовое сообщение:**
-```java
-SendMessage message = new SendMessage(chatId.toString(), "Привет, пользователь!");
-bot.execute(message);
-```
-
-**Сообщение с клавиатурой:**
-```java
-SendMessage message = new SendMessage(chatId.toString(), "Выбери вариант:");
-message.setReplyMarkup(KeyboardService.getStartKeyboardStatic());
-bot.execute(message);
-```
-
-**Фото:**
-```java
-SendPhoto photo = photoService.getStartPhoto(chatId);
-bot.execute(photo);
-```
-
-**Инлайн-клавиатура:**
-```java
-SendMessage message = new SendMessage(chatId.toString(), "Создать персонажа?");
-message.setReplyMarkup(KeyboardService.getCreatePersonageInlineKeyboard());
-bot.execute(message);
-```
-
----
-
-### 2. Как создавать викторины (quiz)
-
-**Пример викторины:**
-```java
-SendPoll poll = new SendPoll();
-poll.setChatId(chatId);
-poll.setQuestion("Какой метод добавляет элемент в ArrayList?");
-poll.setOptions(Arrays.asList("abb()", "insert()", "add()", "push()"));
-poll.setCorrectOptionId(2); // Индекс правильного ответа
-poll.setType("quiz");
-poll.setExplanation("Правильный ответ: add()");
-bot.execute(poll);
-```
-
-**Совет:**
-- Для каждого нового сюжета делай отдельный метод для викторины (например, getLinkedListQuiz()).
-- Не смешивай викторины разных тем в одном сервисе.
-
----
-
-### 3. Как расширять сюжет (например, LinkedListStoryService)
-
-**Пошагово:**
-1. **Создай новый класс:**
-   ```java
-   @Service
-   @RequiredArgsConstructor
-   public class LinkedListStoryService {
-       // Все методы и логика только для LinkedList!
-   }
-   ```
-2. **Добавь методы для теории, фото, викторин:**
-   - getLinkedListTheory(), getLinkedListPhotoTheory(), getLinkedListQuiz(), sendLinkedListTheory() и т.д.
-3. **Добавь клавиатуру, если нужно:**
-   - В KeyboardService сделай getLinkedListKeyboard().
-4. **В Bot/MessageHandlerService делегируй обработку новых команд в этот сервис.**
-5. **Не копипасть!** Если логика повторяется — выноси в абстрактные классы/интерфейсы.
-
-**Юмор:**
-- Если начнёшь смешивать логику ArrayList и LinkedList — Архитектор лично напишет тебе в Telegram.
-
----
-
-### 4. Примеры миграций, схемы для других сущностей, советы по оптимизации
-
-**Пример миграции (добавить поле coins):**
-```sql
-ALTER TABLE users ADD COLUMN coins INT DEFAULT 0;
-```
-
-**Схема для новой сущности (например, achievements):**
-```sql
-CREATE TABLE achievements (
-    id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT REFERENCES users(id),
-    name VARCHAR(64),
-    date_earned TIMESTAMP
+CREATE TABLE personages (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    name VARCHAR(255),
+    level INTEGER DEFAULT 0,
+    energy INTEGER DEFAULT 8,
+    achievement_points INTEGER DEFAULT 0,
+    currency DOUBLE DEFAULT 0.0,
+    character_type VARCHAR(255),
+    analytics INTEGER,
+    optimization INTEGER,
+    code_accuracy INTEGER,
+    communication INTEGER,
+    humor INTEGER,
+    deadline_resistance INTEGER,
+    status VARCHAR(255) DEFAULT 'Новобранец',
+    tg_id BIGINT,
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 ```
 
-**Советы по оптимизации:**
-- Не делай сложные join'ы без индексов — иначе база будет тормозить.
-- Для часто используемых полей (tg_id, user_id) делай индексы.
-- Не храни большие объекты (фото, файлы) в базе — лучше ссылки.
-- Периодически делай VACUUM/ANALYZE (для PostgreSQL).
-- Пиши тесты для миграций (Flyway, Liquibase).
+### JPA сущности:
 
----
-
-**Если хочешь — могу расписать примеры для других коллекций, схемы для новых таблиц, или дать советы по архитектуре под твои задачи!** 
-
----
-
-## 8. Примеры для других коллекций (Set, Map, TreeSet, HashMap и т.д.)
-
----
-
-### Set
+#### UserEntity.java:
 ```java
-Set<String> names = new HashSet<>();
-names.add("Вася");
-names.add("Петя");
-// Множество не хранит дубликаты!
+@Entity
+@Table(name = "users")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @Column(name = "tg_id", unique = true)
+    private Long tgId;
+    
+    @Column(name = "username")
+    private String username;
+    
+    @Column(name = "current_story")
+    private String currentStory;
+    
+    @Column(name = "passed_array_list")
+    private Boolean passedArrayList = false;
+    
+    @Column(name = "state")
+    private String state;
+    
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private PersonageEntity personage;
+}
 ```
 
-### HashSet
+#### PersonageEntity.java:
 ```java
-HashSet<Integer> numbers = new HashSet<>();
-numbers.add(1);
-numbers.add(2);
-numbers.add(1); // дубликат не добавится
+@Entity
+@Table(name = "personages")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class PersonageEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
+    
+    @Column(name = "name")
+    private String name;
+    
+    @Column(name = "level")
+    private Integer level = 0;
+    
+    @Column(name = "energy")
+    private Integer energy = 8;
+    
+    @Column(name = "achievement_points")
+    private Integer achievementPoints = 0;
+    
+    @Column(name = "currency")
+    private Double currency = 0.0;
+    
+    @Column(name = "character_type")
+    private String characterType;
+    
+    // Индивидуальные статы
+    @Column(name = "analytics")
+    private Integer analytics;
+    
+    @Column(name = "optimization")
+    private Integer optimization;
+    
+    @Column(name = "code_accuracy")
+    private Integer codeAccuracy;
+    
+    @Column(name = "communication")
+    private Integer communication;
+    
+    @Column(name = "humor")
+    private Integer humor;
+    
+    @Column(name = "deadline_resistance")
+    private Integer deadlineResistance;
+    
+    @Column(name = "status")
+    private String status = "Новобранец";
+    
+    @Column(name = "tg_id")
+    private Long tgId;
+}
 ```
 
-### TreeSet
+---
+
+## 🚀 РАЗВЕРТЫВАНИЕ
+
+### Требования:
+- Java 24
+- PostgreSQL 12+
+- Maven 3.6+
+
+### Конфигурация:
+
+#### application.yaml:
+```yaml
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/telegram_bot
+    username: your_username
+    password: your_password
+    driver-class-name: org.postgresql.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+telegram:
+  bot:
+    token: YOUR_BOT_TOKEN
+    username: YOUR_BOT_USERNAME
+
+logging:
+  level:
+    org.example: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+```
+
+### Запуск:
+```bash
+# Сборка проекта
+mvn clean package
+
+# Запуск приложения
+java -jar target/telegram-bot-1.0.0.jar
+```
+
+---
+
+## 👨‍💻 РАЗРАБОТКА
+
+### Добавление новой функциональности:
+
+#### 1. Создание нового сервиса:
 ```java
-TreeSet<String> sorted = new TreeSet<>();
-sorted.add("b");
-sorted.add("a");
-sorted.add("c");
-// Элементы будут отсортированы: a, b, c
+@Service
+@Slf4j
+@RequiredArgsConstructor
+public class NewService {
+    
+    private final UserService userService;
+    
+    public void newMethod(Long chatId) {
+        log.info("NewService: Выполнение нового метода для chatId={}", chatId);
+        // Логика метода
+    }
+}
 ```
 
-### Map
+#### 2. Добавление новой команды:
 ```java
-Map<Long, String> idToName = new HashMap<>();
-idToName.put(123L, "Вася");
-idToName.put(456L, "Петя");
-String name = idToName.get(123L); // Вася
+// В ArrayListStory.java
+commandsMap.put("🆕 Новая команда", (bot, msg) -> {
+    log.info("ArrayListStory: Обработка новой команды для chatId={}", msg.getChatId());
+    newService.newMethod(msg.getChatId());
+});
 ```
 
-### HashMap
+#### 3. Создание нового персонажа:
 ```java
-HashMap<String, Integer> scores = new HashMap<>();
-scores.put("Вася", 10);
-scores.put("Петя", 20);
+@Component
+public class Personage4 extends PersonageBase {
+    
+    @Override
+    public String getRomanArmorCard() {
+        // Логика карточки персонажа
+    }
+    
+    @Override
+    public String getCharacterDialogue() {
+        // Диалоги персонажа
+    }
+}
 ```
 
-### LinkedHashMap
+### Логирование:
 ```java
-LinkedHashMap<String, Integer> ordered = new LinkedHashMap<>();
-ordered.put("a", 1);
-ordered.put("b", 2);
-// Сохраняет порядок добавления
+// Разные уровни логирования
+log.debug("Отладочная информация");
+log.info("Информационное сообщение");
+log.warn("Предупреждение");
+log.error("Ошибка", exception);
 ```
 
-### TreeMap
-```java
-TreeMap<String, Integer> sortedMap = new TreeMap<>();
-sortedMap.put("b", 2);
-sortedMap.put("a", 1);
-// Ключи будут отсортированы: a, b
-```
-
----
-
-## 9. Схемы для новых таблиц (инвентарь, квесты)
-
----
-
-### Инвентарь (inventory)
-```sql
-CREATE TABLE inventory (
-    id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT REFERENCES users(id),
-    item_name VARCHAR(64),
-    quantity INT DEFAULT 1
-);
-```
-
-### Квесты (quests)
-```sql
-CREATE TABLE quests (
-    id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT REFERENCES users(id),
-    quest_name VARCHAR(128),
-    status VARCHAR(32), -- например, active, completed
-    started_at TIMESTAMP,
-    completed_at TIMESTAMP
-);
-```
-
----
-
-## 10. Советы по архитектуре и чистоте кода для расширения проекта
-
----
-- Для каждого нового сюжета — отдельный StoryService (например, LinkedListStoryService, SetStoryService)
-- Все клавиатуры — только в KeyboardService
-- Все фото — только в PhotoService
-- Все бизнес-правила — только в сервисах, не в Bot и не в сущностях
-- Для новых сущностей — отдельные репозитории
-- Не копипасть! Если логика повторяется — выноси в абстрактные классы/интерфейсы
-- Пиши комментарии и логи, даже если кажется, что всё понятно
-- Не бойся делать рефакторинг — лучше сейчас, чем когда всё сломается
-- Пиши тесты для сервисов и бизнес-логики
-
----
-
-## 11. Типичные ошибки и как их избегать (best practices, anti-patterns)
-
----
-- **Бизнес-логика в Bot:** Делегируй всё в сервисы!
-- **Огромные методы:** Разбивай на маленькие, понятные куски
-- **Дублирование кода:** Выноси общее в базу/интерфейсы
-- **Нет комментариев:** Пиши, иначе забудешь сам
-- **Нет тестов:** Пиши хотя бы простые unit-тесты
-- **Миграции без бэкапа:** Всегда делай бэкап перед ALTER/DELETE/TRUNCATE
-- **Нет индексов:** Для часто используемых полей делай индексы
-- **Смешивание логики разных коллекций:** Для каждой коллекции — свой сервис
-- **Секреты и токены в коде:** Используй переменные окружения или application.yaml
-
----
-
-## 12. Примеры unit-тестов для сервисов
-
----
-
-### Пример теста для UserService (JUnit + Mockito)
+### Тестирование:
 ```java
 @SpringBootTest
-public class UserServiceTest {
-    @MockBean
-    private UserRepository userRepository;
+class NewServiceTest {
+    
     @Autowired
-    private UserService userService;
-
+    private NewService newService;
+    
     @Test
-    public void testSaveUser() {
-        UserEntity user = new UserEntity();
-        user.setTgId(123L);
-        userService.saveUser(user);
-        verify(userRepository, times(1)).save(user);
-    }
-
-    @Test
-    public void testGetUserByTgId() {
-        UserEntity user = new UserEntity();
-        user.setTgId(123L);
-        when(userRepository.findByTgId(123L)).thenReturn(Optional.of(user));
-        UserEntity found = userService.getUserByTgId(123L);
-        assertNotNull(found);
-        assertEquals(123L, found.getTgId());
+    void testNewMethod() {
+        // Тестовая логика
     }
 }
 ```
 
 ---
 
-**Если нужны примеры для других коллекций, сервисов или тестов — пиши!** 
+## 🚀 ЗАКЛЮЧЕНИЕ
+
+### Ключевые особенности проекта:
+
+1. **Современная архитектура** — использование последних технологий
+2. **Модульность** — четкое разделение ответственности
+3. **Масштабируемость** — легко добавлять новые функции
+4. **Читаемость** — понятная структура и комментарии
+5. **Производительность** — оптимизированная работа с БД
+
+### Преимущества после рефакторинга:
+
+- ✅ **Чистая архитектура** — разделение ответственности
+- ✅ **Читаемый код** — понятная структура
+- ✅ **Поддерживаемость** — легко добавлять новые функции
+- ✅ **Тестируемость** — каждый компонент изолирован
+- ✅ **Масштабируемость** — легко расширять функциональность
+
+### Направления развития:
+
+1. **Новые коллекции** — добавление LinkedList, HashMap и др.
+2. **Расширенная система персонажей** — новые типы и способности
+3. **Мультиплеер** — взаимодействие между игроками
+4. **Система достижений** — геймификация обучения
+5. **Аналитика** — отслеживание прогресса обучения
+
+**Автор: Архитектор (который знает, что хороший проект — это как хороший дом: прочный фундамент, продуманная планировка и уютная атмосфера)** 😄 

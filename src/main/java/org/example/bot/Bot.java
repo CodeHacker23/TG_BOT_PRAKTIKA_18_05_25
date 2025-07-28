@@ -35,13 +35,8 @@ import org.example.service.ArrayListStoryService;
 public class Bot extends TelegramLongPollingBot { // класс бота
     private static final Logger log = LoggerFactory.getLogger(Bot.class);
     // Все сервисы, которые нужны боту. Если их станет больше 10 — пора делать рефакторинг.
-    private final org.example.Service service;
-    private final ArrayListStoryService arrayListStoryService;
     private final MessageHandlerService messageHandlerService;
-    private final UserService userService;
-    private final PersonageCreationService personageCreationService;
     private final StoryStartService storyStartService;
-    private final PhotoStart photoStart;
     private final CallbackQueryHandlerService callbackQueryHandlerService;
 
     /**

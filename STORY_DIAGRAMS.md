@@ -1,387 +1,529 @@
-# 📊 ДИАГРАММЫ И СХЕМЫ СЮЖЕТНОЙ ВЕТКИ
+# 📊 ДИАГРАММЫ И СХЕМЫ ПРОЕКТА
 
 ---
 
-## 🔄 ПОЛНАЯ СХЕМА ВЗАИМОДЕЙСТВИЯ
+## 📋 СОДЕРЖАНИЕ
+
+1. [Общая архитектура](#общая-архитектура)
+2. [Сюжетная линия](#сюжетная-линия)
+3. [Поток данных](#поток-данных)
+4. [Система персонажей](#система-персонажей)
+5. [Боевая система](#боевая-система)
+6. [База данных](#база-данных)
+7. [Компоненты системы](#компоненты-системы)
+
+---
+
+## 🏗️ ОБЩАЯ АРХИТЕКТУРА
+
+### Архитектура после рефакторинга:
+
+```mermaid
+graph TB
+    A[Telegram Bot] --> B[Bot.java]
+    B --> C[MessageHandlerService]
+    C --> D{Тип команды}
+    
+    D -->|/start| E[StoryStartService]
+    D -->|ArrayList команды| F[ArrayListStory]
+    D -->|Другие команды| G[Service.java]
+    
+    E --> H[PersonageCreationService]
+    E --> I[PersonageService]
+    
+    F --> J[BattleActionService]
+    F --> K[MessageService]
+    F --> L[StatService]
+    F --> M[ArrayListSchedulerService]
+    F --> N[ArrayListTheoryService]
+    
+    J --> O[UserService]
+    K --> O
+    L --> O
+    M --> O
+    
+    O --> P[(PostgreSQL)]
+    
+    style A fill:#ff9999
+    style B fill:#99ccff
+    style C fill:#99ccff
+    style E fill:#99ff99
+    style F fill:#ffcc99
+    style J fill:#ff99cc
+    style K fill:#cc99ff
+    style L fill:#99ffcc
+    style M fill:#ffcc99
+    style N fill:#ccff99
+    style P fill:#cccccc
+```
+
+---
+
+## 🎭 СЮЖЕТНАЯ ЛИНИЯ
+
+### Полный поток сюжета:
 
 ```mermaid
 flowchart TD
-    A[Пользователь: /start] --> B[БайтФордж: Приветствие]
-    B --> C[Кнопка: Создать персонажа]
-    C --> D[Выбор типа персонажа]
-    D --> E[Ввод имени персонажа]
-    E --> F[Карточка персонажа]
-    F --> G[БайтФордж с вертолетом]
-    G --> H[Кнопка: Какая?]
-    H --> I[Объяснение симуляции]
-    I --> J[Кнопка: Я готов✅]
-    J --> K[Наставление БайтФорджа]
-    K --> L[Кнопка: 🏛️ Войти во врата Рима]
-    L --> M[Фото воина]
-    M --> N[Фото Итераториуса]
-    N --> O[Кнопки: Принять доспехи / Обновить IDE]
-    O --> P[Обновление персонажа]
-    P --> Q[Сообщение от Итераториуса]
-    Q --> R[Кнопка: 📜 Получить боевой свиток]
-    R --> S[Теория ArrayList - 20 сек]
-    S --> T[Удаление теории]
-    T --> U[Предупреждение о противнике]
-    U --> V[Фото Аррейна - 5 сек]
-    V --> W[Представление Аррейна]
-    W --> X[Боевая последовательность - 4 сек]
-    X --> Y[Кнопки боевых действий]
-    Y --> Z[Результат боя]
+    A[Пользователь отправляет /start] --> B[БайтФордж приветствует]
+    B --> C[Выбор типа персонажа]
+    C --> D[Ввод имени персонажа]
+    D --> E[Создание карточки персонажа]
+    E --> F[БайтФордж объясняет симуляцию]
+    F --> G[Выбор: Войти во врата Рима]
+    G --> H[Итераториус встречает]
+    H --> I[Теория ArrayList]
+    I --> J[Кнопка: 📜 Получить боевой свиток]
+    J --> K[Теория удаляется через 20 сек]
+    K --> L[Предупреждение о противнике]
+    L --> M[Фото Аррейна]
+    M --> N[Боевая клавиатура]
+    N --> O{Выбор действия}
+    
+    O -->|🛡 Блокировать| P[Try-catch защита]
+    O -->|🔍 Анализировать| Q[Анализ противника]
+    O -->|🚨 Вставить в начало| R[Атака с риском]
+    
+    P --> S[Результат защиты]
+    Q --> T[Результат анализа]
+    R --> U[Результат атаки]
+    
+    S --> V[Награды и развитие]
+    T --> V
+    U --> V
+    
+    V --> W[Обновленная карточка персонажа]
+    W --> X[Продолжение сюжета]
+    
+    style A fill:#ff9999
+    style B fill:#99ccff
+    style C fill:#99ff99
+    style D fill:#99ff99
+    style E fill:#99ff99
+    style F fill:#99ccff
+    style G fill:#ffcc99
+    style H fill:#ffcc99
+    style I fill:#ffcc99
+    style J fill:#ffcc99
+    style K fill:#ffcc99
+    style L fill:#ffcc99
+    style M fill:#ffcc99
+    style N fill:#ffcc99
+    style O fill:#ff9999
+    style P fill:#ff99cc
+    style Q fill:#ff99cc
+    style R fill:#ff99cc
+    style S fill:#cc99ff
+    style T fill:#cc99ff
+    style U fill:#cc99ff
+    style V fill:#99ffcc
+    style W fill:#99ffcc
+    style X fill:#cccccc
 ```
 
 ---
 
-## 👥 СХЕМА ПЕРСОНАЖЕЙ
+## 📊 ПОТОК ДАННЫХ
+
+### Обработка сообщений:
 
 ```mermaid
-graph TB
-    subgraph "Главные персонажи"
-        A[БайтФордж<br/>Наставник]
-        B[Итераториус<br/>Командир]
-        C[Аррейн<br/>Противник]
-        D[Пользователь<br/>Новобранец]
-    end
-    
-    subgraph "Типы персонажей"
-        E[Personage1<br/>Кодыч - Аналитик]
-        F[Personage2<br/>Флой - Коммуникатор]
-        G[Personage3<br/>Оптимизатор - Технарь]
-    end
-    
-    A --> B
-    B --> C
-    D --> E
-    D --> F
-    D --> G
+sequenceDiagram
+    participant U as Пользователь
+    participant T as Telegram
+    participant B as Bot.java
+    participant M as MessageHandlerService
+    participant S as StoryStartService
+    participant A as ArrayListStory
+    participant BA as BattleActionService
+    participant MS as MessageService
+    participant SS as StatService
+    participant DB as PostgreSQL
+
+    U->>T: Отправляет сообщение
+    T->>B: Update
+    B->>M: handleMessage()
+    M->>S: Обработка /start
+    S->>DB: Создание персонажа
+    DB-->>S: Подтверждение
+    S->>T: Ответ пользователю
+    T-->>U: Сообщение
+
+    U->>T: Нажимает кнопку ArrayList
+    T->>B: Update
+    B->>M: handleMessage()
+    M->>A: Обработка ArrayList команды
+    A->>BA: processAction()
+    BA->>MS: createMessage()
+    BA->>SS: generateRewards()
+    SS->>DB: Обновление статов
+    DB-->>SS: Подтверждение
+    BA->>T: Отправка результата
+    T-->>U: Сообщение с наградами
 ```
 
 ---
 
-## ⚔️ СХЕМА БОЕВОЙ СИСТЕМЫ
+## 👥 СИСТЕМА ПЕРСОНАЖЕЙ
+
+### Иерархия персонажей:
+
+```mermaid
+classDiagram
+    class PersonageBase {
+        <<abstract>>
+        +String name
+        +Integer level
+        +Integer energy
+        +Integer achievementPoints
+        +Double currency
+        +String characterType
+        +getRomanArmorCard() String
+        +getCharacterDialogue() String
+    }
+    
+    class Personage1 {
+        +String name
+        +Integer analytics
+        +Integer deadlineResistance
+        +getRomanArmorCard() String
+        +getCharacterDialogue() String
+    }
+    
+    class Personage2 {
+        +String name
+        +Integer codeAccuracy
+        +Integer communication
+        +getRomanArmorCard() String
+        +getCharacterDialogue() String
+    }
+    
+    class Personage3 {
+        +String name
+        +Integer codeAccuracy
+        +Integer optimization
+        +getRomanArmorCard() String
+        +getCharacterDialogue() String
+    }
+    
+    PersonageBase <|-- Personage1
+    PersonageBase <|-- Personage2
+    PersonageBase <|-- Personage3
+```
+
+### Статы персонажей:
 
 ```mermaid
 graph LR
-    subgraph "Боевые действия"
-        A[🛡 Блокировать<br/>try-catch]
-        B[🔍 Анализировать]
-        C[📝 Вставить в начало]
-    end
+    A[Персонаж] --> B[Базовые статы]
+    A --> C[Индивидуальные статы]
     
-    subgraph "Результаты"
-        D[+53 ⭐️ +251 💲<br/>ArrayIndexOutOfBoundsException]
-        E[+45 ⭐️ +180 💲<br/>Понял слабость]
-        F[+38 ⭐️ +120 💲<br/>Дорогая операция]
-    end
+    B --> D[🏆 Level]
+    B --> E[⚡ Энергия]
+    B --> F[⭐ Очки достижения]
+    B --> G[💲 Деньги]
     
-    A --> D
-    B --> E
-    C --> F
+    C --> H[Personage1: 📊 Аналитика]
+    C --> I[Personage1: ⌚ Сопротивление дедлайну]
+    C --> J[Personage2: 🔍 Точность кода]
+    C --> K[Personage2: 💬 Коммуникация]
+    C --> L[Personage3: 🔍 Точность кода]
+    C --> M[Personage3: ⚙️ Оптимизация]
+    
+    style A fill:#ff9999
+    style B fill:#99ccff
+    style C fill:#99ff99
 ```
 
 ---
 
-## 🕐 СХЕМА ТАЙМЕРОВ
+## ⚔️ БОЕВАЯ СИСТЕМА
 
-```mermaid
-gantt
-    title Схема таймеров ArrayList
-    dateFormat  X
-    axisFormat %s сек
-    
-    section Теория
-    Отправка теории    :0, 0, 1
-    Удаление теории    :20, 20, 1
-    
-    section Противник
-    Предупреждение     :20, 20, 1
-    Фото Аррейна      :25, 25, 1
-    Представление      :25, 25, 1
-    
-    section Бой
-    Боевая последовательность :29, 29, 1
-```
-
----
-
-## 🎮 СХЕМА КНОПОК И ИНТЕРФЕЙСА
+### Боевые действия:
 
 ```mermaid
 graph TD
-    subgraph "Основные кнопки"
-        A[Создать персонажа]
-        B[Какая?]
-        C[Я готов✅]
-        D[🏛️ Войти во врата Рима]
-        E[Принять доспехи ⚔️]
-        F[📜 Получить боевой свиток]
-    end
+    A[Боевая клавиатура] --> B{Выбор действия}
     
-    subgraph "Боевые кнопки"
-        G[🛡 Блокировать try-catch]
-        H[🔍 Анализировать]
-        I[📝 Вставить в начало]
-    end
+    B -->|🛡 Блокировать| C[Try-catch защита]
+    B -->|🔍 Анализировать| D[Анализ противника]
+    B -->|🚨 Вставить в начало| E[Атака с риском]
     
-    subgraph "Альтернативные пути"
-        J[❌ Сбежать от компиляции]
-        K[Я лучше пойду обновлю IDE]
-        L[🔄 Вернуться и скомпилироваться]
-    end
-    
-    A --> B
-    B --> C
-    C --> D
-    D --> E
+    C --> F[Генерация наград]
+    D --> F
     E --> F
-    F --> G
-    F --> H
-    F --> I
-    C --> J
-    C --> K
-    J --> L
+    
+    F --> G[Стандартные награды]
+    F --> H[Кастомные награды]
+    F --> I[Индивидуальные статы]
+    
+    G --> J[⭐ Очки достижения]
+    G --> K[💲 Деньги]
+    
+    H --> L[💲 Деньги уменьшаются]
+    H --> M[⭐ Очки достижения растут]
+    
+    I --> N[Personage1: 📊 Аналитика]
+    I --> O[Personage2: 💬 Коммуникация]
+    I --> P[Personage3: ⚙️ Оптимизация]
+    
+    J --> Q[Применение к персонажу]
+    K --> Q
+    L --> Q
+    M --> Q
+    N --> Q
+    O --> Q
+    P --> Q
+    
+    Q --> R[Обновленная карточка]
+    R --> S[Сообщение с результатом]
+    
+    style A fill:#ff9999
+    style B fill:#ffcc99
+    style C fill:#ff99cc
+    style D fill:#ff99cc
+    style E fill:#ff99cc
+    style F fill:#cc99ff
+    style G fill:#99ffcc
+    style H fill:#99ffcc
+    style I fill:#99ffcc
+    style Q fill:#ccff99
+    style R fill:#ccff99
+    style S fill:#ccff99
 ```
 
----
-
-## 🏗️ АРХИТЕКТУРНАЯ СХЕМА
-
-```mermaid
-graph TB
-    subgraph "Входная точка"
-        A[Bot.onUpdateReceived]
-    end
-    
-    subgraph "Маршрутизация"
-        B[MessageHandlerService]
-    end
-    
-    subgraph "Сюжетные сервисы"
-        C[StoryStartService]
-        D[ArrayListStory]
-        E[Service]
-    end
-    
-    subgraph "Специализированные сервисы"
-        F[ArrayListTheoryService]
-        G[ArrayListBattleService]
-        H[ArrayListSchedulerService]
-        I[PersonageCreationService]
-        J[UserService]
-    end
-    
-    subgraph "Модели"
-        K[Personage1]
-        L[Personage2]
-        M[Personage3]
-        N[UserEntity]
-        O[PersonageEntity]
-    end
-    
-    A --> B
-    B --> C
-    B --> D
-    B --> E
-    D --> F
-    D --> G
-    D --> H
-    C --> I
-    C --> J
-    I --> K
-    I --> L
-    I --> M
-    J --> N
-    I --> O
-```
-
----
-
-## 📊 СХЕМА ПРОГРЕССА ПЕРСОНАЖА
+### Система наград:
 
 ```mermaid
 graph LR
-    subgraph "Начальные характеристики"
-        A[🏆 Level: 0]
-        B[⚡ Энергия: 8]
-        C[⭐ Очки: 0]
-        D[💲 Деньги: 0]
-    end
+    A[Действие игрока] --> B{Тип награды}
     
-    subgraph "После доспехов"
-        E[🏆 Level: 1]
-        F[⚡ Энергия: 8]
-        G[⭐ Очки: 50]
-        H[💲 Деньги: 450]
-    end
+    B -->|Стандартная| C[Опыт + Деньги]
+    B -->|Кастомная| D[Деньги - Опыт +]
+    B -->|Индивидуальная| E[Спец. стат +]
     
-    subgraph "Уникальные характеристики"
-        I[Personage1: Аналитика 110→133-149]
-        J[Personage2: Коммуникация 120→143-159]
-        K[Personage3: Оптимизация 160→183-199]
-    end
+    C --> F[generateStandardRewards()]
+    D --> G[generateCustomStatChanges()]
+    E --> H[getIndividualStatForCharacter()]
     
-    A --> E
-    B --> F
-    C --> G
-    D --> H
-    I --> I
-    J --> J
-    K --> K
+    F --> I[applyStatChanges()]
+    G --> I
+    H --> I
+    
+    I --> J[Обновление в БД]
+    J --> K[Отображение результата]
+    
+    style A fill:#ff9999
+    style B fill:#ffcc99
+    style C fill:#99ffcc
+    style D fill:#99ffcc
+    style E fill:#99ffcc
+    style F fill:#cc99ff
+    style G fill:#cc99ff
+    style H fill:#cc99ff
+    style I fill:#ffcc99
+    style J fill:#99ccff
+    style K fill:#ccff99
 ```
 
 ---
 
-## 🎯 СХЕМА СЮЖЕТНЫХ ВЕТОК
+## 🗄️ БАЗА ДАННЫХ
+
+### ER-диаграмма:
 
 ```mermaid
-graph TD
-    A[Создание персонажа] --> B[Путь программиста]
-    B --> C[ArrayList]
+erDiagram
+    USERS {
+        bigint id PK
+        bigint tg_id UK
+        varchar username
+        varchar current_story
+        boolean passed_array_list
+        varchar state
+    }
     
-    B --> D[Альтернатива 1: Сбежать]
-    B --> E[Альтернатива 2: Обновить IDE]
+    PERSONAGES {
+        bigint id PK
+        bigint user_id FK
+        varchar name
+        integer level
+        integer energy
+        integer achievement_points
+        double currency
+        varchar character_type
+        integer analytics
+        integer optimization
+        integer code_accuracy
+        integer communication
+        integer humor
+        integer deadline_resistance
+        varchar status
+        bigint tg_id
+    }
     
-    D --> F[Вернуться]
-    E --> G[К чёрту NetBeans]
+    USERS ||--o{ PERSONAGES : has
+```
+
+### Схема таблиц:
+
+```mermaid
+graph TB
+    subgraph "Таблица USERS"
+        A1[id - bigint PK]
+        A2[tg_id - bigint UK]
+        A3[username - varchar]
+        A4[current_story - varchar]
+        A5[passed_array_list - boolean]
+        A6[state - varchar]
+    end
     
+    subgraph "Таблица PERSONAGES"
+        B1[id - bigint PK]
+        B2[user_id - bigint FK]
+        B3[name - varchar]
+        B4[level - integer]
+        B5[energy - integer]
+        B6[achievement_points - integer]
+        B7[currency - double]
+        B8[character_type - varchar]
+        B9[analytics - integer]
+        B10[optimization - integer]
+        B11[code_accuracy - integer]
+        B12[communication - integer]
+        B13[humor - integer]
+        B14[deadline_resistance - integer]
+        B15[status - varchar]
+        B16[tg_id - bigint]
+    end
+    
+    A1 -.->|1:N| B2
+    
+    style A1 fill:#ff9999
+    style A2 fill:#ff9999
+    style B1 fill:#99ccff
+    style B2 fill:#99ccff
+```
+
+---
+
+## 🔧 КОМПОНЕНТЫ СИСТЕМЫ
+
+### Архитектура сервисов:
+
+```mermaid
+graph TB
+    subgraph "Основные сервисы"
+        A[StoryStartService]
+        B[ArrayListStory]
+        C[UserService]
+        D[PersonageService]
+    end
+    
+    subgraph "ArrayList сервисы"
+        E[BattleActionService]
+        F[MessageService]
+        G[StatService]
+        H[ArrayListSchedulerService]
+        I[ArrayListTheoryService]
+    end
+    
+    subgraph "Вспомогательные сервисы"
+        J[PersonageCreationService]
+        K[PhotoService]
+        L[KeyboardService]
+    end
+    
+    A --> C
+    A --> D
+    A --> J
+    
+    B --> E
+    B --> F
+    B --> G
+    B --> H
+    B --> I
+    
+    E --> C
     F --> C
     G --> C
     
-    C --> H[Теория]
-    C --> I[Бой]
+    H --> F
+    H --> G
     
-    H --> I
-    I --> J[Результат]
+    style A fill:#ff9999
+    style B fill:#ff9999
+    style C fill:#99ccff
+    style D fill:#99ccff
+    style E fill:#99ff99
+    style F fill:#99ff99
+    style G fill:#99ff99
+    style H fill:#99ff99
+    style I fill:#99ff99
+    style J fill:#ffcc99
+    style K fill:#ffcc99
+    style L fill:#ffcc99
 ```
 
----
-
-## 💬 СХЕМА ДИАЛОГОВ
+### Поток обработки команд:
 
 ```mermaid
-graph LR
-    subgraph "БайтФордж"
-        A["Приветствие<br/>Создание персонажа"]
-        B["Объяснение симуляции<br/>Римская проекция"]
-        C["Наставление<br/>Каждая структура - инструмент"]
-    end
+flowchart LR
+    A[Telegram Update] --> B[Bot.java]
+    B --> C[MessageHandlerService]
+    C --> D{Тип команды}
     
-    subgraph "Итераториус"
-        D["Введение в ArrayList<br/>Не дай простоте обмануть"]
-        E["Предупреждение о противнике<br/>Аррейн приближается"]
-        F["Боевые подсказки<br/>Реагируй быстро"]
-    end
+    D -->|/start| E[StoryStartService]
+    D -->|ArrayList| F[ArrayListStory]
+    D -->|Другие| G[Service.java]
     
-    subgraph "Аррейн"
-        G["Представление<br/>Я чертов ArrayList"]
-        H["Боевые вызовы<br/>ПИЗ''Ц как сложно"]
-    end
+    E --> H[Создание персонажа]
+    E --> I[Диалоги БайтФорджа]
     
-    A --> B
-    B --> C
-    C --> D
-    D --> E
-    E --> F
-    G --> H
+    F --> J[Маршрутизация команд]
+    J --> K[BattleActionService]
+    J --> L[MessageService]
+    J --> M[StatService]
+    J --> N[ArrayListSchedulerService]
+    
+    K --> O[Обработка действий]
+    L --> P[Создание сообщений]
+    M --> Q[Генерация наград]
+    N --> R[Планирование событий]
+    
+    O --> S[Обновление БД]
+    P --> T[Отправка сообщений]
+    Q --> S
+    R --> T
+    
+    style A fill:#ff9999
+    style B fill:#99ccff
+    style C fill:#99ccff
+    style E fill:#99ff99
+    style F fill:#ffcc99
+    style G fill:#cc99ff
+    style S fill:#99ccff
+    style T fill:#99ccff
 ```
 
 ---
 
-## 🎮 СХЕМА ИГРОВОГО ПРОЦЕССА
+## 🚀 ЗАКЛЮЧЕНИЕ
 
-```mermaid
-graph TD
-    subgraph "Этап 1: Создание"
-        A[Выбор персонажа]
-        B[Ввод имени]
-        C[Карточка персонажа]
-    end
-    
-    subgraph "Этап 2: Введение"
-        D[БайтФордж с вертолетом]
-        E[Объяснение симуляции]
-        F[Наставление]
-    end
-    
-    subgraph "Этап 3: ArrayList"
-        G[Вход в мир ArrayList]
-        H[Обновление персонажа]
-        I[Теория с таймером]
-        J[Бой с противником]
-    end
-    
-    A --> B
-    B --> C
-    C --> D
-    D --> E
-    E --> F
-    F --> G
-    G --> H
-    H --> I
-    I --> J
-```
+### Ключевые особенности архитектуры:
 
----
+1. **Модульность** — каждый сервис отвечает за свою область
+2. **Масштабируемость** — легко добавлять новые функции
+3. **Читаемость** — понятная структура и разделение ответственности
+4. **Тестируемость** — изолированные компоненты
+5. **Производительность** — эффективная обработка команд
 
-## 📈 СХЕМА СТАТИСТИК
+### Преимущества после рефакторинга:
 
-```mermaid
-graph TB
-    subgraph "Базовые характеристики"
-        A[🏆 Level]
-        B[⚡ Энергия]
-        C[⭐ Очки достижения]
-        D[💲 Деньги]
-    end
-    
-    subgraph "Уникальные характеристики"
-        E[Personage1: Аналитика]
-        F[Personage2: Коммуникация]
-        G[Personage3: Оптимизация]
-    end
-    
-    subgraph "Бонусы за действия"
-        H[try-catch: +53⭐ +251💲]
-        I[Анализ: +45⭐ +180💲]
-        J[Вставка: +38⭐ +120💲]
-    end
-    
-    A --> H
-    A --> I
-    A --> J
-    B --> H
-    B --> I
-    B --> J
-    C --> H
-    C --> I
-    C --> J
-    D --> H
-    D --> I
-    D --> J
-```
+- ✅ **Чистая архитектура** — разделение ответственности
+- ✅ **Читаемый код** — понятная структура
+- ✅ **Поддерживаемость** — легко добавлять новые функции
+- ✅ **Тестируемость** — каждый компонент изолирован
+- ✅ **Масштабируемость** — легко расширять функциональность
 
----
-
-## 🎯 ЗАКЛЮЧЕНИЕ
-
-Эти диаграммы показывают:
-
-1. **Полный поток взаимодействия** — от /start до результата боя
-2. **Архитектуру персонажей** — типы и их особенности
-3. **Боевую систему** — действия и их результаты
-4. **Временную схему** — таймеры и последовательность событий
-5. **Интерфейс** — все кнопки и их назначение
-6. **Техническую архитектуру** — компоненты и их связи
-7. **Систему прогресса** — развитие персонажа
-8. **Сюжетные ветки** — альтернативные пути
-9. **Диалоги** — реплики персонажей
-10. **Игровой процесс** — этапы прохождения
-
-Все схемы созданы для наглядного понимания сложной сюжетной ветки бота и могут использоваться для:
-- **Разработки** — понимание архитектуры
-- **Тестирования** — проверка всех путей
-- **Документации** — объяснение пользователям
-- **Расширения** — добавление новых веток 
+**Автор: Архитектор (который знает, что хорошая диаграмма — это как хорошая карта: показывает путь и не дает заблудиться)** 😄 
