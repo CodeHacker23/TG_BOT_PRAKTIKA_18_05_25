@@ -22,20 +22,29 @@ import java.util.function.BiConsumer;
  * <p>
  * Этот класс отвечает за:
  * - Маршрутизацию команд пользователя к соответствующим сервисам
- * - Делегирование обработки в специализированные сервисы
+ * - Прямую обработку боевых действий (try-catch, анализ, вставка)
  * - Управление жизненным циклом изучения ArrayList
+ * - Координацию между различными сервисами
  * <p>
  * Связи с другими классами:
  * - Использует ArrayListTheoryService для работы с теорией и контентом
- * - Использует ArrayListBattleService для боевых действий
  * - Использует ArrayListSchedulerService для планирования событий
+ * - Использует MessageService для создания сообщений
+ * - Использует StatService для работы со статами персонажей
+ * - Использует UserService для работы с пользователями
  * - Интегрируется с MessageHandlerService для получения команд
  * <p>
  * Принцип работы:
  * 1. Получает команду от MessageHandlerService
  * 2. Проверяет, может ли обработать команду
- * 3. Делегирует обработку в соответствующий сервис
- * 4. Логирует все действия для отладки
+ * 3. Выполняет прямую обработку боевых действий
+ * 4. Координирует работу других сервисов
+ * 5. Логирует все действия для отладки
+ * <p>
+ * Боевые действия обрабатываются напрямую:
+ * - "🛡 Блокировать (try-catch)" — защита с наградами
+ * - "🔍 Уклониться и проанализировать" — анализ с наградами
+ * - "📜 Получить боевой свиток" — запуск теории с автоудалением
  * <p>
  * Автор: Архитектор (который знает, что маршрутизация — это искусство)
  * <p>
@@ -44,7 +53,7 @@ import java.util.function.BiConsumer;
  * @Autowired private ArrayListStory arrayListStory;
  * <p>
  * if (arrayListStory.canHandle(text)) {
- * arrayListStory.handle(bot, message);
+ *     arrayListStory.handle(bot, message);
  * }
  */
 @RequiredArgsConstructor
@@ -54,7 +63,6 @@ public class ArrayListStory {
 
     // Специализированные сервисы для разных аспектов ArrayList
     private final ArrayListTheoryService theoryService;
-    private final ArrayListBattleService battleService;
     private final ArrayListSchedulerService schedulerService;
     private final MessageService messageService;
     private final StatService statService;
@@ -225,6 +233,8 @@ public class ArrayListStory {
                         log.error("ArrayListStory: Ошибка отправки результата вставки для chatId={}", msg.getChatId(), e);
                     }
                 }, 5);
+
+
 
             } catch (TelegramApiException e) {
                 log.error("ArrayListStory: Ошибка отправки сообщения о вставке для chatId={}", msg.getChatId(), e);

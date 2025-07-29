@@ -17,19 +17,21 @@ import java.util.concurrent.TimeUnit;
 import java.util.Map;
 
 /**
- * ArrayListSchedulerService — сервис для управления планировщиком задач в изучении ArrayList.
+ * ArrayListSchedulerService — универсальный сервис для планирования задач в Telegram боте.
  * <p>
  * Этот класс отвечает за:
  * - Автоматическое удаление сообщений через заданное время
  * - Последовательное выполнение событий с задержками
- * - Планирование отправки фото и сообщений
+ * - Создание сложных сценариев с множественными событиями
  * - Управление временными интервалами в игровом процессе
+ * - Планирование отправки фото и сообщений
  * <p>
  * Связи с другими классами:
  * - Используется в ArrayListStory для планирования событий
  * - Работает с ArrayListTheoryService для получения контента
- * - Использует ArrayListBattleService для боевых действий
  * - Интегрируется с PhotoReam для отправки изображений
+ * - Использует MessageService для создания сообщений
+ * - Использует StatService для работы со статами
  * <p>
  * Принцип работы:
  * 1. Пользователь запрашивает теорию
@@ -37,14 +39,28 @@ import java.util.Map;
  * 3. После удаления запускается последовательность событий
  * 4. Каждое событие планируется с определенной задержкой
  * <p>
+ * Универсальные методы для разработки:
+ * - scheduleEvent() — планирование одного события
+ * - scheduleMessage() — планирование отправки сообщения
+ * - scheduleMessageDeletion() — планирование удаления сообщения
+ * - createEventSequence() — создание сложных последовательностей
+ * <p>
  * Автор: Архитектор (который знает, что время — это не просто переменная)
  * <p>
  * Пример использования:
  *
  * @Autowired private ArrayListSchedulerService schedulerService;
  * <p>
- * schedulerService.sendTheoryWithAutoDelete(bot, chatId);
+ * // Простое планирование
  * schedulerService.scheduleEvent(bot, chatId, () -> sendMessage(bot, chatId), 5);
+ * <p>
+ * // Сложная последовательность
+ * ScheduledEvent[] sequence = {
+ *     new ScheduledEvent(() -> sendWarning(bot, chatId), 0),
+ *     new ScheduledEvent(() -> sendEnemyPhoto(bot, chatId), 3),
+ *     new ScheduledEvent(() -> sendAttack(bot, chatId), 6)
+ * };
+ * schedulerService.createEventSequence(bot, chatId, sequence);
  */
 @Slf4j
 @Service
@@ -244,8 +260,23 @@ public class ArrayListSchedulerService {
         }, delaySeconds, TimeUnit.SECONDS);
     }
 
+
     /**
      * Планирует удаление сообщения через заданное количество секунд.
+     * <p>
+     * Этот метод полезен для:
+     * - Автоматического удаления временных сообщений
+     * - Создания эффекта "самоуничтожающихся" сообщений
+     * - Очистки чата от устаревшей информации
+     * <p>
+     * Пример использования:
+     * 
+     * // Отправляем сообщение и сразу планируем его удаление
+     * SendMessage tempMessage = new SendMessage(chatId, "Временное сообщение");
+     * Message sentMsg = bot.execute(tempMessage);
+     * schedulerService.scheduleMessageDeletion(bot, chatId, sentMsg.getMessageId(), 10);
+     * 
+     * // Через 10 секунд сообщение автоматически удалится
      *
      * @param bot          — TelegramLongPollingBot для удаления сообщений
      * @param chatId       — ID чата
@@ -268,13 +299,25 @@ public class ArrayListSchedulerService {
         }, delaySeconds, TimeUnit.SECONDS);
     }
 
-
-
     /**
-     * Создает последовательность событий с заданными интервалами.
+     * Создает сложную последовательность событий с заданными интервалами.
      * <p>
-     * Этот метод позволяет создать сложную последовательность событий,
-     * где каждое событие выполняется через определенный интервал.
+     * Этот метод позволяет создавать сложные сценарии с множественными событиями.
+     * Каждое событие выполняется через определенный интервал от начала последовательности.
+     * <p>
+     * Пример использования:
+     * 
+     * // Создаем последовательность событий для боевой сцены
+     * ScheduledEvent[] battleSequence = {
+     *     new ScheduledEvent(() -> sendWarning(bot, chatId), 0),      // Сразу
+     *     new ScheduledEvent(() -> sendEnemyPhoto(bot, chatId), 3),    // Через 3 сек
+     *     new ScheduledEvent(() -> sendAttack(bot, chatId), 6),        // Через 6 сек
+     *     new ScheduledEvent(() -> sendResult(bot, chatId), 9)         // Через 9 сек
+     * };
+     * 
+     * schedulerService.createEventSequence(bot, chatId, battleSequence);
+     * 
+     * // Все события выполнятся автоматически с нужными интервалами
      *
      * @param bot    — TelegramLongPollingBot для отправки сообщений
      * @param chatId — ID чата пользователя
@@ -300,6 +343,19 @@ public class ArrayListSchedulerService {
      * <p>
      * Этот метод должен вызываться при завершении работы приложения
      * для корректного освобождения ресурсов планировщика.
+     * <p>
+     * Пример использования:
+     * 
+     * // В @PreDestroy методе или при завершении приложения
+     * @PreDestroy
+     * public void cleanup() {
+     *     schedulerService.shutdown();
+     * }
+     * 
+     * // Или при получении сигнала завершения
+     * Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+     *     schedulerService.shutdown();
+     * }));
      */
     public void shutdown() {
         log.info("ArrayListSchedulerService: Остановка планировщика");
@@ -319,22 +375,60 @@ public class ArrayListSchedulerService {
      * <p>
      * Этот класс инкапсулирует событие и его задержку для использования
      * в методах создания последовательностей событий.
+     * <p>
+     * Пример создания события:
+     * 
+     * ScheduledEvent event = new ScheduledEvent(() -> {
+     *     try {
+     *         SendMessage message = new SendMessage(chatId, "Привет!");
+     *         bot.execute(message);
+     *     } catch (TelegramApiException e) {
+     *         log.error("Ошибка отправки", e);
+     *     }
+     * }, 5); // Выполнится через 5 секунд
+     * 
+     * // Использование в последовательности:
+     * ScheduledEvent[] events = {
+     *     new ScheduledEvent(() -> sendMessage1(bot, chatId), 0),
+     *     new ScheduledEvent(() -> sendMessage2(bot, chatId), 3),
+     *     new ScheduledEvent(() -> sendMessage3(bot, chatId), 6)
+     * };
+     * 
+     * schedulerService.createEventSequence(bot, chatId, events);
      */
     public static class ScheduledEvent {
         private final Runnable event;
         private final int delaySeconds;
 
+        /**
+         * Создает новое запланированное событие.
+         * 
+         * @param event — лямбда-функция для выполнения
+         * @param delaySeconds — задержка в секундах от начала последовательности
+         */
         public ScheduledEvent(Runnable event, int delaySeconds) {
             this.event = event;
             this.delaySeconds = delaySeconds;
         }
 
+        /**
+         * Выполняет событие.
+         * 
+         * @param bot — TelegramLongPollingBot для отправки сообщений
+         * @param chatId — ID чата пользователя
+         */
         public void execute(TelegramLongPollingBot bot, Long chatId) {
             event.run();
         }
 
+        /**
+         * Получает задержку события в секундах.
+         * 
+         * @return int — задержка в секундах
+         */
         public int getDelaySeconds() {
             return delaySeconds;
         }
     }
+
 } 

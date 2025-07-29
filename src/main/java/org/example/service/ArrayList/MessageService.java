@@ -12,18 +12,32 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import java.util.Map;
 
 /**
- * MessageService — сервис для создания сообщений в ArrayList истории.
+ * MessageService — универсальный сервис для создания сообщений в Telegram боте.
  * <p>
  * Этот класс отвечает за:
- * - Создание боевых сообщений
- * - Создание сообщений с результатами
- * - Создание сообщений с наградами
- * - Форматирование текста сообщений
+ * - Создание боевых сообщений (try-catch, анализ, вставка)
+ * - Создание сообщений с результатами и наградами
+ * - Создание сообщений с изменениями статов персонажей
+ * - Форматирование текста сообщений с Markdown
+ * - Создание сообщений с клавиатурами
  * <p>
- * Зачем нужен:
- * - Вынес логику создания сообщений из огромного ArrayListBattleService
- * - Централизованное создание всех типов сообщений
- * - Единообразное форматирование
+ * Связи с другими классами:
+ * - Использует UserService для получения данных пользователей
+ * - Использует StatService для работы со статами персонажей
+ * - Интегрируется с KeyboardReam для создания клавиатур
+ * - Используется в ArrayListStory для создания сообщений
+ * <p>
+ * Типы создаваемых сообщений:
+ * - Боевые действия (защита, анализ, вставка)
+ * - Результаты с наградами (опыт, деньги, индивидуальные статы)
+ * - Информационные сообщения (атака, завершение раунда)
+ * - Сообщения с клавиатурами для взаимодействия
+ * <p>
+ * Форматирование:
+ * - Использует Markdown для жирного текста (*текст*)
+ * - Использует курсив для описаний (_текст_)
+ * - Использует код-блоки для примеров (```код```)
+ * - Добавляет эмодзи для визуального оформления
  * <p>
  * Автор: Архитектор (который знает, что сообщения без логики — это просто текст)
  * <p>
@@ -31,7 +45,15 @@ import java.util.Map;
  *
  * @Autowired private MessageService messageService;
  * <p>
- * SendMessage result = messageService.createBattleResult(chatId, expReward, cashReward);
+ * // Создание боевого сообщения
+ * SendMessage defense = messageService.createTryCatchDefenseMessage(chatId);
+ * <p>
+ * // Создание результата с наградами
+ * SendMessage result = messageService.createBattleResultMessage(chatId, 50, 200);
+ * <p>
+ * // Создание сообщения с изменениями статов
+ * Map<String, Integer> changes = Map.of("achievement_points", 30, "currency", 150);
+ * SendMessage stats = messageService.createInsertBeginningResultMessage(chatId, changes);
  */
 @Slf4j
 @Service
@@ -54,7 +76,7 @@ public class MessageService {
         sendMessage.setChatId(chatId);
         sendMessage.setParseMode("Markdown");
         sendMessage.setText("🛡 Блокировать \n" +
-                "*Нанесен урон Айрену 100(-50)*\n\n" +
+                "*Нанесен урон Aррейну 100(-50)*\n\n" +
                 "_Ты строишь стену из_\n" +
                 "``` try { ... } catch (...) { ... } ```\n" +
                 "_но Аррейон не из тех, кто уважает чужие перехваты._\n\n" +
@@ -128,7 +150,8 @@ public class MessageService {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setParseMode("Markdown");
-        sendMessage.setText("*Итераториус:*\n\n" +
+        sendMessage.setText("*Нанесен урон Aррейну 100(-50)*\\n\\n\" +" +
+                "*Итераториус:*\n\n" +
                 "Вот это подход! Учиться через боль — зато запомнишь на всю жизнь.\n" +
                 "Только не забывай, что в пятницу прод лучше не трогать.\n\n" +
                 "_Видно, что ты читал JavaDoc, а не только переписывал код с StackOverflow._\n\n" +
@@ -218,7 +241,7 @@ public class MessageService {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setParseMode("Markdown");
-        sendMessage.setText("💥 Аррейн бросает в тебя виртуальный элемент с индексом 0!\n\n" +
+        sendMessage.setText("💥 _Аррейн бросает в тебя виртуальный элемент с индексом 0!_\n\n" +
                 "🧠 Итераториус (шепчет):\n" +
                 "У тебя есть доля секунды. Реагируй!");
         
