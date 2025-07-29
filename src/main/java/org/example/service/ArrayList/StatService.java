@@ -11,18 +11,36 @@ import java.util.Map;
 import java.util.HashMap;
 
 /**
- * StatService — сервис для работы со статами персонажей.
+ * StatService — универсальный сервис для работы со статами персонажей в Telegram боте.
  * <p>
  * Этот класс отвечает за:
- * - Генерацию случайных наград
- * - Применение изменений к статам персонажа
- * - Сохранение прогресса в базе данных
+ * - Генерацию случайных наград в заданных диапазонах
+ * - Применение изменений к статам персонажа с null-безопасностью
+ * - Сохранение прогресса в базе данных через UserService
  * - Определение индивидуальных статов для разных типов персонажей
+ * - Генерацию кастомных изменений (деньги уменьшаются, другие статы растут)
+ * - Получение информации для отображения статов
  * <p>
- * Зачем нужен:
- * - Вынес логику работы со статами из огромного ArrayListBattleService
- * - Централизованная обработка всех изменений статов
- * - Безопасная работа с null значениями
+ * Связи с другими классами:
+ * - Использует UserService для получения и сохранения данных пользователей
+ * - Используется в ArrayListStory для применения наград
+ * - Используется в MessageService для отображения изменений статов
+ * - Работает с PersonageEntity для изменения статов персонажей
+ * <p>
+ * Поддерживаемые статы:
+ * - achievement_points — очки достижения
+ * - currency/money — деньги персонажа
+ * - analytics — аналитика (для Personage1)
+ * - communication — коммуникация (для Personage2)
+ * - code_accuracy — точность кода (для Personage3)
+ * - optimization — оптимизация
+ * - humor — юмор
+ * <p>
+ * Безопасность:
+ * - Проверяет null значения перед арифметическими операциями
+ * - Использует значения по умолчанию (0) для null полей
+ * - Логирует все изменения для отладки
+ * - Обрабатывает ошибки при отсутствии пользователя/персонажа
  * <p>
  * Автор: Архитектор (который знает, что статы без логики — это просто цифры)
  * <p>
@@ -30,8 +48,16 @@ import java.util.HashMap;
  * 
  * @Autowired private StatService statService;
  * 
- * Map<String, Integer> changes = statService.generateRandomRewards();
+ * // Генерация стандартных наград
+ * Map<String, Integer> rewards = statService.generateStandardRewards();
+ * statService.applyStatChanges(chatId, rewards);
+ * 
+ * // Генерация кастомных изменений
+ * Map<String, Integer> changes = statService.generateCustomStatChanges();
  * statService.applyStatChanges(chatId, changes);
+ * 
+ * // Получение индивидуального стата для персонажа
+ * String individualStat = statService.getIndividualStatForCharacter("Personage1");
  */
 @Slf4j
 @Service
