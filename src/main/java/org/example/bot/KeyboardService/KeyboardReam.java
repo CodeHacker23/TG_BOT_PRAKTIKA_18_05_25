@@ -105,7 +105,6 @@ public class KeyboardReam {
                 "вставкой \n" +
                 " в начало"));//создание нашей кнопки
 
-
         replyKeyboardMarkup.setKeyboard(List.of(row));
         return replyKeyboardMarkup;
     }

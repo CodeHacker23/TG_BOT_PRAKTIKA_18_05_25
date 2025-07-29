@@ -253,16 +253,24 @@ public class MessageService {
     }
 
 
+    /**
+     * Создает сообщение о завершении раунда 1.
+     *
+     * @param chatId — ID чата пользователя
+     * @return SendMessage — сообщение о завершении раунда
+     */
     public SendMessage endOfRoundOne(Long chatId) {
         log.debug("MessageService: Создание сообщения с завершением раунда 1 для chatId={}", chatId);
+        
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setParseMode("Markdown");
-        sendMessage.setText("⏳ Раунд 1 завершён\n" +
+        sendMessage.setText("⏳ *Раунд 1 завершён*\n\n" +
                 "*Итераториус* хмурится, а где-то в логе мелькает баг из его прошлого проекта... \n\n" +
                 "_Аррейон всё ещё стоит.\n" +
                 "Но его структура… дала трещину._");
+        
+        log.debug("MessageService: Сообщение о завершении раунда 1 создано для chatId={}", chatId);
         return sendMessage;
-
     }
 }

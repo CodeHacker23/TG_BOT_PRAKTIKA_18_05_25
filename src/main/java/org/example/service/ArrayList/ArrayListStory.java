@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.polls.SendPoll;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -67,6 +68,7 @@ public class ArrayListStory {
     private final MessageService messageService;
     private final StatService statService;
     private final UserService userService;
+    private final ArrayListQuiz arrayListQuiz;
 
     // Карта команд для маршрутизации
     private final Map<String, BiConsumer<TelegramLongPollingBot, Message>> commandsMap = new HashMap<>();
@@ -128,6 +130,12 @@ public class ArrayListStory {
                             try {
                                 SendMessage endRoundMessage = messageService.endOfRoundOne(msg.getChatId());
                                 bot.execute(endRoundMessage);
+                                
+                                // 4. Через 2 секунды отправляем сообщение от Итераториуса и викторину
+                                schedulerService.scheduleEvent(bot, msg.getChatId(), () -> {
+                                    sendIteratoriusMessageAndQuiz(bot, msg.getChatId());
+                                }, 2);
+                                
                             } catch (TelegramApiException e) {
                                 log.error("ArrayListStory: Ошибка отправки завершения раунда для chatId={}", msg.getChatId(), e);
                             }
@@ -175,6 +183,12 @@ public class ArrayListStory {
                             try {
                                 SendMessage endRoundMessage = messageService.endOfRoundOne(msg.getChatId());
                                 bot.execute(endRoundMessage);
+                                
+                                // 4. Через 2 секунды отправляем сообщение от Итераториуса и викторину
+                                schedulerService.scheduleEvent(bot, msg.getChatId(), () -> {
+                                    sendIteratoriusMessageAndQuiz(bot, msg.getChatId());
+                                }, 2);
+                                
                             } catch (TelegramApiException e) {
                                 log.error("ArrayListStory: Ошибка отправки завершения раунда для chatId={}", msg.getChatId(), e);
                             }
@@ -224,6 +238,12 @@ public class ArrayListStory {
                             try {
                                 SendMessage endRoundMessage = messageService.endOfRoundOne(msg.getChatId());
                                 bot.execute(endRoundMessage);
+                                
+                                // 4. Через 2 секунды отправляем сообщение от Итераториуса и викторину
+                                schedulerService.scheduleEvent(bot, msg.getChatId(), () -> {
+                                    sendIteratoriusMessageAndQuiz(bot, msg.getChatId());
+                                }, 2);
+                                
                             } catch (TelegramApiException e) {
                                 log.error("ArrayListStory: Ошибка отправки завершения раунда для chatId={}", msg.getChatId(), e);
                             }
@@ -234,13 +254,10 @@ public class ArrayListStory {
                     }
                 }, 5);
 
-
-
             } catch (TelegramApiException e) {
                 log.error("ArrayListStory: Ошибка отправки сообщения о вставке для chatId={}", msg.getChatId(), e);
             }
         });
-
 
         log.info("ArrayListStory: Карта команд инициализирована, количество команд: {}", commandsMap.size());
     }
@@ -312,21 +329,49 @@ public class ArrayListStory {
     }
 
     /**
-     * Запускает полную сюжетную линию ArrayList.
-     *
-     * Этот метод запускает последовательность событий:
-     * 1. Отправка теории с автоудалением через 20 секунд
-     * 2. Предупреждение о противнике
-     * 3. Фото противника с представлением
-     * 4. Начало боевой последовательности
-     *
+     * Создает сообщение от Итераториуса перед викториной.
+     * 
+     * @param chatId — ID чата пользователя
+     * @return SendMessage — сообщение от Итераториуса
+     */
+    private SendMessage createIteratoriusQuizMessage(Long chatId) {
+        log.debug("ArrayListStory: Создание сообщения от Итераториуса перед викториной для chatId={}", chatId);
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setParseMode("Markdown");
+        sendMessage.setText("*Итераториус:*\n\n" +
+                "Думал, все так просто?\n" +
+                "Ответь на пару вопросов — докажи, что шаришь за Java, а не просто жмёшь на кнопки!");
+        return sendMessage;
+    }
+
+    /**
+     * Отправляет сообщение от Итераториуса и викторину с задержкой.
+     * 
      * @param bot — TelegramLongPollingBot для отправки сообщений
      * @param chatId — ID чата пользователя
      */
-//    public void startArrayListStory(TelegramLongPollingBot bot, Long chatId) {
-//        log.info("ArrayListStory: Запуск сюжетной линии ArrayList для chatId={}", chatId);
-//        schedulerService.sendTheoryWithAutoDelete(bot, chatId);
-//    }
+    private void sendIteratoriusMessageAndQuiz(TelegramLongPollingBot bot, Long chatId) {
+        try {
+            // Сначала отправляем сообщение от Итераториуса
+            SendMessage iteratoriusMessage = createIteratoriusQuizMessage(chatId);
+            bot.execute(iteratoriusMessage);
+            
+            // Через 1 секунду отправляем викторину
+            schedulerService.scheduleEvent(bot, chatId, () -> {
+                try {
+                    SendPoll quiz = arrayListQuiz.getArrayListQuiz(chatId);
+                    bot.execute(quiz);
+                    log.info("ArrayListStory: Викторина отправлена после сообщения Итераториуса для chatId={}", chatId);
+                } catch (TelegramApiException e) {
+                    log.error("ArrayListStory: Ошибка отправки викторины для chatId={}", chatId, e);
+                }
+            }, 1);
+            
+        } catch (TelegramApiException e) {
+            log.error("ArrayListStory: Ошибка отправки сообщения Итераториуса для chatId={}", chatId, e);
+        }
+    }
 
     /**
      * Отправляет сообщение от Итераториуса с кнопкой "📜 Получить боевой свиток".
