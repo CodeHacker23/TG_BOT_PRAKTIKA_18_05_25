@@ -31,7 +31,7 @@ public class ArrayListStoryService {
     // private final org.example.Service service; // УДАЛЕНО для устранения цикла
     private final KeyboardService keyboardService;
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private final Map<Long, Integer> correctAnswers = new ConcurrentHashMap<>();
+
     private final PhotoStart photoStart;
     private final PhotoReam photoReam;
 
@@ -70,51 +70,30 @@ public class ArrayListStoryService {
 
 
 
-    /**
-     * Отправляет викторину по ArrayList (quiz)
-     * @param chatId — ID чата Telegram
-     * @return SendPoll — объект викторины
-     *
-     * Пример:
-     *   SendPoll poll = arrayListStoryService.getArrayListQuiz(chatId);
-     *   bot.execute(poll);
-     */
-    public SendPoll getArrayListQuiz(Long chatId) {
-        System.out.println("[ArrayListStoryService] getArrayListQuiz() — отправляем quiz по ArrayList для chatId=" + chatId);
-        SendPoll poll = new SendPoll();
-        int result = 2;
-        poll.setChatId(chatId);
-        poll.setQuestion("Какой метод добавляет элемент в ArrayList?");
-        poll.setOptions(Arrays.asList("abb()", "insert()", "add()", "push()"));
-        poll.setCorrectOptionId(result);
-        poll.setType("quiz");
-        poll.setExplanation("БЛЯДЬ");
-        correctAnswers.put(chatId, result);
-        return poll;
-    }
+
 
     /**
      * Отправляет супер-викторину по ArrayList (сложный вопрос)
      * @param chatId — ID чата Telegram
      * @return SendPoll — объект викторины
      */
-    public SendPoll getArrayListSuperQuiz(Long chatId) {
-        System.out.println("[ArrayListStoryService] getArrayListSuperQuiz() — отправляем супер-викторину для chatId=" + chatId);
-        SendPoll superPool = new SendPoll();
-        int correctOption = 3;
-        correctAnswers.put(chatId, correctOption);
-        superPool.setChatId(chatId);
-        superPool.setQuestion("Какое из следующих утверждений о ArrayList является верным?");
-        superPool.setOptions(Arrays.asList(
-                "Размер увеличивается в 2 раза при добавлении.",
-                "Хранение в виде узлов обеспечивает быстрые вставки/удаления.",
-                "Только объекты одного типа<> иначе ошибка компиляции",
-                "Доступ по индексу O(1), поиск по значению O(n)."));
-        superPool.setCorrectOptionId(correctOption);
-        superPool.setType("quiz");
-        superPool.setExplanation("Правильный Ответ: 4\n1.Увеличение на 50% (не в 2 раза)\n2.Узлы — это LinkedList\n3.\n\nБез дженериков — любые объекты\n");
-        return superPool;
-    }
+//    public SendPoll getArrayListSuperQuiz(Long chatId) {
+//        System.out.println("[ArrayListStoryService] getArrayListSuperQuiz() — отправляем супер-викторину для chatId=" + chatId);
+//        SendPoll superPool = new SendPoll();
+//        int correctOption = 3;
+//        correctAnswers.put(chatId, correctOption);
+//        superPool.setChatId(chatId);
+//        superPool.setQuestion("Какое из следующих утверждений о ArrayList является верным?");
+//        superPool.setOptions(Arrays.asList(
+//                "Размер увеличивается в 2 раза при добавлении.",
+//                "Хранение в виде узлов обеспечивает быстрые вставки/удаления.",
+//                "Только объекты одного типа<> иначе ошибка компиляции",
+//                "Доступ по индексу O(1), поиск по значению O(n)."));
+//        superPool.setCorrectOptionId(correctOption);
+//        superPool.setType("quiz");
+//        superPool.setExplanation("Правильный Ответ: 4\n1.Увеличение на 50% (не в 2 раза)\n2.Узлы — это LinkedList\n3.\n\nБез дженериков — любые объекты\n");
+//        return superPool;
+//    }
 
 
 //    public void scheduleMessageDeletion(TelegramLongPollingBot bot, Long chatId, Integer messageId) {
@@ -182,13 +161,13 @@ public class ArrayListStoryService {
         }
     }
 
-    /**
-     * Получить мапу правильных ответов для викторин (chatId -> номер правильного варианта)
-     * @return Map<Long, Integer>
-     */
-    public Map<Long, Integer> getCorrectAnswers() {
-        return correctAnswers;
-    }
+//    /**
+//     * Получить мапу правильных ответов для викторин (chatId -> номер правильного варианта)
+//     * @return Map<Long, Integer>
+//     */
+//    public Map<Long, Integer> getCorrectAnswers() {
+//        return correctAnswers;
+//    }
 
     // --- Советы по расширению ---
     // 1. Хочешь сделать сюжет по LinkedList? Создай LinkedListStoryService по аналогии с этим классом.

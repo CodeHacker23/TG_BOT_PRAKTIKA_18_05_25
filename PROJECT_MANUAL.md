@@ -386,7 +386,7 @@ CREATE TABLE users (
 ```
 
 #### Таблица PERSONAGES:
-```sql
+  ```sql
 CREATE TABLE personages (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     user_id BIGINT NOT NULL,
@@ -617,7 +617,7 @@ class NewServiceTest {
     
     @Autowired
     private NewService newService;
-    
+
     @Test
     void testNewMethod() {
         // Тестовая логика

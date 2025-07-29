@@ -207,7 +207,7 @@ flowchart TD
 ### Ключевые файлы:
 
 #### 1. StoryStartService.java
-```java
+   ```java
 // Обработка команды /start
 public void handleStart(TelegramLongPollingBot bot, Message message)
 
@@ -216,7 +216,7 @@ private void createPersonage(TelegramLongPollingBot bot, Long chatId, String cha
 ```
 
 #### 2. PersonageCreationService.java
-```java
+   ```java
 // Создание персонажа в БД
 public PersonageEntity createPersonage(UserEntity user, String characterType, String name)
 
@@ -225,13 +225,13 @@ private void setInitialStats(PersonageEntity personage, String characterType)
 ```
 
 #### 3. PersonageService.java
-```java
+   ```java
 // Получение персонажа по ID пользователя
 public PersonageEntity getPersonageByUserId(Long userId)
 
 // Обновление статов персонажа
 public void updatePersonageStats(PersonageEntity personage)
-```
+   ```
 
 ---
 
@@ -456,7 +456,7 @@ public class Personage1 extends PersonageBase {
 ### Обновление статов:
 
 #### StatService.java
-```java
+  ```java
 @Service
 @Slf4j
 @RequiredArgsConstructor

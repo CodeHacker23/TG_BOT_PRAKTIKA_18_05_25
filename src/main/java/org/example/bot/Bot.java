@@ -16,6 +16,8 @@ import org.example.service.UserService;
 import org.example.service.StoryStartService;
 import org.example.service.PersonageCreationService;
 import org.example.service.ArrayListStoryService;
+import org.example.service.ArrayList.ArrayListQuizHandler;
+import org.example.bot.MessageHandlerService;
 
 /**
  * Bot — твой главный дирижёр, шлюз между Telegram и всем этим бардаком.
@@ -38,6 +40,7 @@ public class Bot extends TelegramLongPollingBot { // класс бота
     private final MessageHandlerService messageHandlerService;
     private final StoryStartService storyStartService;
     private final CallbackQueryHandlerService callbackQueryHandlerService;
+    private final ArrayListQuizHandler arrayListQuizHandler;
 
     /**
      * Проверка, есть ли у пользователя персонаж
@@ -67,6 +70,13 @@ public class Bot extends TelegramLongPollingBot { // класс бота
     @Override
     public void onUpdateReceived(Update update) {
         log.info("onUpdateReceived() — получен апдейт: {}", update);
+        // Обработка PollAnswer (ответы на викторины)
+        if (update.hasPollAnswer()) {
+            log.info("PollAnswer: получен ответ на викторину от userId={}", update.getPollAnswer().getUser().getId());
+            arrayListQuizHandler.handleArrayListQuizAnswer(update.getPollAnswer(), this);
+            return;
+        }
+
         if (update.hasCallbackQuery()) {
             String data = update.getCallbackQuery().getData();
             Long chatId = update.getCallbackQuery().getMessage().getChatId();
