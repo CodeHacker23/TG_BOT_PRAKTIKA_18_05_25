@@ -75,16 +75,24 @@ public class MessageService {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setParseMode("Markdown");
-        sendMessage.setText("🛡 Блокировать \n" +
+        sendMessage.setText("🛡 **БЛОКИРОВАТЬ (TRY-CATCH)**\n" +
                 "*Нанесен урон Aррейну 100(-50)*\n\n" +
-                "_Ты строишь стену из_\n" +
-                "``` try { ... } catch (...) { ... } ```\n" +
-                "_но Аррейон не из тех, кто уважает чужие перехваты._\n\n" +
-                "Аррейон выносит с ноги твою защиту, как баги выносят прод после пятничного рефактора.\n\n" +
-                "*Ошибка:*\n" +
-                "```ArrayIndexOutOfBoundsException```\n" +
-                "прорывает блок, словно нож сквозь масло.\n\n" +
-                "\uD83D\uDC1E*Получен БАГ* - Ошибка ушла в отпуск, но обещала вернуться к дедлайну.");
+                "Ты быстро строишь защитную стену:\n\n" +
+                "```java\n" +
+                "try {\n" +
+                "    list.add(0, \"💀BUG\");\n" +
+                "    // Пытаемся защититься от атаки\n" +
+                "} catch (IndexOutOfBoundsException e) {\n" +
+                "    System.out.println(\"Поймал баг!\");\n" +
+                "}\n" +
+                "```\n\n" +
+                "_Но Аррейн не из тех, кто уважает чужие перехваты!_\n\n" +
+                "💥 **Аррейн пробивает твою защиту:**\n" +
+                "```\n" +
+                "Exception in thread \"main\":\n" +
+                "ArrayIndexOutOfBoundsException: Index 0 out of bounds\n" +
+                "```\n\n" +
+                "🐞 **ПОЛУЧЕН БАГ** - _Ошибка ушла в отпуск, но обещала вернуться к дедлайну._");
 
         log.debug("MessageService: Сообщение о защите try-catch создано");
         return sendMessage;
@@ -242,7 +250,13 @@ public class MessageService {
         sendMessage.setChatId(chatId);
         sendMessage.setParseMode("Markdown");
         sendMessage.setText("💥 _Аррейн бросает в тебя виртуальный элемент с индексом 0!_\n\n" +
-                "🧠 Итераториус (шепчет):\n" +
+                "```java\n" +
+                "ArrayList<String> list = new ArrayList<>();\n" +
+                "list.add(\"Bug\");  // <- ВОТ ЭТО ЛЕТИТ В ТЕБЯ!\n" +
+                "list.add(\"Error\");\n" +
+                "list.add(\"Exception\");\n\n" +
+                "```" +
+                "🧠 *Итераториус*_(шепчет_): Аррейн пытается добавить баг в начало списка!\n" +
                 "У тебя есть доля секунды. Реагируй!");
         
         // Добавляем клавиатуру с кнопками боевых действий

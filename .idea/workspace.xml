@@ -4,12 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="сделал завершение раунда 1, так-же сообщение от Итераториуса, а затем викторина, далее будет переход к 2 раунду">
+    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="сделал рефакторинг класса викторин, и класса Bot, так-же добавлен мануал по виктроинам, код стал читаемым и короче, нет говнокода.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListQuiz.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListQuizHandler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListStory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListStory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/MessageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/MessageService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,7 +131,7 @@
       <workItem from="1752729749021" duration="13921000" />
       <workItem from="1753082241027" duration="323000" />
       <workItem from="1753307326154" duration="99279000" />
-      <workItem from="1753816923341" duration="5877000" />
+      <workItem from="1753816923341" duration="7577000" />
     </task>
     <task id="LOCAL-00001" summary="по идеи всеработает как нужн, на команде старт отправляется фото с текстом, затем отправялется сообщение с кнопкой (создать персонажа) кнопка кликабельна, после кнопки отправляется персонаж с характеристиками и фото. все соеденяется с БД2">
       <option name="closed" value="true" />
@@ -391,14 +389,21 @@
       <option name="project" value="LOCAL" />
       <updated>1753793741406</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="сделал рефакторинг класса викторин, и класса Bot, так-же добавлен мануал по виктроинам, код стал читаемым и короче, нет говнокода.">
+      <option name="closed" value="true" />
+      <created>1753875498494</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1753875498494</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value=" Сделал так что бы пользователь когда ввел имя, ему выпадал рандомно персонаж, либо Флоу(это красный) либо синий это Кодыч, будет еще третий персонаж, и с регистриацией закончено, можно отвести душеньку чуть чуть выпить водочки стопок 10 и пойти делать сюжетную линию по Linked" />
     <MESSAGE value="Сделал так что бы кнопка создать персонажа была кликабельна только один раз, прикрутил создание персонажа к id пользователя телеграм а не к БД, Так удобней искать в таблице пользователя, теперь когда пользователь создает имя персонажу отправляется рандомный персонаж из коллекции, так-же обнуляется состояние пользователя, что бы не было проблем с обработкой на проверку персонажа у пользователя, после того если пользователь захочет нажать на кнопку создать персонажа то ему выйдет сообщение (у вас уже есть персонаж с Именем *от пользователя* Создать нового нельзя." />
     <MESSAGE value="Чуть модифицировали код" />
     <MESSAGE value=" И так мы добавили тотальную документацию кода, тотально все расписано, есть схемы взаимодействия кода между классами, куда ссылается что делает, зачем берет, все работает, выводятся на каждой команде логирование, запущен такой-то метод, и т.д выглядит пушка." />
@@ -423,6 +428,7 @@
     <MESSAGE value="мануалы от рефакторины" />
     <MESSAGE value="комиит крч рефакторинг" />
     <MESSAGE value="сделал завершение раунда 1, так-же сообщение от Итераториуса, а затем викторина, далее будет переход к 2 раунду" />
-    <option name="LAST_COMMIT_MESSAGE" value="сделал завершение раунда 1, так-же сообщение от Итераториуса, а затем викторина, далее будет переход к 2 раунду" />
+    <MESSAGE value="сделал рефакторинг класса викторин, и класса Bot, так-же добавлен мануал по виктроинам, код стал читаемым и короче, нет говнокода." />
+    <option name="LAST_COMMIT_MESSAGE" value="сделал рефакторинг класса викторин, и класса Bot, так-же добавлен мануал по виктроинам, код стал читаемым и короче, нет говнокода." />
   </component>
 </project>
