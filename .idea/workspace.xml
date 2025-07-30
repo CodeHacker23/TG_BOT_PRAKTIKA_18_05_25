@@ -4,18 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="комиит крч рефакторинг">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListQuiz.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListQuizHandler.java" afterDir="false" />
+    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="сделал завершение раунда 1, так-же сообщение от Итераториуса, а затем викторина, далее будет переход к 2 раунду">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PERSONAGE_MANUAL.md" beforeDir="false" afterPath="$PROJECT_DIR$/PERSONAGE_MANUAL.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PROJECT_MANUAL.md" beforeDir="false" afterPath="$PROJECT_DIR$/PROJECT_MANUAL.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PROJECT_USER_MANUAL.md" beforeDir="false" afterPath="$PROJECT_DIR$/PROJECT_USER_MANUAL.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/KeyboardService/KeyboardReam.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/KeyboardService/KeyboardReam.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListQuiz.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListQuizHandler.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListStory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListStory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/MessageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/MessageService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayListStoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayListStoryService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,7 +70,7 @@
     &quot;Spring Boot.App.executor&quot;: &quot;Run&quot;,
     &quot;git-widget-placeholder&quot;: &quot;in__package&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/ilari/IdeaProjects/TG_BOT_PRAKTIKA_18_05_25&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/ilari/IdeaProjects/SpringWazhno_05_07_25&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -138,7 +132,8 @@
       <workItem from="1752688642599" duration="3328000" />
       <workItem from="1752729749021" duration="13921000" />
       <workItem from="1753082241027" duration="323000" />
-      <workItem from="1753307326154" duration="98003000" />
+      <workItem from="1753307326154" duration="99279000" />
+      <workItem from="1753816923341" duration="5877000" />
     </task>
     <task id="LOCAL-00001" summary="по идеи всеработает как нужн, на команде старт отправляется фото с текстом, затем отправялется сообщение с кнопкой (создать персонажа) кнопка кликабельна, после кнопки отправляется персонаж с характеристиками и фото. все соеденяется с БД2">
       <option name="closed" value="true" />
@@ -388,14 +383,21 @@
       <option name="project" value="LOCAL" />
       <updated>1753777802709</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="сделал завершение раунда 1, так-же сообщение от Итераториуса, а затем викторина, далее будет переход к 2 раунду">
+      <option name="closed" value="true" />
+      <created>1753793741406</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1753793741406</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Сделал, что бы пользователь задавал имя своему персонажа, так-же сохраняется  все в БД, прикручено было состояние пользователя, что бы бот понимал что он ждет имя от пользоавтеля а не абы чего" />
     <MESSAGE value=" Сделал так что бы пользователь когда ввел имя, ему выпадал рандомно персонаж, либо Флоу(это красный) либо синий это Кодыч, будет еще третий персонаж, и с регистриацией закончено, можно отвести душеньку чуть чуть выпить водочки стопок 10 и пойти делать сюжетную линию по Linked" />
     <MESSAGE value="Сделал так что бы кнопка создать персонажа была кликабельна только один раз, прикрутил создание персонажа к id пользователя телеграм а не к БД, Так удобней искать в таблице пользователя, теперь когда пользователь создает имя персонажу отправляется рандомный персонаж из коллекции, так-же обнуляется состояние пользователя, что бы не было проблем с обработкой на проверку персонажа у пользователя, после того если пользователь захочет нажать на кнопку создать персонажа то ему выйдет сообщение (у вас уже есть персонаж с Именем *от пользователя* Создать нового нельзя." />
     <MESSAGE value="Чуть модифицировали код" />
@@ -420,6 +422,7 @@
     <MESSAGE value="сделали обработку кнопки  вставка в начало" />
     <MESSAGE value="мануалы от рефакторины" />
     <MESSAGE value="комиит крч рефакторинг" />
-    <option name="LAST_COMMIT_MESSAGE" value="комиит крч рефакторинг" />
+    <MESSAGE value="сделал завершение раунда 1, так-же сообщение от Итераториуса, а затем викторина, далее будет переход к 2 раунду" />
+    <option name="LAST_COMMIT_MESSAGE" value="сделал завершение раунда 1, так-же сообщение от Итераториуса, а затем викторина, далее будет переход к 2 раунду" />
   </component>
 </project>
