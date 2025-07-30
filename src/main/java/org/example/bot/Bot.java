@@ -1,7 +1,6 @@
 package org.example.bot;
 
 import lombok.RequiredArgsConstructor;
-import org.example.service.PhotoService.PhotoStart;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 
@@ -11,13 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.example.model.entity.UserEntity;
-
-import org.example.service.UserService;
 import org.example.service.StoryStartService;
-import org.example.service.PersonageCreationService;
-import org.example.service.ArrayListStoryService;
-import org.example.service.ArrayList.ArrayListQuizHandler;
+import org.example.service.ArrayList.QuizService;
 import org.example.bot.MessageHandlerService;
+import org.example.bot.CallbackQueryHandlerService;
 
 /**
  * Bot — твой главный дирижёр, шлюз между Telegram и всем этим бардаком.
@@ -40,91 +36,197 @@ public class Bot extends TelegramLongPollingBot { // класс бота
     private final MessageHandlerService messageHandlerService;
     private final StoryStartService storyStartService;
     private final CallbackQueryHandlerService callbackQueryHandlerService;
-    private final ArrayListQuizHandler arrayListQuizHandler;
-
-    /**
-     * Проверка, есть ли у пользователя персонаж
-     * @param user — сущность пользователя
-     * @return true, если персонаж уже создан
-     *
-     * Пример:
-     *   if (hasCharacter(user)) { ... }
-     */
-    private boolean hasCharacter(UserEntity user) {
-        return user != null && user.getPersonage() != null && user.getPersonage().getCharacterType() != null && !user.getPersonage().getCharacterType().isEmpty();
-    }
+    private final QuizService quizService;
 
     /**
      * Главный метод: обработка любого апдейта от Telegram
      * @param update — апдейт от Telegram
      *
-     * Здесь происходит вся магия маршрутизации:
-     * - Если пришёл callbackQuery с data "create_personage" — запускаем создание персонажа
-     * - Если пришло текстовое сообщение:
-     *     - /start — запускаем StoryStartService.handleStart
-     *     - Если пользователь ждёт ввода имени — передаём в StoryStartService.handleCharacterNameInput
-     *     - Всё остальное — в MessageHandlerService (и пусть он разбирается)
-     *
-     * Если что-то пойдёт не так — смотри логи и готовься к дебагу.
+     * Теперь это красивый switch-case вместо говнокодных if'ов!
+     * Определяем тип апдейта и обрабатываем через соответствующий метод.
+     * 
+     * Типы апдейтов:
+     * - POLL_ANSWER — ответы на викторины  
+     * - CALLBACK_QUERY — нажатия на inline кнопки
+     * - TEXT_MESSAGE — обычные текстовые сообщения
+     * - UNKNOWN — всё остальное (игнорируем с логом)
      */
     @Override
     public void onUpdateReceived(Update update) {
         log.info("onUpdateReceived() — получен апдейт: {}", update);
-        // Обработка PollAnswer (ответы на викторины)
-        if (update.hasPollAnswer()) {
-            log.info("PollAnswer: получен ответ на викторину от userId={}", update.getPollAnswer().getUser().getId());
-            arrayListQuizHandler.handleArrayListQuizAnswer(update.getPollAnswer(), this);
-            return;
+        
+        UpdateType updateType = determineUpdateType(update);
+        
+        switch (updateType) {
+            case POLL_ANSWER -> handlePollAnswer(update);
+            case CALLBACK_QUERY -> handleCallbackQuery(update);
+            case TEXT_MESSAGE -> handleTextMessage(update);
+            case UNKNOWN -> handleUnknownUpdate(update);
         }
-
-        if (update.hasCallbackQuery()) {
-            String data = update.getCallbackQuery().getData();
-            Long chatId = update.getCallbackQuery().getMessage().getChatId();
-            Long userId = update.getCallbackQuery().getFrom().getId();
-            Integer messageId = update.getCallbackQuery().getMessage().getMessageId();
-            log.info("CallbackQuery: data={}, chatId={}, userId={}", data, chatId, userId);
-
-            // Делегируем обработку всех callbackQuery в отдельный сервис
-            callbackQueryHandlerService.handleCallback(this, data, chatId, userId, messageId);
-            return;
-        }
-
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            String text = update.getMessage().getText();
-            Long chatId = update.getMessage().getChatId();
-            Long userId = update.getMessage().getFrom().getId();
-            log.info("Message: text='{}', chatId={}, userId={}", text, chatId, userId);
-
-            // --- Удалён дублирующий планировщик отправки фото с вертолетом ---
-
-            // Обрабатываем команду /start отдельно
-            if ("/start".equals(text)) {
-                log.info("Пользователь отправил /start.");
-                storyStartService.handleStart(this, chatId, userId);
-                log.info("Завершена обработка /start.");
-                return;
-            }
-
-            // Обработка ввода имени персонажа
-            UserEntity user = storyStartService.userService.getUserByTgId(userId);
-            if (user != null && "AWAITING_CHARACTER_NAME".equals(user.getState())) {
-                log.info("Пользователь вводит имя персонажа: '{}'", text);
-                storyStartService.handleCharacterNameInput(this, chatId, userId, text);
-                log.info("Завершена обработка имени персонажа.");
-                return;
-            }
-
-            // Обрабатываем все остальные сообщения через MessageHandlerService
-            try {
-                log.info("Передаём сообщение в MessageHandlerService.");
-                messageHandlerService.handleMessage(this, update.getMessage());
-                log.info("Завершена обработка сообщения MessageHandlerService.");
-            } catch (TelegramApiException e) {
-                log.error("Ошибка в MessageHandlerService: {}", e.getMessage());
-                throw new RuntimeException(e);
-            }
-        }
+        
         log.info("onUpdateReceived() — обработка апдейта завершена.");
+    }
+
+    /**
+     * Определяет тип апдейта.
+     * Вместо кучи if'ов теперь одна чистая логика определения типа.
+     * 
+     * @param update — апдейт от Telegram
+     * @return UpdateType — тип апдейта
+     */
+    private UpdateType determineUpdateType(Update update) {
+        if (update.hasPollAnswer()) {
+            return UpdateType.POLL_ANSWER;
+        }
+        if (update.hasCallbackQuery()) {
+            return UpdateType.CALLBACK_QUERY;
+        }
+        if (update.hasMessage() && update.getMessage().hasText()) {
+            return UpdateType.TEXT_MESSAGE;
+        }
+        return UpdateType.UNKNOWN;
+    }
+
+    /**
+     * Обрабатывает ответы на викторины.
+     * 
+     * @param update — апдейт с ответом на викторину
+     */
+    private void handlePollAnswer(Update update) {
+        log.info("PollAnswer: получен ответ на викторину от userId={}", 
+                update.getPollAnswer().getUser().getId());
+        quizService.handleQuizAnswer(update.getPollAnswer(), this);
+    }
+
+    /**
+     * Обрабатывает нажатия на inline кнопки.
+     * 
+     * @param update — апдейт с callback query
+     */
+    private void handleCallbackQuery(Update update) {
+        String data = update.getCallbackQuery().getData();
+        Long chatId = update.getCallbackQuery().getMessage().getChatId();
+        Long userId = update.getCallbackQuery().getFrom().getId();
+        Integer messageId = update.getCallbackQuery().getMessage().getMessageId();
+        
+        log.info("CallbackQuery: data={}, chatId={}, userId={}", data, chatId, userId);
+        
+        // Делегируем обработку всех callbackQuery в отдельный сервис
+        callbackQueryHandlerService.handleCallback(this, data, chatId, userId, messageId);
+    }
+
+    /**
+     * Обрабатывает текстовые сообщения.
+     * Здесь тоже используем switch для определения типа сообщения.
+     * 
+     * @param update — апдейт с текстовым сообщением
+     */
+    private void handleTextMessage(Update update) {
+        String text = update.getMessage().getText();
+        Long chatId = update.getMessage().getChatId();
+        Long userId = update.getMessage().getFrom().getId();
+        
+        log.info("Message: text='{}', chatId={}, userId={}", text, chatId, userId);
+        
+        MessageType messageType = determineMessageType(text, userId);
+        
+        switch (messageType) {
+            case START_COMMAND -> handleStartCommand(chatId, userId);
+            case CHARACTER_NAME_INPUT -> handleCharacterNameInput(chatId, userId, text);
+            case REGULAR_MESSAGE -> handleRegularMessage(update);
+        }
+    }
+
+    /**
+     * Определяет тип текстового сообщения.
+     * 
+     * @param text — текст сообщения
+     * @param userId — ID пользователя
+     * @return MessageType — тип сообщения
+     */
+    private MessageType determineMessageType(String text, Long userId) {
+        if ("/start".equals(text)) {
+            return MessageType.START_COMMAND;
+        }
+        
+        UserEntity user = storyStartService.userService.getUserByTgId(userId);
+        if (user != null && "AWAITING_CHARACTER_NAME".equals(user.getState())) {
+            return MessageType.CHARACTER_NAME_INPUT;
+        }
+        
+        return MessageType.REGULAR_MESSAGE;
+    }
+
+    /**
+     * Обрабатывает команду /start.
+     * 
+     * @param chatId — ID чата
+     * @param userId — ID пользователя
+     */
+    private void handleStartCommand(Long chatId, Long userId) {
+        log.info("Пользователь отправил /start.");
+        storyStartService.handleStart(this, chatId, userId);
+        log.info("Завершена обработка /start.");
+    }
+
+    /**
+     * Обрабатывает ввод имени персонажа.
+     * 
+     * @param chatId — ID чата
+     * @param userId — ID пользователя
+     * @param characterName — введённое имя персонажа
+     */
+    private void handleCharacterNameInput(Long chatId, Long userId, String characterName) {
+        log.info("Пользователь вводит имя персонажа: '{}'", characterName);
+        storyStartService.handleCharacterNameInput(this, chatId, userId, characterName);
+        log.info("Завершена обработка имени персонажа.");
+    }
+
+    /**
+     * Обрабатывает обычные сообщения через MessageHandlerService.
+     * 
+     * @param update — апдейт с сообщением
+     */
+    private void handleRegularMessage(Update update) {
+        try {
+            log.info("Передаём сообщение в MessageHandlerService.");
+            messageHandlerService.handleMessage(this, update.getMessage());
+            log.info("Завершена обработка сообщения MessageHandlerService.");
+        } catch (TelegramApiException e) {
+            log.error("Ошибка в MessageHandlerService: {}", e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Обрабатывает неизвестные типы апдейтов.
+     * 
+     * @param update — неизвестный апдейт
+     */
+    private void handleUnknownUpdate(Update update) {
+        log.warn("Получен неизвестный тип апдейта: {}", update);
+        // Можно добавить метрики или отправку в мониторинг
+    }
+
+    /**
+     * Enum для типов апдейтов.
+     * Чётко определяет, какие типы апдейтов мы обрабатываем.
+     */
+    private enum UpdateType {
+        POLL_ANSWER,      // Ответы на викторины
+        CALLBACK_QUERY,   // Нажатия на inline кнопки
+        TEXT_MESSAGE,     // Текстовые сообщения
+        UNKNOWN           // Всё остальное
+    }
+
+    /**
+     * Enum для типов текстовых сообщений.
+     * Помогает различать команды, ввод данных и обычные сообщения.
+     */
+    private enum MessageType {
+        START_COMMAND,        // Команда /start
+        CHARACTER_NAME_INPUT, // Ввод имени персонажа
+        REGULAR_MESSAGE       // Обычные сообщения
     }
 
     /**

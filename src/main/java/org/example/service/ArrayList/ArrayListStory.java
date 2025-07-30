@@ -68,7 +68,7 @@ public class ArrayListStory {
     private final MessageService messageService;
     private final StatService statService;
     private final UserService userService;
-    private final ArrayListQuiz arrayListQuiz;
+    private final QuizService quizService;
 
     // Карта команд для маршрутизации
     private final Map<String, BiConsumer<TelegramLongPollingBot, Message>> commandsMap = new HashMap<>();
@@ -329,23 +329,6 @@ public class ArrayListStory {
     }
 
     /**
-     * Создает сообщение от Итераториуса перед викториной.
-     * 
-     * @param chatId — ID чата пользователя
-     * @return SendMessage — сообщение от Итераториуса
-     */
-    private SendMessage createIteratoriusQuizMessage(Long chatId) {
-        log.debug("ArrayListStory: Создание сообщения от Итераториуса перед викториной для chatId={}", chatId);
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(chatId);
-        sendMessage.setParseMode("Markdown");
-        sendMessage.setText("*Итераториус:*\n\n" +
-                "Думал, все так просто?\n" +
-                "Ответь на пару вопросов — докажи, что шаришь за Java, а не просто жмёшь на кнопки!");
-        return sendMessage;
-    }
-
-    /**
      * Отправляет сообщение от Итераториуса и викторину с задержкой.
      * 
      * @param bot — TelegramLongPollingBot для отправки сообщений
@@ -354,13 +337,13 @@ public class ArrayListStory {
     private void sendIteratoriusMessageAndQuiz(TelegramLongPollingBot bot, Long chatId) {
         try {
             // Сначала отправляем сообщение от Итераториуса
-            SendMessage iteratoriusMessage = createIteratoriusQuizMessage(chatId);
+            SendMessage iteratoriusMessage = quizService.createQuizIntroMessage(chatId);
             bot.execute(iteratoriusMessage);
             
             // Через 1 секунду отправляем викторину
             schedulerService.scheduleEvent(bot, chatId, () -> {
                 try {
-                    SendPoll quiz = arrayListQuiz.getArrayListQuiz(chatId);
+                    SendPoll quiz = quizService.createQuiz(chatId);
                     bot.execute(quiz);
                     log.info("ArrayListStory: Викторина отправлена после сообщения Итераториуса для chatId={}", chatId);
                 } catch (TelegramApiException e) {
