@@ -2,14 +2,19 @@ package org.example.service.ArrayList;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.service.UserService;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.polls.SendPoll;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.polls.PollAnswer;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * QuizService — универсальный сервис для работы с викторинами.
@@ -36,6 +41,8 @@ import java.util.Map;
 public class QuizService {
 
     private final StatService statService;
+    private final UserService userService;
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     /**
      * Создает викторину по ArrayList.
@@ -90,6 +97,9 @@ public class QuizService {
         
         // Отправляем персонализированное сообщение
         sendQuizResult(bot, chatId, isCorrect);
+        
+        // После викторины запускаем раунд 2 через 5 секунд
+        startRound2AfterQuiz(bot, chatId);
     }
 
     /**
@@ -107,6 +117,24 @@ public class QuizService {
             String result = isCorrect ? "ПРАВИЛЬНО" : "НЕПРАВИЛЬНО";
             int points = isCorrect ? QuizConstants.CORRECT_REWARD : QuizConstants.WRONG_PENALTY;
             log.info("QuizService: Результат викторины отправлен для chatId={}, результат: {}, очки: {}", chatId, result, points);
+            
+            // Через 3 секунды отправляем реплику Итераториуса о раунде 2
+            scheduler.schedule(() -> {
+                try {
+                    log.info("QuizService: Отправляем реплику Итераториуса о раунде 2 для chatId={}", chatId);
+                    
+                    MessageServiceRound2 messageServiceRound2 = new MessageServiceRound2(userService, statService, null);
+                    SendMessage round2IntroMessage = messageServiceRound2.createIteratoriusRound2Intro(chatId);
+                    bot.execute(round2IntroMessage);
+                    
+                    log.info("QuizService: Реплика Итераториуса о раунде 2 отправлена для chatId={}", chatId);
+                    
+                } catch (TelegramApiException e) {
+                    log.error("QuizService: Ошибка отправки реплики Итераториуса о раунде 2 для chatId={}", chatId, e);
+                } catch (Exception e) {
+                    log.error("QuizService: Неожиданная ошибка при отправке реплики о раунде 2 для chatId={}", chatId, e);
+                }
+            }, 3, TimeUnit.SECONDS);
             
         } catch (TelegramApiException e) {
             log.error("QuizService: Ошибка отправки результата викторины для chatId={}", chatId, e);
@@ -147,5 +175,37 @@ public class QuizService {
         sendMessage.setText(QuizConstants.QUIZ_INTRO_MESSAGE);
         
         return sendMessage;
+    }
+    
+    /**
+     * 🚀 ЗАПУСК РАУНДА 2 ПОСЛЕ ВИКТОРИНЫ
+     * 
+     * Простой способ перехода к раунду 2 после завершения викторины.
+     * Вызывается автоматически после ответа на викторину с задержкой 6 секунд
+     * (3 сек после результата викторины + 3 сек после реплики Итераториуса).
+     * 
+     * @param bot — TelegramLongPollingBot для отправки сообщений
+     * @param chatId — ID чата пользователя
+     */
+    private void startRound2AfterQuiz(TelegramLongPollingBot bot, Long chatId) {
+        log.info("QuizService: Планируется запуск раунда 2 через 6 секунд для chatId={}", chatId);
+        
+        scheduler.schedule(() -> {
+            try {
+                log.info("QuizService: Запускаем раунд 2 для chatId={}", chatId);
+                
+                // Создаем экземпляр MessageServiceRound2 для отправки фото-сообщения раунда 2
+                MessageServiceRound2 messageServiceRound2 = new MessageServiceRound2(userService, statService, null);
+                SendPhoto round2PhotoMessage = messageServiceRound2.createRound2Message(chatId);
+                bot.execute(round2PhotoMessage);
+                
+                log.info("QuizService: Раунд 2 успешно запущен для chatId={}", chatId);
+                
+            } catch (TelegramApiException e) {
+                log.error("QuizService: Ошибка запуска раунда 2 для chatId={}", chatId, e);
+            } catch (Exception e) {
+                log.error("QuizService: Неожиданная ошибка при запуске раунда 2 для chatId={}", chatId, e);
+            }
+        }, 6, TimeUnit.SECONDS);
     }
 } 

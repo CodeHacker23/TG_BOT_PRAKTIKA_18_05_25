@@ -14,7 +14,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.Map;
 
 /**
  * ArrayListSchedulerService — универсальный сервис для планирования задач в Telegram боте.
@@ -70,7 +69,7 @@ public class ArrayListSchedulerService {
     private final UserService userService;
     private final ArrayListTheoryService theoryService;
     private final StatService statService;
-    private final MessageService messageService;
+    private final MessageServiceRound1 messageService;
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     /**

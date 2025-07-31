@@ -58,7 +58,7 @@ import java.util.Map;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class MessageService {
+public class MessageServiceRound1 {
 
     private final UserService userService;
     private final StatService statService;
@@ -99,15 +99,15 @@ public class MessageService {
     }
 
     /**
-     * Создает сообщение с результатом боя.
+     * Создает сообщение с результатом защиты try-catch.
      *
      * @param chatId     — ID чата пользователя
      * @param expReward  — награда за опыт
      * @param cashReward — награда за деньги
-     * @return SendMessage — сообщение с результатом
+     * @return SendMessage — сообщение с результатом try-catch
      */
-    public SendMessage createBattleResultMessage(Long chatId, int expReward, int cashReward) {
-        log.debug("MessageService: Создание результата боя для chatId={}", chatId);
+    public SendMessage createTryCatchResultMessage(Long chatId, int expReward, int cashReward) {
+        log.debug("MessageService: Создание результата try-catch для chatId={}", chatId);
 
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
@@ -119,7 +119,34 @@ public class MessageService {
                 "  +" + expReward + " ⭐️ к Очкам Достижения\n" +
                 "  +" + cashReward + " 💲 к Деньгам.");
 
-        log.debug("MessageService: Результат боя создан");
+        log.debug("MessageService: Результат try-catch создан");
+        return sendMessage;
+    }
+
+    /**
+     * Создает сообщение с результатом анализа.
+     *
+     * @param chatId     — ID чата пользователя
+     * @param expReward  — награда за опыт
+     * @param cashReward — награда за деньги
+     * @return SendMessage — сообщение с результатом анализа
+     */
+    public SendMessage createAnalysisResultMessage(Long chatId, int expReward, int cashReward) {
+        log.debug("MessageService: Создание результата анализа для chatId={}", chatId);
+
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setParseMode("Markdown");
+        sendMessage.setText(
+                "*Итераториус:*\n\n" +
+                "Вот это подход! Учиться через боль — зато запомнишь на всю жизнь. " +
+                "Только не забывай, что в пятницу прод лучше не трогать.\n\n" +
+                "_Видно, что ты читал JavaDoc, а не только переписывал код с StackOverflow._\n\n" +
+                "*Навык повышен:*\n" +
+                "  +" + expReward + " ⭐️ к Очкам Достижения\n" +
+                "  +" + cashReward + " 💲 к Деньгам.");
+
+        log.debug("MessageService: Результат анализа создан");
         return sendMessage;
     }
 
@@ -138,39 +165,15 @@ public class MessageService {
         sendMessage.setText("📘 Ты вспоминаешь строки древнего манускрипта JavaDocs…\n\n" +
                 "Ты сканируешь память — мозг работает на пределе.\n" +
                 "*ArrayList — это просто массив.*\n" +
-                "*Вставка в начало? Сдвиг, тормоза, страдания. Ты этого хочешь?!*");
+                "*Вставка в начало? Сдвиг, тормоза, страдания. Ты этого хочешь?!*\n\n" +
+                "_Нанесен урон Aррейну 100(-50)\uD83D\uDD25_");
+
 
         log.debug("MessageService: Сообщение об анализе создано");
         return sendMessage;
     }
 
-    /**
-     * Создает сообщение с результатом анализа.
-     *
-     * @param chatId     — ID чата пользователя
-     * @param expReward  — награда за опыт
-     * @param cashReward — награда за деньги
-     * @return SendMessage — сообщение с результатом анализа
-     */
-    public SendMessage createAnalysisResultMessage(Long chatId, int expReward, int cashReward) {
-        log.debug("MessageService: Создание результата анализа для chatId={}", chatId);
 
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(chatId);
-        sendMessage.setParseMode("Markdown");
-        sendMessage.setText("*Нанесен урон Aррейну 100(-50)*\\n\\n\" +" +
-                "*Итераториус:*\n\n" +
-                "Вот это подход! Учиться через боль — зато запомнишь на всю жизнь.\n" +
-                "Только не забывай, что в пятницу прод лучше не трогать.\n\n" +
-                "_Видно, что ты читал JavaDoc, а не только переписывал код с StackOverflow._\n\n" +
-
-                "*Навык повышен:*\n" +
-                "  +" + expReward + " ⭐️ к Очкам Достижения\n" +
-                "  +" + cashReward + " 💲 к Деньгам.");
-
-        log.debug("MessageService: Результат анализа создан");
-        return sendMessage;
-    }
 
     /**
      * Создает сообщение о попытке вставки в начало.
@@ -216,7 +219,7 @@ public class MessageService {
         String individualStat = statService.getIndividualStatForCharacter(characterType);
 
         int achievementChange = statChanges.getOrDefault("achievement_points", 0);
-        int moneyChange = statChanges.getOrDefault("money", 0);
+        int moneyChange = statChanges.getOrDefault("currency", 0); // Исправлено: "money" -> "currency" 
         int individualChange = statChanges.getOrDefault(individualStat, 0);
 
         String individualStatInfo = statService.getStatDisplayInfo(individualStat);
@@ -287,4 +290,6 @@ public class MessageService {
         log.debug("MessageService: Сообщение о завершении раунда 1 создано для chatId={}", chatId);
         return sendMessage;
     }
+
+
 }

@@ -4,9 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="Добавлены, маленькие изменения в сообщении от Аррейна, при атаке, теперь показывается код на Jаva а не просто абстрактно, что Аррейн бросил в тебя индекс 0, сложно представить новичку что это, поэтому я сделал визуальность что бы было комфортабельно.">
+    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="нужно сохранить мануал, из за этого коммит">
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/MessageServiceRound2.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DATABASE_QUIZ_MANUAL_EXTENDED.md" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/model/personage/PersonageBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/model/personage/PersonageBase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListSchedulerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListSchedulerService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListStory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListStory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListTheoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListTheoryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/MessageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/MessageServiceRound1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/QuizService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/QuizService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/StatService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/StatService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/PhotoService/PhotoReam.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/PhotoService/PhotoReam.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -131,6 +141,7 @@
       <workItem from="1753082241027" duration="323000" />
       <workItem from="1753307326154" duration="99279000" />
       <workItem from="1753816923341" duration="11753000" />
+      <workItem from="1753937593536" duration="16138000" />
     </task>
     <task id="LOCAL-00001" summary="по идеи всеработает как нужн, на команде старт отправляется фото с текстом, затем отправялется сообщение с кнопкой (создать персонажа) кнопка кликабельна, после кнопки отправляется персонаж с характеристиками и фото. все соеденяется с БД2">
       <option name="closed" value="true" />
@@ -404,14 +415,21 @@
       <option name="project" value="LOCAL" />
       <updated>1753877896966</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="нужно сохранить мануал, из за этого коммит">
+      <option name="closed" value="true" />
+      <created>1753946273817</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1753946273817</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Чуть модифицировали код" />
     <MESSAGE value=" И так мы добавили тотальную документацию кода, тотально все расписано, есть схемы взаимодействия кода между классами, куда ссылается что делает, зачем берет, все работает, выводятся на каждой команде логирование, запущен такой-то метод, и т.д выглядит пушка." />
     <MESSAGE value=" добавили кнопку к сообщению к фото вертолету,сюжетная линия 1 сделана. Все исправно, и улучшено." />
     <MESSAGE value="добавил кнопку к сюжету, и почти закончил первую сюжетную линию" />
@@ -436,6 +454,7 @@
     <MESSAGE value="сделал завершение раунда 1, так-же сообщение от Итераториуса, а затем викторина, далее будет переход к 2 раунду" />
     <MESSAGE value="сделал рефакторинг класса викторин, и класса Bot, так-же добавлен мануал по виктроинам, код стал читаемым и короче, нет говнокода." />
     <MESSAGE value="Добавлены, маленькие изменения в сообщении от Аррейна, при атаке, теперь показывается код на Jаva а не просто абстрактно, что Аррейн бросил в тебя индекс 0, сложно представить новичку что это, поэтому я сделал визуальность что бы было комфортабельно." />
-    <option name="LAST_COMMIT_MESSAGE" value="Добавлены, маленькие изменения в сообщении от Аррейна, при атаке, теперь показывается код на Jаva а не просто абстрактно, что Аррейн бросил в тебя индекс 0, сложно представить новичку что это, поэтому я сделал визуальность что бы было комфортабельно." />
+    <MESSAGE value="нужно сохранить мануал, из за этого коммит" />
+    <option name="LAST_COMMIT_MESSAGE" value="нужно сохранить мануал, из за этого коммит" />
   </component>
 </project>
