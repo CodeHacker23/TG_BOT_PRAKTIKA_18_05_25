@@ -30,6 +30,10 @@ public abstract class PersonageBase {
     protected double currency;
     /** Статус персонажа (например, Новобранец) */
     protected String status;
+    /** Артефакты у персонажа, после прохождения сюжетки  */
+    protected String artefact;
+    /** */
+
 
     /**
      * Изменить уровень персонажа

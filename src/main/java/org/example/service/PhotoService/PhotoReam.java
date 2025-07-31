@@ -89,13 +89,29 @@ public class PhotoReam {
                 .chatId(chatId)
                 .photo(new InputFile("https://ltdfoto.ru/image/vAKfQG"))
                 .caption("*Имя:* Аррейн\n" +
-                        "*XP* - 150\n" +
+                        "*XP* - 150 \uD83D\uDFE5\uD83D\uDFE5\uD83D\uDFE5\n" +
                         "*Звание:* Призрачный Легат Коллекций\n" +
                         "*Тип:* Упорядоченный, но импульсивный.\n" +
                         "*Специализация:* _не известно_\n" + //Быстрый доступ, капризная вставка
                         "*Слабость:* _не известно_ \n" + //Вставка в начало
                         "*Артефакт:* _не известно_") // FragmentOf.java
                 .parseMode("Markdown")
+                .build();
+        return sendPhoto;
+    }
+
+    public static SendPhoto createRound2PhotoMessage(Long chatId, String statsLine){
+        System.out.println("[PhotoService] createRound2PhotoMessage() — отправляем фото раунда 2.");
+        SendPhoto sendPhoto = SendPhoto.builder()
+                .chatId(chatId)
+                .parseMode("Markdown")
+                .photo(new InputFile("https://ltdfoto.ru/image/vwNxFZ"))
+                .caption("*Раунд 2 — 'На грани слома'*\n\n" +
+                        "📊 Статы Аррейна: \uD83D\uDFE5\uD83D\uDFE5\uD83D\uDFE9\n" +
+                        "🛡️ HP - 100 (Было 150)\n\n" +
+                        "⚡ *Будь осторожен! Он изучил твою тактику из раунда 1!*\n\n" +
+                        "Твои статы:\n" +
+                        statsLine)
                 .build();
         return sendPhoto;
     }

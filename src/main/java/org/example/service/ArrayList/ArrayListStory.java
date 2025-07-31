@@ -9,13 +9,11 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.polls.SendPoll;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
 /**
@@ -65,13 +63,14 @@ public class ArrayListStory {
     // Специализированные сервисы для разных аспектов ArrayList
     private final ArrayListTheoryService theoryService;
     private final ArrayListSchedulerService schedulerService;
-    private final MessageService messageService;
     private final StatService statService;
     private final UserService userService;
     private final QuizService quizService;
+   private final MessageServiceRound2 messageSrviceRound2;
 
     // Карта команд для маршрутизации
     private final Map<String, BiConsumer<TelegramLongPollingBot, Message>> commandsMap = new HashMap<>();
+    private final MessageServiceRound1 messageServiceRound1;
 
 
     /**
@@ -102,161 +101,26 @@ public class ArrayListStory {
         // Команда для боевого действия try-catch
         commandsMap.put("\uD83D\uDEE1 Блокировать \n (try-catch)", (bot, msg) -> {
             log.info("ArrayListStory: Обработка команды '🛡 Блокировать (try-catch)' для chatId={}", msg.getChatId());
-            try {
-                // 1. Отправляем сообщение о защите
-                SendMessage defenseMessage = messageService.createTryCatchDefenseMessage(msg.getChatId());
-                bot.execute(defenseMessage);
-
-                // 2. Через 5 секунды отправляем результат от Итераториуса
-                schedulerService.scheduleEvent(bot, msg.getChatId(), () -> {
-                    try {
-                        // Генерируем награды
-                        int expReward = statService.generateRandomReward(50, 70);
-                        int cashReward = statService.generateRandomReward(200, 300);
-
-                        // Применяем награды
-                        Map<String, Integer> rewards = Map.of(
-                                "achievement_points", expReward,
-                                "currency", cashReward
-                        );
-                        statService.applyStatChanges(msg.getChatId(), rewards);
-
-                        // Отправляем результат
-                        SendMessage resultMessage = messageService.createBattleResultMessage(msg.getChatId(), expReward, cashReward);
-                        bot.execute(resultMessage);
-
-                        // 3. Еще через 4 секунды отправляем завершение раунда
-                        schedulerService.scheduleEvent(bot, msg.getChatId(), () -> {
-                            try {
-                                SendMessage endRoundMessage = messageService.endOfRoundOne(msg.getChatId());
-                                bot.execute(endRoundMessage);
-                                
-                                // 4. Через 2 секунды отправляем сообщение от Итераториуса и викторину
-                                schedulerService.scheduleEvent(bot, msg.getChatId(), () -> {
-                                    sendIteratoriusMessageAndQuiz(bot, msg.getChatId());
-                                }, 2);
-                                
-                            } catch (TelegramApiException e) {
-                                log.error("ArrayListStory: Ошибка отправки завершения раунда для chatId={}", msg.getChatId(), e);
-                            }
-                        }, 4);
-
-                    } catch (TelegramApiException e) {
-                        log.error("ArrayListStory: Ошибка отправки результата try-catch для chatId={}", msg.getChatId(), e);
-                    }
-                }, 5);
-
-            } catch (TelegramApiException e) {
-                log.error("ArrayListStory: Ошибка отправки сообщения о защите для chatId={}", msg.getChatId(), e);
-            }
+            
+            SendMessage defenseMessage = messageServiceRound1.createTryCatchDefenseMessage(msg.getChatId());
+            executeBattleAction(bot, msg.getChatId(), defenseMessage, "try-catch", 50, 70, 200, 300, false);
         });
 
         // Команда для боевого действия Анализировать
         commandsMap.put("\uD83D\uDD0D Уклониться \n и \nпроанализировать", (bot, msg) -> {
             log.info("ArrayListStory: Обработка команды '🔍 Уклониться и проанализировать' для chatId={}", msg.getChatId());
-
-            try {
-                // 1. Отправляем сообщение об анализе
-                SendMessage analysisMessage = messageService.createAnalysisMessage(msg.getChatId());
-                bot.execute(analysisMessage);
-
-                // 2. Через 3 секунды отправляем результат от Итераториуса
-                schedulerService.scheduleEvent(bot, msg.getChatId(), () -> {
-                    try {
-                        // Генерируем награды
-                        int expReward = statService.generateRandomReward(60, 85);
-                        int cashReward = statService.generateRandomReward(250, 350);
-
-                        // Применяем награды
-                        Map<String, Integer> rewards = Map.of(
-                                "achievement_points", expReward,
-                                "currency", cashReward
-                        );
-                        statService.applyStatChanges(msg.getChatId(), rewards);
-
-                        // Отправляем результат
-                        SendMessage resultMessage = messageService.createAnalysisResultMessage(msg.getChatId(), expReward, cashReward);
-                        bot.execute(resultMessage);
-
-                        // 3. Еще через 3 секунды отправляем завершение раунда
-                        schedulerService.scheduleEvent(bot, msg.getChatId(), () -> {
-                            try {
-                                SendMessage endRoundMessage = messageService.endOfRoundOne(msg.getChatId());
-                                bot.execute(endRoundMessage);
-                                
-                                // 4. Через 2 секунды отправляем сообщение от Итераториуса и викторину
-                                schedulerService.scheduleEvent(bot, msg.getChatId(), () -> {
-                                    sendIteratoriusMessageAndQuiz(bot, msg.getChatId());
-                                }, 2);
-                                
-                            } catch (TelegramApiException e) {
-                                log.error("ArrayListStory: Ошибка отправки завершения раунда для chatId={}", msg.getChatId(), e);
-                            }
-                        }, 5);
-
-                    } catch (TelegramApiException e) {
-                        log.error("ArrayListStory: Ошибка отправки результата анализа для chatId={}", msg.getChatId(), e);
-                    }
-                },4);
-
-            } catch (TelegramApiException e) {
-                log.error("ArrayListStory: Ошибка отправки сообщения об анализе для chatId={}", msg.getChatId(), e);
-            }
+            
+            SendMessage analysisMessage = messageServiceRound1.createAnalysisMessage(msg.getChatId());
+            executeBattleAction(bot, msg.getChatId(), analysisMessage, "анализ", 60, 85, 250, 350, false);
         });
 
         commandsMap.put("\uD83D\uDEA8 Отразить \n" +
                 "вставкой \n" +
                 " в начало", (bot, msg) -> {
             log.info("ArrayListStory: Обработка команды 'Отразить' для chatId={}", msg.getChatId());
-
-            try {
-                // 1. Отправляем сообщение о вставке
-                SendMessage insertMessage = messageService.createInsertBeginningMessage(msg.getChatId());
-                bot.execute(insertMessage);
-
-                // 2. Через 3 секунды отправляем результат от Итераториуса
-                schedulerService.scheduleEvent(bot, msg.getChatId(), () -> {
-                    try {
-                        // Генерируем изменения статов для вставки в начало
-                        Map<String, Integer> statChanges = statService.generateCustomStatChanges();
-                        var user = userService.getUserByTgId(msg.getChatId());
-                        if (user != null && user.getPersonage() != null) {
-                            String characterType = user.getPersonage().getCharacterType();
-                            String individualStat = statService.getIndividualStatForCharacter(characterType);
-                            statChanges.put(individualStat, statService.generateRandomReward(15, 25));
-                        }
-
-                        // Применяем изменения статов
-                        statService.applyStatChanges(msg.getChatId(), statChanges);
-
-                        // Отправляем результат
-                        SendMessage resultMessage = messageService.createInsertBeginningResultMessage(msg.getChatId(), statChanges);
-                        bot.execute(resultMessage);
-
-                        // 3. Еще через 3 секунды отправляем завершение раунда
-                        schedulerService.scheduleEvent(bot, msg.getChatId(), () -> {
-                            try {
-                                SendMessage endRoundMessage = messageService.endOfRoundOne(msg.getChatId());
-                                bot.execute(endRoundMessage);
-                                
-                                // 4. Через 2 секунды отправляем сообщение от Итераториуса и викторину
-                                schedulerService.scheduleEvent(bot, msg.getChatId(), () -> {
-                                    sendIteratoriusMessageAndQuiz(bot, msg.getChatId());
-                                }, 2);
-                                
-                            } catch (TelegramApiException e) {
-                                log.error("ArrayListStory: Ошибка отправки завершения раунда для chatId={}", msg.getChatId(), e);
-                            }
-                        }, 4);
-
-                    } catch (TelegramApiException e) {
-                        log.error("ArrayListStory: Ошибка отправки результата вставки для chatId={}", msg.getChatId(), e);
-                    }
-                }, 5);
-
-            } catch (TelegramApiException e) {
-                log.error("ArrayListStory: Ошибка отправки сообщения о вставке для chatId={}", msg.getChatId(), e);
-            }
+            
+            SendMessage insertMessage = messageServiceRound1.createInsertBeginningMessage(msg.getChatId());
+            executeBattleAction(bot, msg.getChatId(), insertMessage, "атака", 40, 60, -250, -100, true); // Отрицательные значения для уменьшения денег
         });
 
         log.info("ArrayListStory: Карта команд инициализирована, количество команд: {}", commandsMap.size());
@@ -370,4 +234,145 @@ public class ArrayListStory {
         log.info("ArrayListStory: Отправка сообщения от Итераториуса для chatId={}", chatId);
         return theoryService.createIteratoriusMessage(chatId);
     }
+    
+    // ========================================
+    // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ДЛЯ СОКРАЩЕНИЯ КОДА
+    // ========================================
+    
+    /**
+     * 🛠️ УНИВЕРСАЛЬНЫЙ ОБРАБОТЧИК БОЕВЫХ ДЕЙСТВИЙ
+     * 
+     * Упрощает повторяющуюся логику в initCommands:
+     * 1. Отправляет сообщение о действии
+     * 2. Через 5 сек показывает результат с наградами
+     * 3. Через 5 сек показывает завершение раунда  
+     * 4. Через 3 сек запускает викторину
+     * 
+     * @param bot - Telegram bot
+     * @param chatId - ID чата
+     * @param actionMessage - сообщение о действии пользователя
+     * @param actionType - тип действия для логирования
+     * @param expRewardMin - минимальная награда опыта
+     * @param expRewardMax - максимальная награда опыта
+     * @param moneyRewardMin - минимальная награда денег
+     * @param moneyRewardMax - максимальная награда денег
+     * @param includePersonalStat - добавить ли персональный стат персонажа
+     */
+    private void executeBattleAction(TelegramLongPollingBot bot, Long chatId, SendMessage actionMessage, 
+                                   String actionType, int expRewardMin, int expRewardMax, 
+                                   int moneyRewardMin, int moneyRewardMax, boolean includePersonalStat) {
+        
+        log.info("ArrayListStory: Выполнение боевого действия '{}' для chatId={}", actionType, chatId);
+        
+        try {
+            // 1. Отправляем сообщение о действии
+            bot.execute(actionMessage);
+            
+            // 2. Через 5 секунд отправляем результат
+            schedulerService.scheduleEvent(bot, chatId, () -> {
+                try {
+                    // Генерируем награды
+                    int expReward = statService.generateRandomReward(expRewardMin, expRewardMax);
+                    int cashReward = statService.generateRandomReward(moneyRewardMin, moneyRewardMax);
+                    
+                    // Создаем мапу наград
+                    Map<String, Integer> rewards = new java.util.HashMap<>(Map.of(
+                        "achievement_points", expReward,
+                        "currency", cashReward
+                    ));
+                    
+                    // Добавляем персональный стат если нужно
+                    if (includePersonalStat) {
+                        addPersonalStatReward(chatId, rewards);
+                    }
+                    
+                    // Применяем награды
+                    statService.applyStatChanges(chatId, rewards);
+                    
+                    // Отправляем результат
+                    SendMessage resultMessage;
+                    if (includePersonalStat) {
+                        resultMessage = messageServiceRound1.createInsertBeginningResultMessage(chatId, rewards);
+                    } else {
+                        // Выбираем правильное сообщение в зависимости от типа действия
+                        switch (actionType) {
+                            case "try-catch":
+                                resultMessage = messageServiceRound1.createTryCatchResultMessage(chatId, expReward, cashReward);
+                                break;
+                            case "анализ":
+                                resultMessage = messageServiceRound1.createAnalysisResultMessage(chatId, expReward, cashReward);
+                                break;
+                            default:
+                                resultMessage = messageServiceRound1.createTryCatchResultMessage(chatId, expReward, cashReward);
+                                break;
+                        }
+                    }
+                    bot.execute(resultMessage);
+                    
+                    // 3. Через 5 секунд отправляем завершение раунда
+                    schedulerService.scheduleEvent(bot, chatId, () -> {
+                        try {
+                            SendMessage endRoundMessage = messageServiceRound1.endOfRoundOne(chatId);
+                            bot.execute(endRoundMessage);
+                            
+                            // 4. Через 3 секунды запускаем викторину
+                            schedulerService.scheduleEvent(bot, chatId, () -> {
+                                sendIteratoriusMessageAndQuiz(bot, chatId);
+                            }, 3);
+                            
+                        } catch (TelegramApiException e) {
+                            log.error("ArrayListStory: Ошибка отправки завершения раунда '{}' для chatId={}", actionType, chatId, e);
+                        }
+                    }, 5);
+                    
+                } catch (TelegramApiException e) {
+                    log.error("ArrayListStory: Ошибка отправки результата '{}' для chatId={}", actionType, chatId, e);
+                }
+            }, 5);
+            
+        } catch (TelegramApiException e) {
+            log.error("ArrayListStory: Ошибка отправки сообщения '{}' для chatId={}", actionType, chatId, e);
+        }
+    }
+    
+    /**
+     * 🎭 ДОБАВЛЕНИЕ ПЕРСОНАЛЬНОГО СТАТА ПЕРСОНАЖА
+     * 
+     * Добавляет индивидуальный стат в зависимости от типа персонажа.
+     * Используется для агрессивных действий (вставка в начало).
+     */
+    private void addPersonalStatReward(Long chatId, Map<String, Integer> rewards) {
+        try {
+            var user = userService.getUserByTgId(chatId);
+            if (user != null && user.getPersonage() != null) {
+                String characterType = user.getPersonage().getCharacterType();
+                String individualStat = statService.getIndividualStatForCharacter(characterType);
+                int personalReward = statService.generateRandomReward(15, 25);
+                
+                rewards.put(individualStat, personalReward);
+                log.debug("ArrayListStory: Добавлен персональный стат '{}' = {} для персонажа '{}'", 
+                    individualStat, personalReward, characterType);
+            }
+        } catch (Exception e) {
+            log.warn("ArrayListStory: Ошибка добавления персонального стата для chatId={}", chatId, e);
+        }
+    }
+    
+    /**
+//     * 🚀 ПРОСТОЙ СПОСОБ ЗАПУСКА РАУНДА 2
+//     *
+//     * Отправляет сообщение о начале раунда 2.
+//     * Можно вызывать после завершения викторины.
+//     */
+//    public void startRound2(TelegramLongPollingBot bot, Long chatId) {
+//        log.info("ArrayListStory: Запуск раунда 2 для chatId={}", chatId);
+//
+//        try {
+//            SendMessage round2Message = messageServiceRound2.createRound2Message(chatId);
+//            bot.execute(round2Message);
+//            log.info("ArrayListStory: Раунд 2 успешно запущен для chatId={}", chatId);
+//        } catch (TelegramApiException e) {
+//            log.error("ArrayListStory: Ошибка запуска раунда 2 для chatId={}", chatId, e);
+//        }
+//    }
 }

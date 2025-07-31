@@ -131,7 +131,6 @@ public class StatService {
             Integer change = entry.getValue();
 
             switch (statName) {
-                case "money":
                 case "currency":
                     Double currentCurrency = entity.getCurrency();
                     entity.setCurrency((currentCurrency != null ? currentCurrency : 0.0) + change);
