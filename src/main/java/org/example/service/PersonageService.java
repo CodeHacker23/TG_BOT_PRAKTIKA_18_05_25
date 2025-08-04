@@ -1,5 +1,6 @@
 package org.example.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.model.entity.PersonageEntity;
 import org.example.repository.PersonageRepository;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import java.util.Random;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PersonageService {
     private final PersonageRepository personageRepository;
     private final Random random = new Random();
@@ -108,6 +110,8 @@ public class PersonageService {
             field.set(personage, newValue);
             personageRepository.save(personage);
         } catch (Exception e) {
+            log.error("PersonageService: КРИТИЧЕСКАЯ ошибка обновления поля '{}' у персонажа (ID={}): {}", 
+                     fieldName, personage.getId(), e.getMessage(), e);
             throw new RuntimeException("Ошибка обновления поля '" + fieldName + "' у персонажа: " + e.getMessage(), e);
         }
         return delta;

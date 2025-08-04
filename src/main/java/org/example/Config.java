@@ -36,8 +36,10 @@ public class Config {
             telegramBotsApi.registerBot(bot);
             System.out.println("[Config] telegramBotsApi() — бот успешно зарегистрирован!");
         } catch (TelegramApiException e) {
-            System.err.println("[Config] Ошибка регистрации бота: " + e.getMessage());
-            throw new RuntimeException();
+            System.err.println("[Config] КРИТИЧЕСКАЯ ОШИБКА: Не удалось зарегистрировать бота в Telegram API!");
+            System.err.println("[Config] Детали ошибки: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Не удалось зарегистрировать Telegram бота. Проверьте токен и подключение к интернету.", e);
         }
         return telegramBotsApi;
     }

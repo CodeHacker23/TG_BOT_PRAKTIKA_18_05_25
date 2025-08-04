@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 public class PhotoReam {
     /**
      * Фото с теорией по ArrayList
+     *
      * @param chatId — ID чата Telegram
      * @return SendPhoto — объект для отправки теории
      * <p>
@@ -29,14 +30,15 @@ public class PhotoReam {
 
     /**
      * Мем: встреча в Риме (фото воина)
+     *
      * @param chatId — ID чата Telegram
      * @return SendPhoto — мемная фотка
      * Пример:
-     *   SendPhoto photo = photoService.photoWarrior(chatId);
-     *   bot.execute(photo);
+     * SendPhoto photo = photoService.photoWarrior(chatId);
+     * bot.execute(photo);
      * Юмор: если не добавишь мем — Архитектор пришлёт тебе мем про SpaghettiCode.
      */
-    public SendPhoto photoWarrior(Long chatId){
+    public SendPhoto photoWarrior(Long chatId) {
         System.out.println("[PhotoService] photoWarrior() — отправляем мемную фотку воина.");
         SendPhoto sendPhotoStart = SendPhoto
                 .builder()
@@ -51,20 +53,21 @@ public class PhotoReam {
 
     /**
      * Фото генерала Итераториуса (легенда коллекций)
+     *
      * @param chatId — ID чата Telegram
      * @return SendPhoto — фото генерала
      * Пример:
-     *   SendPhoto photo = photoService.photoIteratorius(chatId);
-     *   bot.execute(photo);
+     * SendPhoto photo = photoService.photoIteratorius(chatId);
+     * bot.execute(photo);
      * Юмор: если не знаешь, что такое .next() — Итераториус тебя не пощадит.
      */
-    public SendPhoto photoIteratorius(Long chatId){
+    public SendPhoto photoIteratorius(Long chatId) {
         System.out.println("[PhotoService] photoIteratorius() — отправляем фото генерала Итераториуса.");
         SendPhoto sendPhoto = SendPhoto
                 .builder()
                 .chatId(chatId)
                 .photo(new InputFile("https://ltdfoto.ru/image/sC91sk"))
-                .caption("*Я — Генерал Итераториус.* \n"+
+                .caption("*Я — Генерал Итераториус.* \n" +
                         "_На этой арене не выживают те, кто не знает, что такое .next()..._\n" +
                         "\n" +
                         "Ты прибыл из будущего...\n" +
@@ -80,10 +83,11 @@ public class PhotoReam {
 
     /**
      * Наша фотка первого отрицательного персонажа и его характеристики.
+     *
      * @param chatId
      * @return
      */
-    public static SendPhoto photoArray(Long chatId){
+    public static SendPhoto photoArray(Long chatId) {
         System.out.println("[PhotoService] photoArray() — отправляем фото ARRAY.");
         SendPhoto sendPhoto = SendPhoto.builder()
                 .chatId(chatId)
@@ -100,7 +104,7 @@ public class PhotoReam {
         return sendPhoto;
     }
 
-    public static SendPhoto createRound2PhotoMessage(Long chatId, String statsLine){
+    public static SendPhoto createRound2PhotoMessage(Long chatId, String statsLine) {
         System.out.println("[PhotoService] createRound2PhotoMessage() — отправляем фото раунда 2.");
         SendPhoto sendPhoto = SendPhoto.builder()
                 .chatId(chatId)
@@ -114,6 +118,22 @@ public class PhotoReam {
                         statsLine)
                 .build();
         return sendPhoto;
+    }
+
+    public static SendPhoto quizCoffeRound2(Long chatId) {
+        System.out.println("[PhotoService] quizCoffeRound2() — отправляем фото нашего кода для раунда 2.");
+        SendPhoto sendPhoto = SendPhoto.builder()
+                .chatId(chatId)
+                .parseMode("Markdown")
+                .photo(new InputFile("https://ltdfoto.ru/image/vJ7h93"))
+                .caption("☕*Кофе-брейк превратился в минное поле!*\n" +
+                        "Ты мирно попиваешь кофеёк, а Аррейон подкидывает тебе гадость:\n\n" +
+                        "\uD83E\uDD14 *Что произойдёт?* _Твой кофе уже начинает горчить..._")
+                .build();
+        return sendPhoto;
+
+
+
     }
 
 }

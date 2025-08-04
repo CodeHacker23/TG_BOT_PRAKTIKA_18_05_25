@@ -3,14 +3,16 @@ package org.example.service.ArrayList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.service.UserService;
+import org.example.service.PersonageStatManager;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.polls.SendPoll;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+
 import org.telegram.telegrambots.meta.api.objects.polls.PollAnswer;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -42,7 +44,12 @@ public class QuizService {
 
     private final StatService statService;
     private final UserService userService;
+    private final ArrayListTheoryService arrayListTheoryService;
+    private final PersonageStatManager personageStatManager;
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    
+    // 🗺️ MAP ДЛЯ ОТСЛЕЖИВАНИЯ ТИПОВ ВИКТОРИН: chatId -> тип последней викторины
+    private final Map<Long, String> lastQuizType = new HashMap<>();
 
     /**
      * Создает викторину по ArrayList.
@@ -67,8 +74,76 @@ public class QuizService {
         poll.setType("quiz");
         poll.setExplanation("БЛЯТЬ");
         
-        log.info("QuizService: Викторина создана для chatId={}, правильный ответ: {}", chatId, QuizConstants.CORRECT_ANSWER);
+        // 🏷️ Сохраняем тип викторины для правильной обработки ответов
+        lastQuizType.put(chatId, "normal");
+        
+        log.info("QuizService: Обычная викторина создана для chatId={}, правильный ответ: {}", chatId, QuizConstants.CORRECT_ANSWER);
         return poll;
+    }
+
+    /**
+     * ☕ СОЗДАЕТ КОФЕ-ВИКТОРИНУ С NULL
+     * 
+     * Специальная викторина для кофе-брейка про добавление null в ArrayList.
+     * 
+     * @param chatId — ID чата Telegram
+     * @return SendPoll — объект кофе-викторины
+     *
+     * Пример:
+     *   SendPoll coffeeQuiz = quizService.createCoffeeQuiz(chatId);
+     *   bot.execute(coffeeQuiz);
+     */
+    public SendPoll createCoffeeQuiz(Long chatId) {
+        log.info("QuizService: Создание кофе-викторины для chatId={}", chatId);
+        
+        SendPoll poll = new SendPoll();
+        poll.setIsAnonymous(false); // НЕАНОНИМНАЯ викторина для отслеживания ответов
+        
+        poll.setChatId(chatId);
+        poll.setQuestion(QuizConstants.COFFEE_QUIZ_QUESTION);
+        poll.setOptions(QuizConstants.COFFEE_QUIZ_OPTIONS);
+        poll.setCorrectOptionId(QuizConstants.COFFEE_CORRECT_ANSWER);
+        poll.setType("quiz");
+        poll.setExplanation("ArrayList может хранить null значения!");
+        
+        // ☕ Сохраняем тип кофе-викторины для правильной обработки ответов  
+        lastQuizType.put(chatId, "coffee");
+        
+        log.info("QuizService: Кофе-викторина создана для chatId={}, правильный ответ: {}", chatId, QuizConstants.COFFEE_CORRECT_ANSWER);
+        return poll;
+    }
+
+    /**
+     * 🎯 УНИВЕРСАЛЬНЫЙ ОБРАБОТЧИК ВИКТОРИН
+     * 
+     * Автоматически определяет тип викторины (обычная или кофе-викторина)
+     * и вызывает соответствующий обработчик.
+     * 
+     * @param pollAnswer — ответ пользователя на викторину
+     * @param bot        — Telegram бот для отправки ответа
+     */
+    public void handleAnyQuizAnswer(PollAnswer pollAnswer, TelegramLongPollingBot bot) {
+        Long chatId = pollAnswer.getUser().getId();
+        String quizType = lastQuizType.get(chatId);
+        
+        log.info("QuizService: Получен ответ на викторину для chatId={}, тип викторины: {}", chatId, quizType);
+        
+        if ("coffee".equals(quizType)) {
+            // ☕ Это кофе-викторина - используем специальный обработчик (БЕЗ запуска раунда 2)
+            log.info("QuizService: Обрабатываем ответ на КОФЕ-викторину для chatId={}", chatId);
+            handleCoffeeQuizAnswer(pollAnswer, bot);
+        } else if ("normal".equals(quizType)) {
+            // 📝 Это обычная викторина - используем стандартный обработчик (С запуском раунда 2)
+            log.info("QuizService: Обрабатываем ответ на ОБЫЧНУЮ викторину для chatId={}", chatId);
+            handleQuizAnswer(pollAnswer, bot);
+        } else {
+            // ❓ Неизвестный тип викторины - логируем и используем стандартный обработчик
+            log.warn("QuizService: Неизвестный тип викторины '{}' для chatId={}, используем стандартный обработчик", quizType, chatId);
+            handleQuizAnswer(pollAnswer, bot);
+        }
+        
+        // 🧹 Очищаем тип викторины после обработки
+        lastQuizType.remove(chatId);
     }
 
     /**
@@ -103,6 +178,57 @@ public class QuizService {
     }
 
     /**
+     * ☕ ОБРАБАТЫВАЕТ ОТВЕТ НА КОФЕ-ВИКТОРИНУ
+     * 
+     * Специальная обработка для кофе-викторины с null.
+     * 
+     * @param pollAnswer — ответ пользователя на кофе-викторину
+     * @param bot — TelegramLongPollingBot для отправки сообщений
+     */
+    public void handleCoffeeQuizAnswer(PollAnswer pollAnswer, TelegramLongPollingBot bot) {
+        Long chatId = pollAnswer.getUser().getId();
+        int selectedOption = pollAnswer.getOptionIds().get(0);
+        boolean isCorrect = selectedOption == QuizConstants.COFFEE_CORRECT_ANSWER;
+        
+        log.info("QuizService: Обработка ответа на КОФЕ-викторину для chatId={}, выбранный вариант: {}, правильный: {}, результат: {}", 
+                chatId, selectedOption, QuizConstants.COFFEE_CORRECT_ANSWER, isCorrect ? "ПРАВИЛЬНО" : "НЕПРАВИЛЬНО");
+
+        // Начисляем/снимаем очки через PersonageStatManager
+        PersonageStatManager.StatUpdateResult result;
+        if (isCorrect) {
+            result = personageStatManager.updateRandomRewards(chatId, 
+                QuizConstants.COFFEE_CORRECT_REWARD, QuizConstants.COFFEE_CORRECT_REWARD, 0, 0);
+        } else {
+            result = personageStatManager.updateRandomRewards(chatId, 
+                QuizConstants.COFFEE_WRONG_PENALTY, QuizConstants.COFFEE_WRONG_PENALTY, 0, 0);
+        }
+        
+        // Отправляем результат кофе-викторины
+        sendCoffeeQuizResult(bot, chatId, isCorrect);
+    }
+
+    /**
+     * ☕ ОТПРАВЛЯЕТ РЕЗУЛЬТАТ КОФЕ-ВИКТОРИНЫ
+     * 
+     * @param bot — TelegramLongPollingBot для отправки сообщений
+     * @param chatId — ID чата пользователя
+     * @param isCorrect — правильно ли ответил пользователь
+     */
+    private void sendCoffeeQuizResult(TelegramLongPollingBot bot, Long chatId, boolean isCorrect) {
+        try {
+            SendMessage message = createCoffeeQuizResultMessage(chatId, isCorrect);
+            bot.execute(message);
+            
+            String result = isCorrect ? "ПРАВИЛЬНО" : "НЕПРАВИЛЬНО";
+            int points = isCorrect ? QuizConstants.COFFEE_CORRECT_REWARD : QuizConstants.COFFEE_WRONG_PENALTY;
+            log.info("QuizService: Результат КОФЕ-викторины отправлен для chatId={}, результат: {}, очки: {}", chatId, result, points);
+            
+        } catch (TelegramApiException e) {
+            log.error("QuizService: Ошибка отправки результата кофе-викторины для chatId={}", chatId, e);
+        }
+    }
+
+    /**
      * Отправляет результат викторины пользователю.
      * 
      * @param bot — TelegramLongPollingBot для отправки сообщений
@@ -123,7 +249,7 @@ public class QuizService {
                 try {
                     log.info("QuizService: Отправляем реплику Итераториуса о раунде 2 для chatId={}", chatId);
                     
-                    MessageServiceRound2 messageServiceRound2 = new MessageServiceRound2(userService, statService, null);
+                    MessageServiceRound2 messageServiceRound2 = new MessageServiceRound2(userService, arrayListTheoryService, personageStatManager, this);
                     SendMessage round2IntroMessage = messageServiceRound2.createIteratoriusRound2Intro(chatId);
                     bot.execute(round2IntroMessage);
                     
@@ -161,6 +287,25 @@ public class QuizService {
     }
 
     /**
+     * ☕ СОЗДАЕТ СООБЩЕНИЕ С РЕЗУЛЬТАТОМ КОФЕ-ВИКТОРИНЫ
+     * 
+     * @param chatId — ID чата пользователя
+     * @param isCorrect — правильно ли ответил пользователь
+     * @return SendMessage — сообщение с результатом кофе-викторины
+     */
+    private SendMessage createCoffeeQuizResultMessage(Long chatId, boolean isCorrect) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setParseMode("Markdown");
+        
+        // Выбираем сообщение в зависимости от правильности ответа
+        String messageText = isCorrect ? QuizConstants.COFFEE_CORRECT_MESSAGE : QuizConstants.COFFEE_WRONG_MESSAGE;
+        sendMessage.setText(messageText);
+        
+        return sendMessage;
+    }
+
+    /**
      * Создает сообщение от Итераториуса перед викториной.
      * 
      * @param chatId — ID чата пользователя
@@ -192,17 +337,14 @@ public class QuizService {
         
         scheduler.schedule(() -> {
             try {
-                log.info("QuizService: Запускаем раунд 2 для chatId={}", chatId);
+                log.info("QuizService: Запускаем ПОЛНУЮ ЦЕПОЧКУ раунда 2 для chatId={}", chatId);
                 
-                // Создаем экземпляр MessageServiceRound2 для отправки фото-сообщения раунда 2
-                MessageServiceRound2 messageServiceRound2 = new MessageServiceRound2(userService, statService, null);
-                SendPhoto round2PhotoMessage = messageServiceRound2.createRound2Message(chatId);
-                bot.execute(round2PhotoMessage);
+                // 🚀 ЗАПУСКАЕМ ПОЛНУЮ ЦЕПОЧКУ: фото + 3 сообщения с задержками
+                MessageServiceRound2 messageServiceRound2 = new MessageServiceRound2(userService, arrayListTheoryService, personageStatManager, this);
+                messageServiceRound2.startRound2Sequence(bot, chatId);
                 
-                log.info("QuizService: Раунд 2 успешно запущен для chatId={}", chatId);
+                log.info("QuizService: ✅ Полная цепочка раунда 2 ЗАПЛАНИРОВАНА для chatId={}", chatId);
                 
-            } catch (TelegramApiException e) {
-                log.error("QuizService: Ошибка запуска раунда 2 для chatId={}", chatId, e);
             } catch (Exception e) {
                 log.error("QuizService: Неожиданная ошибка при запуске раунда 2 для chatId={}", chatId, e);
             }

@@ -184,7 +184,7 @@ public class ArrayListSchedulerService {
                                 try {
                                     bot.execute(attackMessage);
                                 } catch (TelegramApiException e) {
-                                    throw new RuntimeException(e);
+                                    log.error("ArrayListSchedulerService: Ошибка отправки атаки противника для chatId={}: {}", chatId, e.getMessage());
                                 }
                             }, 4, TimeUnit.SECONDS);
 

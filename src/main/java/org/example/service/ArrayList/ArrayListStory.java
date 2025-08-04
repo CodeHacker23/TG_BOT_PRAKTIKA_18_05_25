@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.polls.SendPoll;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -122,6 +123,35 @@ public class ArrayListStory {
             SendMessage insertMessage = messageServiceRound1.createInsertBeginningMessage(msg.getChatId());
             executeBattleAction(bot, msg.getChatId(), insertMessage, "атака", 40, 60, -250, -100, true); // Отрицательные значения для уменьшения денег
         });
+
+        commandsMap.put("☠\uFE0F Добить",((bot, msg) -> {
+            log.info("ArrayListStory: Обработка команды '☠\uFE0F Добить' для chatId={}", msg.getChatId());
+            SendMessage finishOff = messageSrviceRound2.messageFinishOff(msg.getChatId());
+            try {
+                bot.execute(finishOff);
+            } catch (TelegramApiException e) {
+                log.error("ошибка отправки сообщения на кнопку ДОБИТЬ");
+            }
+        }));
+
+        commandsMap.put("\uD83E\uDDE0 .ensureCapacity()",(bot,msg)->{
+            log.info("ArrayListStory: Обработка команды '\uD83E\uDDE0 ensureCapacity' для chatId={}", msg.getChatId());
+            SendMessage ensureCapacity = messageSrviceRound2.messageEnsureCapacityRound2(msg.getChatId());
+            try {
+                bot.execute(ensureCapacity);
+            } catch (TelegramApiException e) {
+                throw new RuntimeException(e);
+            }
+
+        });
+
+        commandsMap.put("☕Кофе пауза",(bot,msg) ->{
+            log.info("ArrayListStory: Обработка команды '☕Кофе пауза' для chatId={}", msg.getChatId());
+            
+            // 🚀 Запускаем кофе-сценарий: фото с кодом → викторина → ответ Итераториуса
+            messageSrviceRound2.messageCoffeRound2(bot, msg.getChatId());
+        });
+
 
         log.info("ArrayListStory: Карта команд инициализирована, количество команд: {}", commandsMap.size());
     }
@@ -359,20 +389,25 @@ public class ArrayListStory {
     }
     
     /**
-//     * 🚀 ПРОСТОЙ СПОСОБ ЗАПУСКА РАУНДА 2
-//     *
-//     * Отправляет сообщение о начале раунда 2.
-//     * Можно вызывать после завершения викторины.
-//     */
-//    public void startRound2(TelegramLongPollingBot bot, Long chatId) {
-//        log.info("ArrayListStory: Запуск раунда 2 для chatId={}", chatId);
-//
-//        try {
-//            SendMessage round2Message = messageServiceRound2.createRound2Message(chatId);
-//            bot.execute(round2Message);
-//            log.info("ArrayListStory: Раунд 2 успешно запущен для chatId={}", chatId);
-//        } catch (TelegramApiException e) {
-//            log.error("ArrayListStory: Ошибка запуска раунда 2 для chatId={}", chatId, e);
-//        }
-//    }
+     * 🚀 ЗАПУСК РАУНДА 2 С ЦЕПОЧКОЙ СООБЩЕНИЙ
+     * 
+     * ПОСЛЕДОВАТЕЛЬНОСТЬ:
+     * 1. Фото с объявлением раунда 2 и статами (сразу)
+     * 2. Через 5 сек → sendMessageText2Rond
+     * 3. Через 3 сек → messageArreyon2Rond  
+     * 4. Через 4 сек → messageIteratorius2Rond
+     * 
+     * После каждого сообщения пользователь может отвечать на кнопки.
+     * 
+     * @param bot — Telegram бот для отправки
+     * @param chatId — ID чата пользователя
+     */
+    public void startRound2WithSequence(TelegramLongPollingBot bot, Long chatId) {
+        log.info("ArrayListStory: 🚀 Делегирование запуска раунда 2 в MessageServiceRound2 для chatId={}", chatId);
+        
+        // Используем новую надежную реализацию из MessageServiceRound2
+        messageSrviceRound2.startRound2Sequence(bot, chatId);
+        
+        log.info("ArrayListStory: ✅ Раунд 2 успешно делегирован для chatId={}", chatId);
+    }
 }

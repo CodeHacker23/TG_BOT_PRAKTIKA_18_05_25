@@ -99,11 +99,13 @@ public class CallbackQueryHandlerService {
             user.setPassedArrayList(true);
             userService.saveUser(user);
         } else {
-            try {
-                bot.execute(new SendMessage(chatId.toString(), "Ошибка: пользователь не найден. Попробуй ещё раз или напиши Архитектору."));
-            } catch (TelegramApiException e) {
-                log.error("Ошибка при отправке сообщения об ошибке: {}", e.getMessage());
-            }
+            // Используем утилитный класс для отправки дружелюбного сообщения и логирования
+            org.example.util.ErrorMessageUtil.sendCustomFriendlyMessage(
+                bot, chatId, userId,
+                "🎮 Для начала приключения нажмите /start!",
+                "Пользователь не найден в базе данных", 
+                "CallbackQueryHandlerService"
+            );
         }
     }
 

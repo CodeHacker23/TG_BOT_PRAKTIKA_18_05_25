@@ -428,7 +428,7 @@ public class StoryStartService {
                     try {
                         bot.execute(photoWithKeyboard); // отправляем фото с кнопками!
                     } catch (TelegramApiException e) {
-                        throw new RuntimeException(e);
+                        log.error("StoryStartService: Ошибка отправки фото с кнопками для chatId={}: {}", chatId, e.getMessage());
                     }
                 }, 4, TimeUnit.SECONDS);
             }
@@ -442,7 +442,7 @@ public class StoryStartService {
                     try {
                         bot.execute(photoWithKeyboard); // отправляем фото с кнопками!
                     } catch (TelegramApiException e) {
-                        throw new RuntimeException(e);
+                        log.error("StoryStartService: Ошибка отправки фото с кнопками для chatId={}: {}", chatId, e.getMessage());
                     }
                 }, 4, TimeUnit.SECONDS);
             }
@@ -455,7 +455,7 @@ public class StoryStartService {
                     try {
                         bot.execute(photoWithKeyboard); // отправляем фото с кнопками!
                     } catch (TelegramApiException e) {
-                        throw new RuntimeException(e);
+                        log.error("StoryStartService: Ошибка отправки фото с кнопками для chatId={}: {}", chatId, e.getMessage());
                     }
                 }, 4, TimeUnit.SECONDS);
             }
