@@ -109,4 +109,35 @@ public class KeyboardReam {
         return replyKeyboardMarkup;
     }
 
+    public static ReplyKeyboardMarkup BattlArreynRound2(Long chatId){
+        log.info("BattlArreynRound2() - cоздаем клавиатуру с кнопками  'Добить', 'ensureCapacity() ', 'Кофе пауза ' для chatId = {}" , chatId);
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
+
+        KeyboardRow row = new KeyboardRow();
+        row.add(new KeyboardButton("☠\uFE0F Добить"));
+        row.add(new KeyboardButton("\uD83E\uDDE0 .ensureCapacity()"));
+        row.add(new KeyboardButton("☕Кофе пауза"));
+
+        replyKeyboardMarkup.setKeyboard(List.of(row));
+        return replyKeyboardMarkup;
+    }
+
+    public static ReplyKeyboardMarkup BattlArreynRound3(Long chatId){
+        log.info("BattlArreynRound3() - cоздаем клавиатуру с кнопками  '\uD83D\uDFE2 Пощадить', '\uD83D\uDD34 Добить() ', '\uD83D\uDFE1 Спросить Итераториуса ' для chatId = {}" , chatId);
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
+
+        KeyboardRow row = new KeyboardRow();
+        row.add(new KeyboardButton("\uD83D\uDFE2 Пощадить"));
+        row.add(new KeyboardButton("\uD83D\uDD34 Добить\n"));
+        row.add(new KeyboardButton("\uD83D\uDFE1 Спросить Итераториуса"));
+
+        replyKeyboardMarkup.setKeyboard(List.of(row));
+        return replyKeyboardMarkup;
+
+    }
+
 }

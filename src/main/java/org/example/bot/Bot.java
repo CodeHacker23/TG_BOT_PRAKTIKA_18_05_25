@@ -95,7 +95,9 @@ public class Bot extends TelegramLongPollingBot { // класс бота
     private void handlePollAnswer(Update update) {
         log.info("PollAnswer: получен ответ на викторину от userId={}", 
                 update.getPollAnswer().getUser().getId());
-        quizService.handleQuizAnswer(update.getPollAnswer(), this);
+        
+        // 🎯 Используем универсальный обработчик викторин
+        quizService.handleAnyQuizAnswer(update.getPollAnswer(), this);
     }
 
     /**
@@ -193,8 +195,8 @@ public class Bot extends TelegramLongPollingBot { // класс бота
             messageHandlerService.handleMessage(this, update.getMessage());
             log.info("Завершена обработка сообщения MessageHandlerService.");
         } catch (TelegramApiException e) {
-            log.error("Ошибка в MessageHandlerService: {}", e.getMessage());
-            throw new RuntimeException(e);
+            log.error("Bot: Критическая ошибка в MessageHandlerService для update: {}", e.getMessage(), e);
+            // Не прерываем работу бота из-за одной ошибки обработки сообщения
         }
     }
 
