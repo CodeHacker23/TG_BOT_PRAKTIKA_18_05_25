@@ -16,7 +16,7 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
  *   p2.setName("Петя");
  *   p2.humor(10);
  *
- * Юмор: если скопируешь поле humor в Personage3 — Архитектор лично напишет тебе в Telegram.
+ * Юмор: если скопируешь поле humor в Personage3 — Иларион лично напишет тебе в Telegram.
  */
 public class Personage2 extends PersonageBase {
     /** Юмор */
@@ -29,7 +29,7 @@ public class Personage2 extends PersonageBase {
      * Здесь создаётся новый герой с уникальными параметрами.
      * Пример:
      *   Personage2 p2 = new Personage2();
-     * Юмор: если забудешь вызвать super() — Архитектор лично напишет тебе в Telegram.
+     * Юмор: если забудешь вызвать super() — Иларион лично напишет тебе в Telegram.
      */
     public Personage2() {
         System.out.println("[Personage2] Конструктор — создаём нового персонажа Personage2");
@@ -165,5 +165,5 @@ public class Personage2 extends PersonageBase {
     // --- Советы по расширению ---
     // 1. Все уникальные свойства (например, юмор, коммуникации) — только здесь.
     // 2. Не копипасть! Если логика повторяется — выноси в базу.
-    // 3. Если добавишь метод без комментария — Архитектор лично напишет тебе в Telegram.
+    // 3. Если добавишь метод без комментария — Иларион лично напишет тебе в Telegram.
 }

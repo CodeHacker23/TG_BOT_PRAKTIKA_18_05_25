@@ -16,7 +16,7 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
  *   p3.setName("Лёха");
  *   p3.codeAccuracy(10);
  *
- * Юмор: если скопируешь codeAccuracy в Personage1 — Архитектор лично напишет тебе в Telegram.
+ * Юмор: если скопируешь codeAccuracy в Personage1 — Иларион лично напишет тебе в Telegram.
  */
 public class Personage3 extends PersonageBase {
     /** Точность кода */
@@ -29,7 +29,7 @@ public class Personage3 extends PersonageBase {
      * Здесь создаётся новый герой с уникальными параметрами.
      * Пример:
      *   Personage3 p3 = new Personage3();
-     * Юмор: если забудешь вызвать super() — Архитектор лично напишет тебе в Telegram.
+     * Юмор: если забудешь вызвать super() — Иларион лично напишет тебе в Telegram.
      */
     public Personage3() {
         System.out.println("[Personage3] Конструктор — создаём нового персонажа Personage3");
@@ -164,5 +164,5 @@ public class Personage3 extends PersonageBase {
     // --- Советы по расширению ---
     // 1. Все уникальные свойства (например, codeAccuracy, optimization) — только здесь.
     // 2. Не копипасть! Если логика повторяется — выноси в базу.
-    // 3. Если добавишь метод без комментария — Архитектор лично напишет тебе в Telegram.
+    // 3. Если добавишь метод без комментария — Иларион лично напишет тебе в Telegram.
 }

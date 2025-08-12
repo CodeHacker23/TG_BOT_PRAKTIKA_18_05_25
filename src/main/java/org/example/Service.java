@@ -15,7 +15,7 @@ import org.example.service.UserService;
  *   - Хочешь добавить новую команду? Добавь case в switch и делегируй обработку в отдельный StoryService (например, LinkedListStoryService).
  *   - Не пихай всю логику прямо сюда — делегируй!
  *
- * Юмор: если добавишь 100 case'ов в switch — Архитектор лично напишет тебе в Telegram.
+ * Юмор: если добавишь 100 case'ов в switch — Иларион лично напишет тебе в Telegram.
  */
 @RequiredArgsConstructor
 @org.springframework.stereotype.Service
@@ -76,7 +76,7 @@ public class Service {
     // 1. Для каждой новой коллекции (LinkedList, Set, Map и т.д.) делай отдельный StoryService.
     // 2. В этом сервисе только роутинг и общая информация, не пихай сюда бизнес-логику.
     // 3. Если логика повторяется — выноси в абстрактные классы/интерфейсы.
-    // 4. Если добавишь 100 case'ов — Архитектор лично напишет тебе в Telegram.
+    // 4. Если добавишь 100 case'ов — Иларион лично напишет тебе в Telegram.
 }
 
 

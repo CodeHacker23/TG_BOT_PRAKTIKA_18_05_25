@@ -53,7 +53,7 @@ public class PersonageService {
      *    int analyticsDelta = personageService.updateStatWithRandomDelta(personage, "analytics", 23, 39);
      *    int optimizationDelta = personageService.updateStatWithRandomDelta(personage, "optimization", 23, 39);
      *
-     * 5. Не забудь: если будешь обновлять не то поле — Архитектор лично напишет тебе в Telegram!
+     * 5. Не забудь: если будешь обновлять не то поле — Иларион лично напишет тебе в Telegram!
      *
      * === Пример в обработчике команды ===
      *
@@ -85,7 +85,7 @@ public class PersonageService {
             personage.setAnalytics(analytics + analyticsDelta);
         }
         // --- Теперь ты не просто джун, а ЛЕГИОНЕР, мать его! ---
-        personage.setStatus("Легионер"); // Если забудешь это — Архитектор лично напишет тебе в Telegram и в БД будет вечный Новобранец
+        personage.setStatus("Легионер"); // Если забудешь это — Иларион лично напишет тебе в Telegram и в БД будет вечный Новобранец
         personageRepository.save(personage);
     }
 

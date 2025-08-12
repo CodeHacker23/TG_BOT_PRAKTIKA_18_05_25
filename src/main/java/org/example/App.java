@@ -16,7 +16,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *       SpringApplication.run(App.class, args);
  *   }
  *
- * Юмор: если начнёшь писать логику в main — Архитектор лично напишет тебе в Telegram.
+ * Юмор: если начнёшь писать логику в main — Иларион лично напишет тебе в Telegram.
  */
 @SpringBootApplication
 public class App {

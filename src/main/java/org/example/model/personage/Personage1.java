@@ -19,7 +19,7 @@ public class Personage1 extends PersonageBase {
      * Здесь создаётся новый герой с уникальными параметрами.
      * Пример:
      *   Personage1 p1 = new Personage1();
-     * Юмор: если забудешь вызвать super() — Архитектор лично напишет тебе в Telegram.
+     * Юмор: если забудешь вызвать super() — Иларион лично напишет тебе в Telegram.
      */
     public Personage1() {
         System.out.println("[Personage1] Конструктор — создаём нового персонажа Personage1");
@@ -54,7 +54,7 @@ public class Personage1 extends PersonageBase {
      * @param delta — на сколько изменить
      * Пример:
      *   p1.changeAnalytics(10);
-     * Юмор: если аналитика > 9000 — ты уже Архитектор.
+     * Юмор: если аналитика > 9000 — ты уже Иларион.
      */
     public void changeAnalytics(int delta) {
         System.out.println("[Personage1] changeAnalytics() — старт, текущее значение: " + analytics);

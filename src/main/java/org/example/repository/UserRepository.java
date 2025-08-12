@@ -16,7 +16,7 @@ import java.util.Optional;
  *   Optional<UserEntity> userOpt = userRepository.findByTgId(123456789L);
  *   UserEntity user = userRepository.findByUsername("vasya");
  *
- * Юмор: если начнёшь писать SQL вручную в репозитории — Архитектор лично напишет тебе в Telegram.
+ * Юмор: если начнёшь писать SQL вручную в репозитории — Иларион лично напишет тебе в Telegram.
  */
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
     /**
@@ -40,6 +40,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     // --- Советы по расширению ---
     // 1. Новый способ поиска? Добавь метод findByXxx.
     // 2. Не пихай бизнес-логику — только запросы к БД.
-    // 3. Если добавишь метод без комментария — Архитектор лично напишет тебе в Telegram.
+    // 3. Если добавишь метод без комментария — Иларион лично напишет тебе в Telegram.
     // Если потребуется сложная логика — создай кастомный репозиторий и реализуй там с логами.
 }
