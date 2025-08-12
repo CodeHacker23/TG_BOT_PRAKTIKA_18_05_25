@@ -126,7 +126,7 @@ public class ArrayListStory {
 
         commandsMap.put("☠\uFE0F Добить",((bot, msg) -> {
             log.info("ArrayListStory: Обработка команды '☠\uFE0F Добить' для chatId={}", msg.getChatId());
-            SendMessage finishOff = messageSrviceRound2.messageFinishOff(msg.getChatId());
+            SendMessage finishOff = messageSrviceRound2.messageFinishOff(bot, msg.getChatId());
             try {
                 bot.execute(finishOff);
             } catch (TelegramApiException e) {
@@ -136,12 +136,9 @@ public class ArrayListStory {
 
         commandsMap.put("\uD83E\uDDE0 .ensureCapacity()",(bot,msg)->{
             log.info("ArrayListStory: Обработка команды '\uD83E\uDDE0 ensureCapacity' для chatId={}", msg.getChatId());
-            SendMessage ensureCapacity = messageSrviceRound2.messageEnsureCapacityRound2(msg.getChatId());
-            try {
-                bot.execute(ensureCapacity);
-            } catch (TelegramApiException e) {
-                throw new RuntimeException(e);
-            }
+            
+            // 🚀 Запускаем цепочку: основное сообщение → ответ Аррейна → ответ Итераториуса
+            messageSrviceRound2.messageEnsureCapacityRound2(bot, msg.getChatId());
 
         });
 

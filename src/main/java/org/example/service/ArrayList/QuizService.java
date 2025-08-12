@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.service.UserService;
 import org.example.service.PersonageStatManager;
+import org.example.service.ArrayList.AudioService;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.polls.SendPoll;
@@ -223,6 +224,18 @@ public class QuizService {
             int points = isCorrect ? QuizConstants.COFFEE_CORRECT_REWARD : QuizConstants.COFFEE_WRONG_PENALTY;
             log.info("QuizService: Результат КОФЕ-викторины отправлен для chatId={}, результат: {}, очки: {}", chatId, result, points);
             
+            // 🎵 Отправляем голосовое сообщение через 4 секунды после результата кофе-викторины
+            scheduler.schedule(() -> {
+                try {
+                    // Создаем AudioService для отправки голосового сообщения
+                    AudioService audioService = new AudioService();
+                    audioService.sendAudio(bot, chatId, "src/main/resources/audio/Ставки на код.mp3");
+                    log.info("QuizService: 🎵 Голосовое сообщение отправлено после кофе-викторины для chatId={}", chatId);
+                } catch (Exception e) {
+                    log.error("QuizService: ❌ Ошибка отправки голосового сообщения после кофе-викторины для chatId={}: {}", chatId, e.getMessage());
+                }
+            }, 4, TimeUnit.SECONDS);
+            
         } catch (TelegramApiException e) {
             log.error("QuizService: Ошибка отправки результата кофе-викторины для chatId={}", chatId, e);
         }
@@ -249,7 +262,9 @@ public class QuizService {
                 try {
                     log.info("QuizService: Отправляем реплику Итераториуса о раунде 2 для chatId={}", chatId);
                     
-                    MessageServiceRound2 messageServiceRound2 = new MessageServiceRound2(userService, arrayListTheoryService, personageStatManager, this);
+                    // Создаем AudioService для передачи в MessageServiceRound2
+                    AudioService audioService = new AudioService();
+                    MessageServiceRound2 messageServiceRound2 = new MessageServiceRound2(userService, arrayListTheoryService, personageStatManager, this, audioService);
                     SendMessage round2IntroMessage = messageServiceRound2.createIteratoriusRound2Intro(chatId);
                     bot.execute(round2IntroMessage);
                     
@@ -340,7 +355,9 @@ public class QuizService {
                 log.info("QuizService: Запускаем ПОЛНУЮ ЦЕПОЧКУ раунда 2 для chatId={}", chatId);
                 
                 // 🚀 ЗАПУСКАЕМ ПОЛНУЮ ЦЕПОЧКУ: фото + 3 сообщения с задержками
-                MessageServiceRound2 messageServiceRound2 = new MessageServiceRound2(userService, arrayListTheoryService, personageStatManager, this);
+                // Создаем AudioService для передачи в MessageServiceRound2
+                AudioService audioService = new AudioService();
+                MessageServiceRound2 messageServiceRound2 = new MessageServiceRound2(userService, arrayListTheoryService, personageStatManager, this, audioService);
                 messageServiceRound2.startRound2Sequence(bot, chatId);
                 
                 log.info("QuizService: ✅ Полная цепочка раунда 2 ЗАПЛАНИРОВАНА для chatId={}", chatId);
