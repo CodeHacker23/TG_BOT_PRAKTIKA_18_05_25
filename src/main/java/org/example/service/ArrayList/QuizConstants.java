@@ -85,6 +85,7 @@ public class QuizConstants {
         "получишь NullPointerException прямо в лицо! 💀\n\n" +
         "*Награда:* +50 ⭐️ к Очкам Достижения\n\n" +
         "_Запомни: null в списке — это как мина. Тикает, пока не взорвётся._";
+
     
     /** Сообщение о неправильном ответе в кофе-викторине */
     public static final String COFFEE_WRONG_MESSAGE = 

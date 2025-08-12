@@ -159,7 +159,8 @@ public class MessageServiceRound2 {
 
     /**
      * Сообщение ответное на кнопку добить ☠
-     * @param bot — Telegram бот для отправки
+     *
+     * @param bot    — Telegram бот для отправки
      * @param chatId
      * @return
      */
@@ -190,30 +191,59 @@ public class MessageServiceRound2 {
                         "🐞 *Рандомный баг:* \"Ошибка залогирована… теперь её никто не найдёт, но все будут материться.\"\n"
         );
         message.setParseMode("Markdown");
-        
-        // 🎵 Отправляем голосовое сообщение через 4 секунды после сообщения
+
+        // 🎰 ЗАПУСКАЕМ ЦЕПОЧКУ КАЗИНО ПОСЛЕ КНОПКИ "ДОБИТЬ"
+        // 
+        // ПОСЛЕДОВАТЕЛЬНОСТЬ:
+        // 1. Через 4 сек → сообщение Итераториуса о казино (БЕЗ голосового!)
+        // 2. Через 7 сек → фото мешка с билетами
+        // 3. Через 10 сек → аудио "Ставки на код" (завершение)
         scheduler.schedule(() -> {
             try {
-                audioService.sendAudio(bot, chatId, "src/main/resources/audio/Ставки на код.mp3");
-                log.info("MessageServiceRound2: 🎵 Голосовое сообщение отправлено после 'Добить' для chatId={}", chatId);
+                log.info("MessageServiceRound2: 🎰 Запуск сценария казино после 'Добить' для chatId={}", chatId);
+                
+                // 1. Отправляем сообщение Итераториуса о казино (БЕЗ голосового!)
+                bot.execute(IteratoriysCasino(chatId)); // вызов сообщения от Итераториуса о Казино
+                
+                // 2. Через 3 секунды отправляем фото мешка с билетами
+                scheduler.schedule(() -> {
+                    try {
+                        log.info("MessageServiceRound2: 🎰 Запуск фото мешка после 'Добить' для chatId={}", chatId);
+                        bot.execute(PhotoReam.casinoBag(chatId));
+                        
+                        // 3. Через 3 секунды отправляем финальное аудио
+                        scheduler.schedule(() -> {
+                            try {
+                                log.info("MessageServiceRound2: 🎰 Отправка финального аудио после 'Добить' для chatId={}", chatId);
+                                audioService.sendAudio(bot, chatId, "src/main/resources/audio/Ставки на код.mp3");
+                            } catch (Exception e) {
+                                log.error("MessageServiceRound2: ❌ Ошибка отправки финального аудио для chatId={}: {}", chatId, e.getMessage());
+                            }
+                        }, 3, TimeUnit.SECONDS);
+                        
+                    } catch (TelegramApiException e) {
+                        log.error("MessageServiceRound2: ❌ Ошибка фото мешка для chatId={}: {}", chatId, e.getMessage());
+                    }
+                }, 3, TimeUnit.SECONDS);
+                
             } catch (Exception e) {
-                log.error("MessageServiceRound2: ❌ Ошибка отправки голосового сообщения для chatId={}: {}", chatId, e.getMessage());
+                log.error("MessageServiceRound2: ❌ Ошибка запуска казино для chatId={}: {}", chatId, e.getMessage());
             }
         }, 4, TimeUnit.SECONDS);
-        
+
         return message;
     }
 
 
-        /**
+    /**
      * 🧠 СООБЩЕНИЕ EnsureCapacity с автоматической цепочкой ответов
-     * 
+     * <p>
      * ПОСЛЕДОВАТЕЛЬНОСТЬ:
      * 1. Сразу → сообщение о применении ensureCapacity()
      * 2. Через 5 сек → answerArrayenCapacityRound2() (ответ Аррейна)
      * 3. Через 8 сек → answerIteratoriysCapacityRound2() (ответ Итераториуса)
-     * 
-     * @param bot — Telegram бот для отправки
+     *
+     * @param bot    — Telegram бот для отправки
      * @param chatId — ID чата пользователя
      */
     public void messageEnsureCapacityRound2(TelegramLongPollingBot bot, Long chatId) {
@@ -231,9 +261,9 @@ public class MessageServiceRound2 {
             );
             message.setParseMode("Markdown");
             bot.execute(message);
-            
+
             log.info("MessageServiceRound2: ✅ Основное сообщение ensureCapacity отправлено для chatId={}", chatId);
-            
+
             // 2. ЧЕРЕЗ 5 СЕК: Ответ Аррейна
             scheduler.schedule(() -> {
                 try {
@@ -244,7 +274,7 @@ public class MessageServiceRound2 {
                     log.error("MessageServiceRound2: ❌ Ошибка отправки ответа Аррейна для chatId={}: {}", chatId, e.getMessage(), e);
                 }
             }, 5, TimeUnit.SECONDS);
-            
+
             // 3. ЧЕРЕЗ 8 СЕК (5+3): Ответ Итераториуса
             scheduler.schedule(() -> {
                 try {
@@ -255,51 +285,51 @@ public class MessageServiceRound2 {
                     log.error("MessageServiceRound2: ❌ Ошибка отправки ответа Итераториуса для chatId={}: {}", chatId, e.getMessage(), e);
                 }
             }, 8, TimeUnit.SECONDS);
-            
+
+
             log.info("MessageServiceRound2: 🎯 Цепочка ensureCapacity запланирована для chatId={}", chatId);
-            
+
         } catch (TelegramApiException e) {
             log.error("MessageServiceRound2: ❌ Критическая ошибка ensureCapacity для chatId={}: {}", chatId, e.getMessage(), e);
         }
     }
 
 
-
     /**
      * ☕ ЗАПУСКАЕТ КОФЕ-СЦЕНАРИЙ: ФОТО → ВИКТОРИНА → ОТВЕТ ИТЕРАТОРИУСА
-     * 
+     * <p>
      * СЦЕНАРИЙ:
      * 1. Отправляет фото с кодом и подписью (PhotoReam.quizCoffeRound2)
      * 2. Через 3 сек отправляет викторину с 4 вариантами ответов
      * 3. После ответа пользователя — Итераториус отвечает вашими сообщениями
      * 4. Автоматически начисляет/снимает очки и сохраняет в БД
-     * 
-     * @param bot — Telegram бот для отправки
+     *
+     * @param bot    — Telegram бот для отправки
      * @param chatId — ID чата пользователя
      */
-    public  void messageCoffeRound2(TelegramLongPollingBot bot, Long chatId) {
+    public void messageCoffeRound2(TelegramLongPollingBot bot, Long chatId) {
         log.info("MessageServiceRound2[messageCoffeRound2] ☕ Запуск кофе-сценария для chatId={}", chatId);
-        
+
         try {
             // 1. Отправляем ваше готовое фото с кодом и подписью
             SendPhoto coffeePhoto = PhotoReam.quizCoffeRound2(chatId);
             bot.execute(coffeePhoto);
-            
+
             log.info("MessageServiceRound2: ☕ Фото с кодом отправлено для chatId={}", chatId);
-            
+
             // 2. Через 3 секунды отправляем викторину (пользователь успеет рассмотреть код)
             scheduler.schedule(() -> {
                 try {
                     SendPoll coffeeQuiz = quizService.createCoffeeQuiz(chatId);
                     bot.execute(coffeeQuiz);
-                    
+
                     log.info("MessageServiceRound2: ☕ Кофе-викторина отправлена для chatId={}", chatId);
-                    
+
                 } catch (TelegramApiException e) {
                     log.error("MessageServiceRound2: Ошибка отправки кофе-викторины для chatId={}: {}", chatId, e.getMessage());
                 }
             }, 3, TimeUnit.SECONDS);
-            
+
         } catch (TelegramApiException e) {
             log.error("MessageServiceRound2: Ошибка отправки фото для кофе-сценария chatId={}: {}", chatId, e.getMessage());
         }
@@ -307,10 +337,11 @@ public class MessageServiceRound2 {
 
     /**
      * Ответ Аррейна на кнопку ensureCapacity()
+     *
      * @param chatId
      * @return
      */
-    public SendMessage answerArrayenCapacityRound2(Long chatId){
+    public SendMessage answerArrayenCapacityRound2(Long chatId) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setParseMode("Markdown");
@@ -318,19 +349,20 @@ public class MessageServiceRound2 {
                 "Не-е-ет! Только не резерв… Это мой ночной кошмар...");
         return sendMessage;
     }
+
     /**
      * 🎯 ОТВЕТ ИТЕРАТОРИУСА НА ПРАВИЛЬНОЕ ИСПОЛЬЗОВАНИЕ .ensureCapacity()
-     * 
+     * <p>
      * Метод для поощрения когда пользователь правильно использует ensureCapacity().
      * Начисляет большие награды за понимание оптимизации ArrayList.
-     * 
-     * @param bot — Telegram бот для отправки
+     *
+     * @param bot    — Telegram бот для отправки
      * @param chatId — ID чата пользователя
      * @return SendMessage — сообщение с поощрением от Итераториуса
      */
-    public SendMessage answerIteratoriysCapacityRound2(TelegramLongPollingBot bot, Long chatId){
+    public SendMessage answerIteratoriysCapacityRound2(TelegramLongPollingBot bot, Long chatId) {
         log.info("MessageServiceRound2[answerIteratoriysCapacityRound2] 🎯 Создание ответа Итераториуса для chatId={}", chatId);
-        
+
         PersonageStatManager.StatUpdateResult result = statManager.updateRandomRewards(
                 chatId,
                 80,   // expMin - минимальный опыт
@@ -338,7 +370,7 @@ public class MessageServiceRound2 {
                 300,  // cashMin - минимальные деньги
                 450  // cashMax - максимальные деньги
         );
-        
+
         // Если ошибка - возвращаем сообщение об ошибке
         if (!result.isSuccess()) {
             return statManager.createErrorMessage(chatId, result.getErrorMessage());
@@ -354,46 +386,70 @@ public class MessageServiceRound2 {
                 "  +" + result.getExpReward() + " ⭐️ к Очкам Достижения\n" +
                 "  +" + result.getCashReward() + " 💲 к Деньгам\n\n" +
                 "🧠 *Мысль дня:* _Оптимизация — это когда код работает быстро, а не когда программист работает быстро._");
-        
-        log.info("MessageServiceRound2: ✅ Ответ Итераториуса создан для chatId={}, награды: +{} очков, +{} денег", 
+
+        log.info("MessageServiceRound2: ✅ Ответ Итераториуса создан для chatId={}, награды: +{} очков, +{} денег",
                 chatId, result.getExpReward(), result.getCashReward());
-        
-        // 🎵 Отправляем голосовое сообщение через 5 секунд после сообщения
+
+
         scheduler.schedule(() -> {
             try {
-                audioService.sendAudio(bot, chatId, "src/main/resources/audio/Ставки на код.mp3");
-                log.info("MessageServiceRound2: 🎵 Голосовое сообщение отправлено после ответа Итераториуса для chatId={}", chatId);
+                bot.execute(IteratoriysCasino(chatId)); // вызов сообщения от Итераториуса о Казино
+                //через 3 сек отправка фото
+                scheduler.schedule(() -> {
+                    try {
+                        log.info("Запуск Фото мешка ");
+                        bot.execute(PhotoReam.casinoBag(chatId));
+                        scheduler.schedule(() -> {
+                            audioService.sendAudio(bot, chatId, "src/main/resources/audio/Ставки на код.mp3");
+                        }, 3, TimeUnit.SECONDS);
+
+                    } catch (TelegramApiException e) {
+                        log.error("[MessageServiceRound2] PhotoReam.casinoBag(chatId) Ошибка фото МЕШКА для chatId = {} не отправлено!!", chatId);
+                    }
+                }, 3, TimeUnit.SECONDS);
+                //   log.info("MessageServiceRound2: 🎵 Голосовое сообщение отправлено после ответа Итераториуса для chatId={}", chatId);
             } catch (Exception e) {
                 log.error("MessageServiceRound2: ❌ Ошибка отправки голосового сообщения для chatId={}: {}", chatId, e.getMessage());
             }
         }, 5, TimeUnit.SECONDS);
-        
+
+        return sendMessage;
+    }
+
+
+    public SendMessage IteratoriysCasino(Long chatId) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setParseMode("Markdown");
+        sendMessage.setText("*Итераториус*\n" +
+                "Малец, ты прошёл бои и викторины...\n" +
+                "Но ArrayList — это не только логика, это ещё и УДАЧА!");
         return sendMessage;
     }
 
     /**
      * 🚀 ЗАПУСК ПОЛНОЙ ЦЕПОЧКИ РАУНДА 2 (НАДЕЖНАЯ ВЕРСИЯ)
-     * 
+     * <p>
      * ПОСЛЕДОВАТЕЛЬНОСТЬ:
      * 1. Фото с объявлением раунда 2 и статами (сразу)
      * 2. Через 5 сек → sendMessageText2Rond
-     * 3. Через 8 сек → messageArreyon2Rond  
+     * 3. Через 8 сек → messageArreyon2Rond
      * 4. Через 12 сек → messageIteratorius2Rond
-     * 
+     * <p>
      * Используется собственный scheduler для надежности.
-     * 
-     * @param bot — Telegram бот для отправки
+     *
+     * @param bot    — Telegram бот для отправки
      * @param chatId — ID чата пользователя
      */
     public void startRound2Sequence(TelegramLongPollingBot bot, Long chatId) {
         log.info("MessageServiceRound2[startRound2Sequence] 🚀 Запуск цепочки раунда 2 для chatId={}", chatId);
-        
+
         try {
             // 1. СРАЗУ: Отправляем фото с объявлением раунда 2
             SendPhoto round2Photo = this.createRound2Message(chatId);
             bot.execute(round2Photo);
             log.info("MessageServiceRound2: ✅ Фото раунда 2 отправлено для chatId={}", chatId);
-            
+
             // 2. ЧЕРЕЗ 5 СЕК: sendMessageText2Rond
             scheduler.schedule(() -> {
                 try {
@@ -404,7 +460,7 @@ public class MessageServiceRound2 {
                     log.error("MessageServiceRound2: ❌ Ошибка sendMessageText2Rond для chatId={}: {}", chatId, e.getMessage(), e);
                 }
             }, 5, TimeUnit.SECONDS);
-            
+
             // 3. ЧЕРЕЗ 8 СЕК: messageArreyon2Rond
             scheduler.schedule(() -> {
                 try {
@@ -415,7 +471,7 @@ public class MessageServiceRound2 {
                     log.error("MessageServiceRound2: ❌ Ошибка messageArreyon2Rond для chatId={}: {}", chatId, e.getMessage(), e);
                 }
             }, 8, TimeUnit.SECONDS);
-            
+
             // 4. ЧЕРЕЗ 12 СЕК: messageIteratorius2Rond
             scheduler.schedule(() -> {
                 try {
@@ -426,35 +482,13 @@ public class MessageServiceRound2 {
                     log.error("MessageServiceRound2: ❌ Ошибка messageIteratorius2Rond для chatId={}: {}", chatId, e.getMessage(), e);
                 }
             }, 12, TimeUnit.SECONDS);
-            
+
             log.info("MessageServiceRound2: 🎯 Все задачи раунда 2 запланированы для chatId={}", chatId);
-            
+
         } catch (TelegramApiException e) {
             log.error("MessageServiceRound2: ❌ Критическая ошибка запуска раунда 2 для chatId={}: {}", chatId, e.getMessage(), e);
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     /**

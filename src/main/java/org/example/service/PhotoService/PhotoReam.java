@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 
+import java.io.File;
+
 @Service
 public class PhotoReam {
     /**
@@ -131,9 +133,26 @@ public class PhotoReam {
                         "\uD83E\uDD14 *Что произойдёт?* _Твой кофе уже начинает горчить..._")
                 .build();
         return sendPhoto;
+    }
+
+    /**
+     * Отправка фото мешка с билетами.
+     * @param chatId
+     * @return
+     */
+    public static SendPhoto casinoBag(Long chatId){
+        System.out.println("[PhotoService] casinoBag() — отправляем фото мешка с билетами в конце раунда 2.");
+        SendPhoto sendPhoto = SendPhoto.builder()
+                .chatId(chatId.toString())
+                .parseMode("Markdown")
+                .photo(new InputFile(new File("src/main/resources/Photo/Мешок.jpg")))
+                .caption("\uD83C\uDFAF В этом волшебном мешке лежат 10 билетов.\n" +
+                        "Каждый содержит своё исключение, свой сюрприз...\n" +
+                        "И только ОДИН из них — ДЖЕКПОТ!")
+                .build();
 
 
-
+        return sendPhoto;
     }
 
 }
