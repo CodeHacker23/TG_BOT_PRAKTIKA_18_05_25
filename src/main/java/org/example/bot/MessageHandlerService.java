@@ -3,6 +3,7 @@ package org.example.bot;
 import lombok.RequiredArgsConstructor;
 
 import org.example.service.*;
+import org.example.service.ArrayList.AudioService;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -52,6 +53,7 @@ public class MessageHandlerService {
     private final PersonageService personageService;
     private final StoryStartService storyStartService;
     private final ArrayListStory arrayListStory;
+    private final AudioService audioService;
 
 
     /**

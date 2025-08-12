@@ -4,21 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="сделали, начало раунда 2, отправка смс после викторины, затем отправляется фото противника помятого, после этого оптравляются статы противника и статы пользователя.">
+    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="сделали ответ на кнопки во 2 раунде, реализовали полностью раунд 2, буду думать над 3 раундом.">
+      <change afterPath="$PROJECT_DIR$/src/main/resources/Photo/Мешок.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/audio/Ставки на код.mp3" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Config.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/CallbackQueryHandlerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/CallbackQueryHandlerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/KeyboardService/KeyboardReam.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/KeyboardService/KeyboardReam.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListSchedulerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListSchedulerService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/MessageHandlerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/MessageHandlerService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListStory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListStory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/MessageServiceRound2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/MessageServiceRound2.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/QuizConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/QuizConstants.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/QuizService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/QuizService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/PersonageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/PersonageService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/PhotoService/PhotoReam.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/PhotoService/PhotoReam.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/StoryStartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/StoryStartService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,6 +90,12 @@
     ]
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\ilari\IdeaProjects\TG_BOT_PRAKTIKA_18_05_25\src\main\resources\Photo" />
+      <recent name="C:\Users\ilari\IdeaProjects\TG_BOT_PRAKTIKA_18_05_25\src\main\resources\audio" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="App" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
       <module name="TG_BOT_PRAKTIKA_18_05_25" />
@@ -145,7 +146,10 @@
       <workItem from="1753816923341" duration="11753000" />
       <workItem from="1753937593536" duration="19024000" />
       <workItem from="1753985845431" duration="1060000" />
-      <workItem from="1754290085657" duration="17493000" />
+      <workItem from="1754290085657" duration="21171000" />
+      <workItem from="1754585264819" duration="12916000" />
+      <workItem from="1754893961991" duration="2020000" />
+      <workItem from="1754942182209" duration="8134000" />
     </task>
     <task id="LOCAL-00001" summary="по идеи всеработает как нужн, на команде старт отправляется фото с текстом, затем отправялется сообщение с кнопкой (создать персонажа) кнопка кликабельна, после кнопки отправляется персонаж с характеристиками и фото. все соеденяется с БД2">
       <option name="closed" value="true" />
@@ -435,14 +439,21 @@
       <option name="project" value="LOCAL" />
       <updated>1753967028142</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="сделали ответ на кнопки во 2 раунде, реализовали полностью раунд 2, буду думать над 3 раундом.">
+      <option name="closed" value="true" />
+      <created>1754311883231</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1754311883231</updated>
+    </task>
+    <option name="localTasksCounter" value="38" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value=" добавили кнопку к сообщению к фото вертолету,сюжетная линия 1 сделана. Все исправно, и улучшено." />
     <MESSAGE value="добавил кнопку к сюжету, и почти закончил первую сюжетную линию" />
     <MESSAGE value="проект запускается не реализованы некоторые кнопки, все сбилось откатываюсь до пуша" />
     <MESSAGE value="Все работает, нужно до делать конечные кнопки для персонажа в доспехах." />
@@ -467,6 +478,7 @@
     <MESSAGE value="Добавлены, маленькие изменения в сообщении от Аррейна, при атаке, теперь показывается код на Jаva а не просто абстрактно, что Аррейн бросил в тебя индекс 0, сложно представить новичку что это, поэтому я сделал визуальность что бы было комфортабельно." />
     <MESSAGE value="нужно сохранить мануал, из за этого коммит" />
     <MESSAGE value="сделали, начало раунда 2, отправка смс после викторины, затем отправляется фото противника помятого, после этого оптравляются статы противника и статы пользователя." />
-    <option name="LAST_COMMIT_MESSAGE" value="сделали, начало раунда 2, отправка смс после викторины, затем отправляется фото противника помятого, после этого оптравляются статы противника и статы пользователя." />
+    <MESSAGE value="сделали ответ на кнопки во 2 раунде, реализовали полностью раунд 2, буду думать над 3 раундом." />
+    <option name="LAST_COMMIT_MESSAGE" value="сделали ответ на кнопки во 2 раунде, реализовали полностью раунд 2, буду думать над 3 раундом." />
   </component>
 </project>

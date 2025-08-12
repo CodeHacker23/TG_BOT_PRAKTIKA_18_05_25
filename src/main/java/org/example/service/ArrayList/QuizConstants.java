@@ -65,8 +65,8 @@ public class QuizConstants {
     
     /** Вопрос кофе-викторины */
     public static final String COFFEE_QUIZ_QUESTION = 
-        "☕ *Кофе остыл, а вопрос горячий!*\n\n" +
-                "🤔*Что выведется?*";
+        "☕Кофе остыл, а вопрос горячий!\n\n" +
+                "🤔Что выведется?";
     
     /** Варианты ответов для кофе-викторины */
     public static final List<String> COFFEE_QUIZ_OPTIONS = Arrays.asList(
