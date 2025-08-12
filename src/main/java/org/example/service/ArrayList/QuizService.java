@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.service.UserService;
 import org.example.service.PersonageStatManager;
 import org.example.service.ArrayList.AudioService;
+import org.example.service.PhotoService.PhotoReam;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.polls.SendPoll;
@@ -223,16 +224,45 @@ public class QuizService {
             String result = isCorrect ? "ПРАВИЛЬНО" : "НЕПРАВИЛЬНО";
             int points = isCorrect ? QuizConstants.COFFEE_CORRECT_REWARD : QuizConstants.COFFEE_WRONG_PENALTY;
             log.info("QuizService: Результат КОФЕ-викторины отправлен для chatId={}, результат: {}, очки: {}", chatId, result, points);
-            
-            // 🎵 Отправляем голосовое сообщение через 4 секунды после результата кофе-викторины
+            // 🎰 ЗАПУСКАЕМ ЦЕПОЧКУ КАЗИНО ПОСЛЕ КОФЕ-ВИКТОРИНЫ
+            // 
+            // ПОСЛЕДОВАТЕЛЬНОСТЬ:
+            // 1. Через 4 сек → сообщение Итераториуса о казино (БЕЗ голосового!)
+            // 2. Через 7 сек → фото мешка с билетами
+            // 3. Через 10 сек → аудио "Ставки на код" (завершение)
             scheduler.schedule(() -> {
                 try {
-                    // Создаем AudioService для отправки голосового сообщения
+                    log.info("QuizService: 🎰 Запуск сценария казино после кофе-викторины для chatId={}", chatId);
+                    
+                    // 1. Отправляем сообщение Итераториуса о казино (БЕЗ голосового!)
+                    // Создаем AudioService и MessageServiceRound2 для доступа к методу IteratoriysCasino
                     AudioService audioService = new AudioService();
-                    audioService.sendAudio(bot, chatId, "src/main/resources/audio/Ставки на код.mp3");
-                    log.info("QuizService: 🎵 Голосовое сообщение отправлено после кофе-викторины для chatId={}", chatId);
+                    MessageServiceRound2 messageServiceRound2 = new MessageServiceRound2(userService, arrayListTheoryService, personageStatManager, this, audioService);
+                    bot.execute(messageServiceRound2.IteratoriysCasino(chatId)); // вызов сообщения от Итераториуса о Казино
+                    
+                    // 2. Через 3 секунды отправляем фото мешка с билетами
+                    scheduler.schedule(() -> {
+                        try {
+                            log.info("QuizService: 🎰 Запуск фото мешка после кофе-викторины для chatId={}", chatId);
+                            bot.execute(PhotoReam.casinoBag(chatId));
+                            
+                            // 3. Через 3 секунды отправляем финальное аудио (ЭТО ОСТАВЛЯЕМ!)
+                            scheduler.schedule(() -> {
+                                try {
+                                    log.info("QuizService: 🎰 Отправка финального аудио после кофе-викторины для chatId={}", chatId);
+                                    audioService.sendAudio(bot, chatId, "src/main/resources/audio/Ставки на код.mp3");
+                                } catch (Exception e) {
+                                    log.error("QuizService: ❌ Ошибка отправки финального аудио для chatId={}: {}", chatId, e.getMessage());
+                                }
+                            }, 3, TimeUnit.SECONDS);
+                            
+                        } catch (TelegramApiException e) {
+                            log.error("QuizService: ❌ Ошибка фото мешка для chatId={}: {}", chatId, e.getMessage());
+                        }
+                    }, 3, TimeUnit.SECONDS);
+                    
                 } catch (Exception e) {
-                    log.error("QuizService: ❌ Ошибка отправки голосового сообщения после кофе-викторины для chatId={}: {}", chatId, e.getMessage());
+                    log.error("QuizService: ❌ Ошибка запуска казино для chatId={}: {}", chatId, e.getMessage());
                 }
             }, 4, TimeUnit.SECONDS);
             

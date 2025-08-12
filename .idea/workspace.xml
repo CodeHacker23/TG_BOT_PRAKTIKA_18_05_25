@@ -4,16 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="сделали ответ на кнопки во 2 раунде, реализовали полностью раунд 2, буду думать над 3 раундом.">
-      <change afterPath="$PROJECT_DIR$/src/main/resources/Photo/Мешок.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/audio/Ставки на код.mp3" afterDir="false" />
+    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="Сделали свое перво голосовое, все стабильно работает, правда нужно где то изменить имя Аррейна, порой ошибки возникают, так же добавили класс аудио, классы">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/MessageHandlerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/MessageHandlerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListStory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListStory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/AudioService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/AudioService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/MessageServiceRound2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/MessageServiceRound2.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/QuizConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/QuizConstants.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/QuizService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/QuizService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/PhotoService/PhotoReam.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/PhotoService/PhotoReam.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -149,7 +147,7 @@
       <workItem from="1754290085657" duration="21171000" />
       <workItem from="1754585264819" duration="12916000" />
       <workItem from="1754893961991" duration="2020000" />
-      <workItem from="1754942182209" duration="8134000" />
+      <workItem from="1754942182209" duration="15453000" />
     </task>
     <task id="LOCAL-00001" summary="по идеи всеработает как нужн, на команде старт отправляется фото с текстом, затем отправялется сообщение с кнопкой (создать персонажа) кнопка кликабельна, после кнопки отправляется персонаж с характеристиками и фото. все соеденяется с БД2">
       <option name="closed" value="true" />
@@ -447,15 +445,21 @@
       <option name="project" value="LOCAL" />
       <updated>1754311883231</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="Сделали свое перво голосовое, все стабильно работает, правда нужно где то изменить имя Аррейна, порой ошибки возникают, так же добавили класс аудио, классы">
+      <option name="closed" value="true" />
+      <created>1755000913278</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1755000913278</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="добавил кнопку к сюжету, и почти закончил первую сюжетную линию" />
-    <MESSAGE value="проект запускается не реализованы некоторые кнопки, все сбилось откатываюсь до пуша" />
     <MESSAGE value="Все работает, нужно до делать конечные кнопки для персонажа в доспехах." />
     <MESSAGE value=" 1." />
     <MESSAGE value="все рабоатет, теперь когда пользователь нажимает принять доспехи ему выпадает персонаж в доспехах, с обновленными статами а так-же идет сохранения в БД" />
@@ -479,6 +483,8 @@
     <MESSAGE value="нужно сохранить мануал, из за этого коммит" />
     <MESSAGE value="сделали, начало раунда 2, отправка смс после викторины, затем отправляется фото противника помятого, после этого оптравляются статы противника и статы пользователя." />
     <MESSAGE value="сделали ответ на кнопки во 2 раунде, реализовали полностью раунд 2, буду думать над 3 раундом." />
-    <option name="LAST_COMMIT_MESSAGE" value="сделали ответ на кнопки во 2 раунде, реализовали полностью раунд 2, буду думать над 3 раундом." />
+    <MESSAGE value="Сделали свое перво голосовое, все стабильно работает, правда нужно где то изменить имя Аррейна, порой ошибки возникают." />
+    <MESSAGE value="Сделали свое перво голосовое, все стабильно работает, правда нужно где то изменить имя Аррейна, порой ошибки возникают, так же добавили класс аудио, классы" />
+    <option name="LAST_COMMIT_MESSAGE" value="Сделали свое перво голосовое, все стабильно работает, правда нужно где то изменить имя Аррейна, порой ошибки возникают, так же добавили класс аудио, классы" />
   </component>
 </project>
