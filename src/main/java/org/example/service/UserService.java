@@ -18,7 +18,7 @@ import java.util.Optional;
  *   UserEntity user = userService.getUserByTgId(tgId);
  *   userService.assignPersonageToUser(tgId, personage);
  *
- * Если забудешь добавить комментарий — Архитектор добавит тебе багов.
+ * Если забудешь добавить комментарий — Иларион добавит тебе багов.
  */
 @Service
 @RequiredArgsConstructor
@@ -102,6 +102,6 @@ public class UserService {
         saveUser(user);
     }
 
-    // Если добавишь новый метод без комментария — Архитектор лично напишет тебе в Telegram.
+    // Если добавишь новый метод без комментария — Иларион лично напишет тебе в Telegram.
 }
 

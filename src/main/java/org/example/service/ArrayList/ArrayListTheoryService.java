@@ -27,7 +27,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
  * 2. Создает игровые сообщения от персонажей (Итераториус, Аррейн)
  * 3. Предоставляет контент для разных этапов обучения
  * 
- * Автор: Архитектор (который любит чистый код и подробные комментарии)
+ * Автор: Иларион (который любит чистый код и подробные комментарии)
  * 
  * Пример использования:
  *   @Autowired
@@ -42,6 +42,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 public class ArrayListTheoryService {
     
     private final UserService userService;
+    private final StatsDisplayService statsDisplayService;
     
     /**
      * Формирует полный текст теории по ArrayList с примерами кода.
@@ -315,8 +316,8 @@ public class ArrayListTheoryService {
         
         PersonageEntity entity = user.getPersonage();
 
-        // Формируем строку статов
-        String statsLine = buildStatsLine(entity);
+        // Формируем строку статов через StatsDisplayService
+        String statsLine = statsDisplayService.buildStatsLine(entity);
 
         sendMessage.setText(
             "*Раунд 1 — 'Код под давлением'*\n\n" +
@@ -348,75 +349,5 @@ public class ArrayListTheoryService {
         return sendMessage;
     }
 
-    /**
-     * Формирует строку со статистикой персонажа для отображения.
-     * 
-     * Этот метод создает читаемую строку с характеристиками персонажа,
-     * включая уровень, энергию, очки достижения, деньги и специальные навыки
-     * в зависимости от типа персонажа.
-     * 
-     * @param entity — сущность персонажа
-     * @return String — отформатированная строка со статистикой
-     * 
-     * Пример использования:
-     *   String stats = theoryService.buildStatsLine(personageEntity);
-     *   message.setText("Твои статы:\n" + stats);
-     */
-    private String buildStatsLine(PersonageEntity entity) {
-        log.debug("ArrayListTheoryService: Формирование строки статов для персонажа типа: {}", entity.getCharacterType());
-        
-        String type = entity.getCharacterType();
-        String money = String.valueOf(entity.getCurrency());
-        if (money.endsWith(".0")) money = money.substring(0, money.length() - 2); // убираем .0 если не нужно
-        
-        String statsLine;
-        switch (type) {
-            case "Personage1":
-                statsLine = "|🏆Level: " + entity.getLevel() +
-                        " |⚡️Энергия: " + entity.getEnergy() +
-                        " |⭐️Очки достижения: " + entity.getAchievementPoints() +
-                        " |💲Деньги: " + money +
-                        " |📊 Аналитика: " + (entity.getAnalytics() != null ? entity.getAnalytics() : 0) +
-                        " |🛡 Сопротивление дедлайну: " + (entity.getDeadlineResistance() != null ? entity.getDeadlineResistance() : 0);
-                break;
-            case "Personage2":
-                statsLine = "|🏆Level: " + entity.getLevel() +
-                        " |⚡️Энергия: " + entity.getEnergy() +
-                        " |⭐️Очки достижения: " + entity.getAchievementPoints() +
-                        " |💲Деньги: " + money +
-                        " |😁 Юмор: " + (entity.getHumor() != null ? entity.getHumor() : 0) +
-                        " |💬 Навыки коммуникации: " + (entity.getCommunication() != null ? entity.getCommunication() : 0);
-                break;
-            case "Personage3":
-                statsLine = "|🏆Level: " + entity.getLevel() +
-                        " |⚡️Энергия: " + entity.getEnergy() +
-                        " |⭐️Очки достижения: " + entity.getAchievementPoints() +
-                        " |💲Деньги: " + money +
-                        " |💾 Точность кода: " + (entity.getCodeAccuracy() != null ? entity.getCodeAccuracy() : 0) +
-                        " |⚙️ Оптимизация: " + (entity.getOptimization() != null ? entity.getOptimization() : 0);
-                break;
-            default:
-                statsLine = "|⚡️Энергия: " + entity.getEnergy();
-                break;
-        }
-        
-        log.debug("ArrayListTheoryService: Строка статов сформирована: {}", statsLine);
-        return statsLine;
-    }
 
-    /**
-     * Хелпер для безопасного вывода Integer значений (null -> 0).
-     * 
-     * Этот метод предотвращает NullPointerException при работе с Integer полями,
-     * которые могут быть null в базе данных.
-     * 
-     * @param value — Integer значение, которое может быть null
-     * @return int — безопасное значение (0 если null, иначе исходное значение)
-     * 
-     * Пример использования:
-     *   int safeValue = theoryService.safe(entity.getAnalytics());
-     */
-    private int safe(Integer value) {
-        return value != null ? value : 0;
-    }
 } 

@@ -16,7 +16,7 @@ import java.util.Optional;
  * Пример использования:
  *   Optional<PersonageEntity> opt = personageRepository.findByUser(userEntity);
  *
- * Юмор: если начнёшь писать SQL вручную — Архитектор лично напишет тебе в Telegram.
+ * Юмор: если начнёшь писать SQL вручную — Иларион лично напишет тебе в Telegram.
  */
 public interface PersonageRepository extends JpaRepository<PersonageEntity, Long> {
     /**

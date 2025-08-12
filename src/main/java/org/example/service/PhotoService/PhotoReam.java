@@ -38,7 +38,7 @@ public class PhotoReam {
      * Пример:
      * SendPhoto photo = photoService.photoWarrior(chatId);
      * bot.execute(photo);
-     * Юмор: если не добавишь мем — Архитектор пришлёт тебе мем про SpaghettiCode.
+     * Юмор: если не добавишь мем — Иларион пришлёт тебе мем про SpaghettiCode.
      */
     public SendPhoto photoWarrior(Long chatId) {
         System.out.println("[PhotoService] photoWarrior() — отправляем мемную фотку воина.");

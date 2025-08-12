@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
  *   boolean canCreate = personageCreationService.startCharacterCreation(user);
  *   CharacterCreationResult result = personageCreationService.handleCreatePersonageRequest(tgId);
  *
- * Если забудешь добавить комментарий — Архитектор создаст тебе персонажа с именем "Баг".
+ * Если забудешь добавить комментарий — Иларион создаст тебе персонажа с именем "Баг".
  */
 @Service
 public class PersonageCreationService {
@@ -94,5 +94,5 @@ public class PersonageCreationService {
         }
     }
 
-    // Если добавишь новый метод без комментария — Архитектор лично напишет тебе в Telegram.
+    // Если добавишь новый метод без комментария — Иларион лично напишет тебе в Telegram.
 } 

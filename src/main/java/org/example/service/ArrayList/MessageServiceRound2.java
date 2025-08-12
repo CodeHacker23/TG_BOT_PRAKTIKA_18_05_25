@@ -7,11 +7,8 @@ import org.example.model.entity.PersonageEntity;
 import org.example.model.entity.UserEntity;
 import org.example.service.UserService;
 import org.example.service.PhotoService.PhotoReam;
-import org.example.service.PhotoService.PhotoStart;
 import org.example.service.ArrayList.QuizService;
-import org.example.service.ArrayList.StatService;
 import org.example.service.PersonageStatManager;
-import org.example.service.ArrayList.AudioService;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -19,40 +16,36 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.polls.SendPoll;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 /**
- * 🎮 СЕРВИС СООБЩЕНИЙ ДЛЯ РАУНДА 2
+ * 🎮 СЕРВИС СООБЩЕНИЙ ДЛЯ РАУНДА 2 (РЕФАКТОРЕННЫЙ)
  * <p>
- * Этот класс отвечает за создание всех сообщений раунда 2:
- * - Начало раунда 2 (перенесено из ArrayListTheoryService)
- * - Реплики персонажей в раунде 2
- * - Вывод статов персонажа
- * - Боевые сообщения раунда 2
+ * Этот класс теперь отвечает ТОЛЬКО за создание сообщений раунда 2.
+ * Вся сложная логика планирования и сценариев вынесена в отдельные сервисы.
  * <p>
- * 🎯 ЦЕЛЬ: Централизовать все сообщения раунда 2 в одном месте
- * для упрощения разработки и поддержки.
+ * 🎯 ЦЕЛЬ: Максимальная простота и читаемость кода
  * <p>
  * 📝 ПРИНЦИПЫ:
- * - Простота и читаемость кода
- * - Переиспользование логики (buildStatsLine)
+ * - Один класс = одна ответственность
+ * - Простые методы без сложной логики
+ * - Использование специализированных сервисов
  * - Подробные комментарии
- * - Один класс = один раунд
  */
 @Slf4j
 @Service
 @AllArgsConstructor
 public class MessageServiceRound2 {
+    
+    // Основные сервисы
     private final UserService userService;
     private final ArrayListTheoryService arrayListTheoryService;
     private final PersonageStatManager statManager;
     private final QuizService quizService;
-    private final AudioService audioService;
-    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-
-
+    
+    // Новые специализированные сервисы
+    private final StatsDisplayService statsDisplayService;
+    private final CasinoScenarioService casinoScenarioService;
+    private final Round2SequenceService round2SequenceService;
+    
     /**
      * Создает фото-сообщение с объявлением раунда 2.
      *
@@ -63,19 +56,13 @@ public class MessageServiceRound2 {
         log.debug("MessageServiceRound2: Создание фото-сообщения о раунде 2 для chatId={}", chatId);
 
         UserEntity user = userService.getUserByTgId(chatId);
-
-        // Получаем пользователя и персонажа проверяем что он не null
         if (user == null || user.getPersonage() == null) {
             log.warn("MessageServiceRound2: Пользователь или персонаж не найден для раунда 2 для chatId={}", chatId);
-            // В случае ошибки возвращаем фото без статов
             return PhotoReam.createRound2PhotoMessage(chatId, "Ошибка: персонаж не найден.");
         }
 
-        //получаем нашего персонажа из БД
         PersonageEntity entity = user.getPersonage();
-
-        // Формируем строку статов
-        String statsLine = buildStatsLine(entity);
+        String statsLine = statsDisplayService.buildStatsLine(entity);
 
         log.debug("MessageServiceRound2: Фото-сообщение о раунде 2 создано");
         return PhotoReam.createRound2PhotoMessage(chatId, statsLine);
@@ -83,8 +70,6 @@ public class MessageServiceRound2 {
 
     /**
      * 💬 РЕПЛИКА ИТЕРАТОРИУСА ПЕРЕД РАУНДОМ 2
-     * <p>
-     * Дополнительное сообщение с репликой от Итераториуса о сложности раунда 2.
      */
     public SendMessage createIteratoriusRound2Intro(Long chatId) {
         log.debug("MessageServiceRound2: Создание вступительной реплики Итераториуса для chatId={}", chatId);
@@ -108,7 +93,9 @@ public class MessageServiceRound2 {
         return sendMessage;
     }
 
-
+    /**
+     * 📝 СООБЩЕНИЕ О АТМОСФЕРЕ РАУНДА 2
+     */
     public SendMessage sendMessageText2Rond(Long chatId) {
         log.debug("sendMessageText2Rond: Создание смс для chatId={}", chatId);
         SendMessage sendMessage = new SendMessage();
@@ -123,7 +110,9 @@ public class MessageServiceRound2 {
         return sendMessage;
     }
 
-
+    /**
+     * 🎭 СООБЩЕНИЕ ОТ АРРЕЙНА В РАУНДЕ 2
+     */
     public SendMessage messageArreyon2Rond(Long chatId) {
         log.debug("messageArreyon2Rond Отправка смс от Аррейна для chatId={}", chatId);
         SendMessage sendMessage = new SendMessage();
@@ -132,11 +121,14 @@ public class MessageServiceRound2 {
         sendMessage.setText("""
                 *Аррейн*
                  Ты реально ломаешь меня… Не думал, что кто-то пойдёт так далеко… \n
-                 Надеюсь, у тебя есть план “Б” — и психолог. 
+                 Надеюсь, у тебя есть план "Б" — и психолог. 
                 """);
         return sendMessage;
     }
 
+    /**
+     * 🎯 ФИНАЛЬНОЕ СООБЩЕНИЕ ИТЕРАТОРИУСА С КНОПКАМИ
+     */
     public SendMessage messageIteratorius2Rond(Long chatId) {
         log.debug("messageIteratorius2Rond: Создание смс для chatId={}", chatId);
         SendMessage sendMessage = new SendMessage();
@@ -156,16 +148,12 @@ public class MessageServiceRound2 {
         return sendMessage;
     }
 
-
     /**
-     * Сообщение ответное на кнопку добить ☠
-     *
-     * @param bot    — Telegram бот для отправки
-     * @param chatId
-     * @return
+     * ☠️ СООБЩЕНИЕ НА КНОПКУ "ДОБИТЬ"
      */
     public SendMessage messageFinishOff(TelegramLongPollingBot bot, Long chatId) {
         log.info("MessageServiceRound2[messageFinishOff] ☠️ *Добить — повторить ад! запущен метод для chatId={}", chatId);
+        
         // 🎯 КАСТОМНЫЕ ДИАПАЗОНЫ НАГРАД!
         PersonageStatManager.StatUpdateResult result = statManager.updateRandomRewards(
                 chatId,
@@ -174,6 +162,7 @@ public class MessageServiceRound2 {
                 300,  // cashMin - минимальные деньги
                 450  // cashMax - максимальные деньги
         );
+        
         // Если ошибка - возвращаем сообщение об ошибке
         if (!result.isSuccess()) {
             return statManager.createErrorMessage(chatId, result.getErrorMessage());
@@ -192,66 +181,33 @@ public class MessageServiceRound2 {
         );
         message.setParseMode("Markdown");
 
-        // 🎰 ЗАПУСКАЕМ ЦЕПОЧКУ КАЗИНО ПОСЛЕ КНОПКИ "ДОБИТЬ"
-        // 
-        // ПОСЛЕДОВАТЕЛЬНОСТЬ:
-        // 1. Через 4 сек → сообщение Итераториуса о казино (БЕЗ голосового!)
-        // 2. Через 7 сек → фото мешка с билетами
-        // 3. Через 10 сек → аудио "Ставки на код" (завершение)
-        scheduler.schedule(() -> {
-            try {
-                log.info("MessageServiceRound2: 🎰 Запуск сценария казино после 'Добить' для chatId={}", chatId);
-                
-                // 1. Отправляем сообщение Итераториуса о казино (БЕЗ голосового!)
-                bot.execute(IteratoriysCasino(chatId)); // вызов сообщения от Итераториуса о Казино
-                
-                // 2. Через 3 секунды отправляем фото мешка с билетами
-                scheduler.schedule(() -> {
-                    try {
-                        log.info("MessageServiceRound2: 🎰 Запуск фото мешка после 'Добить' для chatId={}", chatId);
-                        bot.execute(PhotoReam.casinoBag(chatId));
-                        
-                        // 3. Через 3 секунды отправляем финальное аудио
-                        scheduler.schedule(() -> {
-                            try {
-                                log.info("MessageServiceRound2: 🎰 Отправка финального аудио после 'Добить' для chatId={}", chatId);
-                                audioService.sendAudio(bot, chatId, "src/main/resources/audio/Ставки на код.mp3");
-                            } catch (Exception e) {
-                                log.error("MessageServiceRound2: ❌ Ошибка отправки финального аудио для chatId={}: {}", chatId, e.getMessage());
-                            }
-                        }, 3, TimeUnit.SECONDS);
-                        
-                    } catch (TelegramApiException e) {
-                        log.error("MessageServiceRound2: ❌ Ошибка фото мешка для chatId={}: {}", chatId, e.getMessage());
-                    }
-                }, 3, TimeUnit.SECONDS);
-                
-            } catch (Exception e) {
-                log.error("MessageServiceRound2: ❌ Ошибка запуска казино для chatId={}: {}", chatId, e.getMessage());
+        // 🎰 ЗАПУСКАЕМ СЦЕНАРИЙ КАЗИНО ЧЕРЕЗ CasinoScenarioService
+        // Через 3 секунды после сообщения "Добить" запускаем казино
+        new java.util.Timer().schedule(new java.util.TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    log.info("MessageServiceRound2: 🎰 Запуск сценария казино после 'Добить' для chatId={}", chatId);
+                    SendMessage casinoMessage = casinoScenarioService.createIteratoriusCasinoMessage(chatId);
+                    casinoScenarioService.startCasinoScenario(bot, chatId, casinoMessage);
+                } catch (Exception e) {
+                    log.error("MessageServiceRound2: ❌ Ошибка запуска казино для chatId={}: {}", chatId, e.getMessage());
+                }
             }
-        }, 4, TimeUnit.SECONDS);
+        }, 3000);
 
         return message;
     }
 
-
     /**
-     * 🧠 СООБЩЕНИЕ EnsureCapacity с автоматической цепочкой ответов
-     * <p>
-     * ПОСЛЕДОВАТЕЛЬНОСТЬ:
-     * 1. Сразу → сообщение о применении ensureCapacity()
-     * 2. Через 5 сек → answerArrayenCapacityRound2() (ответ Аррейна)
-     * 3. Через 8 сек → answerIteratoriysCapacityRound2() (ответ Итераториуса)
-     *
-     * @param bot    — Telegram бот для отправки
-     * @param chatId — ID чата пользователя
+     * 🧠 СООБЩЕНИЕ ENSURE CAPACITY
      */
     public void messageEnsureCapacityRound2(TelegramLongPollingBot bot, Long chatId) {
         log.info("MessageServiceRound2[messageEnsureCapacityRound2] 🧠.ensureCapacity() запущен метод для chatId={}", chatId);
 
         try {
             // 1. СРАЗУ: Отправляем основное сообщение
-            SendMessage message = new SendMessage(chatId.toString(),
+            SendMessage mainMessage = new SendMessage(chatId.toString(),
                     "🧠.ensureCapacity() — взломать изнутри.\n" +
                             "🔥 _Нанесен урон Аррейну 30(-70)_ \n\n" +
                             "Ты вводишь команду, которой пользуются раз в пятилетку:\n" +
@@ -259,76 +215,47 @@ public class MessageServiceRound2 {
                             "Аррейон корчится, его структура не выдерживает...\n\n" +
                             "🐞*Рандомный баг:* На проде эта фича сломалась бы в пятницу.\n"
             );
-            message.setParseMode("Markdown");
-            bot.execute(message);
+            mainMessage.setParseMode("Markdown");
+            
+            // 2. Создаем ответы персонажей
+            SendMessage arreyonResponse = answerArrayenCapacityRound2(chatId);
+            SendMessage iteratoriusResponse = answerIteratoriysCapacityRound2(bot, chatId);
+            
+            // 3. Запускаем цепочку через Round2SequenceService
+            round2SequenceService.startEnsureCapacitySequence(bot, chatId, mainMessage, arreyonResponse, iteratoriusResponse);
 
-            log.info("MessageServiceRound2: ✅ Основное сообщение ensureCapacity отправлено для chatId={}", chatId);
-
-            // 2. ЧЕРЕЗ 5 СЕК: Ответ Аррейна
-            scheduler.schedule(() -> {
-                try {
-                    SendMessage arreyonResponse = answerArrayenCapacityRound2(chatId);
-                    bot.execute(arreyonResponse);
-                    log.info("MessageServiceRound2: ✅ Ответ Аррейна отправлен для chatId={}", chatId);
-                } catch (Exception e) {
-                    log.error("MessageServiceRound2: ❌ Ошибка отправки ответа Аррейна для chatId={}: {}", chatId, e.getMessage(), e);
-                }
-            }, 5, TimeUnit.SECONDS);
-
-            // 3. ЧЕРЕЗ 8 СЕК (5+3): Ответ Итераториуса
-            scheduler.schedule(() -> {
-                try {
-                    SendMessage iteratoriusResponse = answerIteratoriysCapacityRound2(bot, chatId);
-                    bot.execute(iteratoriusResponse);
-                    log.info("MessageServiceRound2: ✅ Ответ Итераториуса отправлен для chatId={}", chatId);
-                } catch (Exception e) {
-                    log.error("MessageServiceRound2: ❌ Ошибка отправки ответа Итераториуса для chatId={}: {}", chatId, e.getMessage(), e);
-                }
-            }, 8, TimeUnit.SECONDS);
-
-
-            log.info("MessageServiceRound2: 🎯 Цепочка ensureCapacity запланирована для chatId={}", chatId);
-
-        } catch (TelegramApiException e) {
+        } catch (Exception e) {
             log.error("MessageServiceRound2: ❌ Критическая ошибка ensureCapacity для chatId={}: {}", chatId, e.getMessage(), e);
         }
     }
 
-
     /**
-     * ☕ ЗАПУСКАЕТ КОФЕ-СЦЕНАРИЙ: ФОТО → ВИКТОРИНА → ОТВЕТ ИТЕРАТОРИУСА
-     * <p>
-     * СЦЕНАРИЙ:
-     * 1. Отправляет фото с кодом и подписью (PhotoReam.quizCoffeRound2)
-     * 2. Через 3 сек отправляет викторину с 4 вариантами ответов
-     * 3. После ответа пользователя — Итераториус отвечает вашими сообщениями
-     * 4. Автоматически начисляет/снимает очки и сохраняет в БД
-     *
-     * @param bot    — Telegram бот для отправки
-     * @param chatId — ID чата пользователя
+     * ☕ ЗАПУСКАЕТ КОФЕ-СЦЕНАРИЙ
      */
     public void messageCoffeRound2(TelegramLongPollingBot bot, Long chatId) {
         log.info("MessageServiceRound2[messageCoffeRound2] ☕ Запуск кофе-сценария для chatId={}", chatId);
 
         try {
-            // 1. Отправляем ваше готовое фото с кодом и подписью
+            // 1. Отправляем фото с кодом и подписью
             SendPhoto coffeePhoto = PhotoReam.quizCoffeRound2(chatId);
             bot.execute(coffeePhoto);
 
             log.info("MessageServiceRound2: ☕ Фото с кодом отправлено для chatId={}", chatId);
 
-            // 2. Через 3 секунды отправляем викторину (пользователь успеет рассмотреть код)
-            scheduler.schedule(() -> {
-                try {
-                    SendPoll coffeeQuiz = quizService.createCoffeeQuiz(chatId);
-                    bot.execute(coffeeQuiz);
-
-                    log.info("MessageServiceRound2: ☕ Кофе-викторина отправлена для chatId={}", chatId);
-
-                } catch (TelegramApiException e) {
-                    log.error("MessageServiceRound2: Ошибка отправки кофе-викторины для chatId={}: {}", chatId, e.getMessage());
+            // 2. Через 3 секунды отправляем викторину
+            // Используем простой планировщик для одного события
+            new java.util.Timer().schedule(new java.util.TimerTask() {
+                @Override
+                public void run() {
+                    try {
+                        SendPoll coffeeQuiz = quizService.createCoffeeQuiz(chatId);
+                        bot.execute(coffeeQuiz);
+                        log.info("MessageServiceRound2: ☕ Кофе-викторина отправлена для chatId={}", chatId);
+                    } catch (TelegramApiException e) {
+                        log.error("MessageServiceRound2: Ошибка отправки кофе-викторины для chatId={}: {}", chatId, e.getMessage());
+                    }
                 }
-            }, 3, TimeUnit.SECONDS);
+            }, 3000);
 
         } catch (TelegramApiException e) {
             log.error("MessageServiceRound2: Ошибка отправки фото для кофе-сценария chatId={}: {}", chatId, e.getMessage());
@@ -336,10 +263,7 @@ public class MessageServiceRound2 {
     }
 
     /**
-     * Ответ Аррейна на кнопку ensureCapacity()
-     *
-     * @param chatId
-     * @return
+     * 🎭 ОТВЕТ АРРЕЙНА НА ENSURE CAPACITY
      */
     public SendMessage answerArrayenCapacityRound2(Long chatId) {
         SendMessage sendMessage = new SendMessage();
@@ -351,14 +275,7 @@ public class MessageServiceRound2 {
     }
 
     /**
-     * 🎯 ОТВЕТ ИТЕРАТОРИУСА НА ПРАВИЛЬНОЕ ИСПОЛЬЗОВАНИЕ .ensureCapacity()
-     * <p>
-     * Метод для поощрения когда пользователь правильно использует ensureCapacity().
-     * Начисляет большие награды за понимание оптимизации ArrayList.
-     *
-     * @param bot    — Telegram бот для отправки
-     * @param chatId — ID чата пользователя
-     * @return SendMessage — сообщение с поощрением от Итераториуса
+     * 🎯 ОТВЕТ ИТЕРАТОРИУСА НА ENSURE CAPACITY
      */
     public SendMessage answerIteratoriysCapacityRound2(TelegramLongPollingBot bot, Long chatId) {
         log.info("MessageServiceRound2[answerIteratoriysCapacityRound2] 🎯 Создание ответа Итераториуса для chatId={}", chatId);
@@ -390,167 +307,42 @@ public class MessageServiceRound2 {
         log.info("MessageServiceRound2: ✅ Ответ Итераториуса создан для chatId={}, награды: +{} очков, +{} денег",
                 chatId, result.getExpReward(), result.getCashReward());
 
-
-        scheduler.schedule(() -> {
-            try {
-                bot.execute(IteratoriysCasino(chatId)); // вызов сообщения от Итераториуса о Казино
-                //через 3 сек отправка фото
-                scheduler.schedule(() -> {
-                    try {
-                        log.info("Запуск Фото мешка ");
-                        bot.execute(PhotoReam.casinoBag(chatId));
-                        scheduler.schedule(() -> {
-                            audioService.sendAudio(bot, chatId, "src/main/resources/audio/Ставки на код.mp3");
-                        }, 3, TimeUnit.SECONDS);
-
-                    } catch (TelegramApiException e) {
-                        log.error("[MessageServiceRound2] PhotoReam.casinoBag(chatId) Ошибка фото МЕШКА для chatId = {} не отправлено!!", chatId);
-                    }
-                }, 3, TimeUnit.SECONDS);
-                //   log.info("MessageServiceRound2: 🎵 Голосовое сообщение отправлено после ответа Итераториуса для chatId={}", chatId);
-            } catch (Exception e) {
-                log.error("MessageServiceRound2: ❌ Ошибка отправки голосового сообщения для chatId={}: {}", chatId, e.getMessage());
+        // 🎰 ЗАПУСКАЕМ СЦЕНАРИЙ КАЗИНО ЧЕРЕЗ CasinoScenarioService
+        // Через 3 секунды после ответа Итераториуса запускаем казино
+        new java.util.Timer().schedule(new java.util.TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    log.info("MessageServiceRound2: 🎰 Запуск сценария казино после ответа Итераториуса для chatId={}", chatId);
+                    SendMessage casinoMessage = casinoScenarioService.createIteratoriusCasinoMessage(chatId);
+                    casinoScenarioService.startCasinoScenario(bot, chatId, casinoMessage);
+                } catch (Exception e) {
+                    log.error("MessageServiceRound2: ❌ Ошибка запуска казино для chatId={}: {}", chatId, e.getMessage());
+                }
             }
-        }, 5, TimeUnit.SECONDS);
+        }, 3000);
 
-        return sendMessage;
-    }
-
-
-    public SendMessage IteratoriysCasino(Long chatId) {
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(chatId);
-        sendMessage.setParseMode("Markdown");
-        sendMessage.setText("*Итераториус*\n" +
-                "Малец, ты прошёл бои и викторины...\n" +
-                "Но ArrayList — это не только логика, это ещё и УДАЧА!");
         return sendMessage;
     }
 
     /**
-     * 🚀 ЗАПУСК ПОЛНОЙ ЦЕПОЧКИ РАУНДА 2 (НАДЕЖНАЯ ВЕРСИЯ)
-     * <p>
-     * ПОСЛЕДОВАТЕЛЬНОСТЬ:
-     * 1. Фото с объявлением раунда 2 и статами (сразу)
-     * 2. Через 5 сек → sendMessageText2Rond
-     * 3. Через 8 сек → messageArreyon2Rond
-     * 4. Через 12 сек → messageIteratorius2Rond
-     * <p>
-     * Используется собственный scheduler для надежности.
-     *
-     * @param bot    — Telegram бот для отправки
-     * @param chatId — ID чата пользователя
+     * 🚀 ЗАПУСК ПОЛНОЙ ЦЕПОЧКИ РАУНДА 2
      */
     public void startRound2Sequence(TelegramLongPollingBot bot, Long chatId) {
         log.info("MessageServiceRound2[startRound2Sequence] 🚀 Запуск цепочки раунда 2 для chatId={}", chatId);
-
-        try {
-            // 1. СРАЗУ: Отправляем фото с объявлением раунда 2
-            SendPhoto round2Photo = this.createRound2Message(chatId);
-            bot.execute(round2Photo);
-            log.info("MessageServiceRound2: ✅ Фото раунда 2 отправлено для chatId={}", chatId);
-
-            // 2. ЧЕРЕЗ 5 СЕК: sendMessageText2Rond
-            scheduler.schedule(() -> {
-                try {
-                    SendMessage textMessage = this.sendMessageText2Rond(chatId);
-                    bot.execute(textMessage);
-                    log.info("MessageServiceRound2: ✅ sendMessageText2Rond отправлено для chatId={}", chatId);
-                } catch (Exception e) {
-                    log.error("MessageServiceRound2: ❌ Ошибка sendMessageText2Rond для chatId={}: {}", chatId, e.getMessage(), e);
-                }
-            }, 5, TimeUnit.SECONDS);
-
-            // 3. ЧЕРЕЗ 8 СЕК: messageArreyon2Rond
-            scheduler.schedule(() -> {
-                try {
-                    SendMessage arreyonMessage = this.messageArreyon2Rond(chatId);
-                    bot.execute(arreyonMessage);
-                    log.info("MessageServiceRound2: ✅ messageArreyon2Rond отправлено для chatId={}", chatId);
-                } catch (Exception e) {
-                    log.error("MessageServiceRound2: ❌ Ошибка messageArreyon2Rond для chatId={}: {}", chatId, e.getMessage(), e);
-                }
-            }, 8, TimeUnit.SECONDS);
-
-            // 4. ЧЕРЕЗ 12 СЕК: messageIteratorius2Rond
-            scheduler.schedule(() -> {
-                try {
-                    SendMessage iteratoriusMessage = this.messageIteratorius2Rond(chatId);
-                    bot.execute(iteratoriusMessage);
-                    log.info("MessageServiceRound2: ✅ messageIteratorius2Rond отправлено для chatId={}", chatId);
-                } catch (Exception e) {
-                    log.error("MessageServiceRound2: ❌ Ошибка messageIteratorius2Rond для chatId={}: {}", chatId, e.getMessage(), e);
-                }
-            }, 12, TimeUnit.SECONDS);
-
-            log.info("MessageServiceRound2: 🎯 Все задачи раунда 2 запланированы для chatId={}", chatId);
-
-        } catch (TelegramApiException e) {
-            log.error("MessageServiceRound2: ❌ Критическая ошибка запуска раунда 2 для chatId={}: {}", chatId, e.getMessage(), e);
-        }
+        
+        // Создаем все необходимые сообщения
+        SendPhoto round2Photo = this.createRound2Message(chatId);
+        SendMessage textMessage = this.sendMessageText2Rond(chatId);
+        SendMessage arreyonMessage = this.messageArreyon2Rond(chatId);
+        SendMessage iteratoriusMessage = this.messageIteratorius2Rond(chatId);
+        
+        // Делегируем планирование в Round2SequenceService
+        round2SequenceService.startRound2Sequence(bot, chatId, round2Photo, textMessage, arreyonMessage, iteratoriusMessage);
     }
-
-
-    /**
-     * 📊 ФОРМИРОВАНИЕ СТРОКИ СТАТИСТИКИ (перенесено из ArrayListTheoryService)
-     * <p>
-     * Создает читаемую строку с характеристиками персонажа.
-     * Метод перенесен без изменений для сохранения совместимости.
-     *
-     * @param entity — сущность персонажа
-     * @return String — отформатированная строка со статистикой
-     */
-    private String buildStatsLine(PersonageEntity entity) {
-        log.debug("MessageServiceRound2: Формирование строки статов для персонажа типа: {}", entity.getCharacterType());
-
-        String type = entity.getCharacterType();
-        String money = String.valueOf(entity.getCurrency());
-        if (money.endsWith(".0")) money = money.substring(0, money.length() - 2); // убираем .0 если не нужно
-
-        String statsLine;
-        switch (type) {
-            case "Personage1":
-                statsLine = "|🏆Level: " + entity.getLevel() +
-                        " |⚡️Энергия: " + entity.getEnergy() +
-                        " |⭐️Очки достижения: " + entity.getAchievementPoints() +
-                        " |💲Деньги: " + money +
-                        " |📊 Аналитика: " + (entity.getAnalytics() != null ? entity.getAnalytics() : 0) +
-                        " |🛡 Сопротивление дедлайну: " + (entity.getDeadlineResistance() != null ? entity.getDeadlineResistance() : 0);
-                break;
-            case "Personage2":
-                statsLine = "|🏆Level: " + entity.getLevel() +
-                        " |⚡️Энергия: " + entity.getEnergy() +
-                        " |⭐️Очки достижения: " + entity.getAchievementPoints() +
-                        " |💲Деньги: " + money +
-                        " |😁 Юмор: " + (entity.getHumor() != null ? entity.getHumor() : 0) +
-                        " |💬 Навыки коммуникации: " + (entity.getCommunication() != null ? entity.getCommunication() : 0);
-                break;
-            case "Personage3":
-                statsLine = "|🏆Level: " + entity.getLevel() +
-                        " |⚡️Энергия: " + entity.getEnergy() +
-                        " |⭐️Очки достижения: " + entity.getAchievementPoints() +
-                        " |💲Деньги: " + money +
-                        " |💾 Точность кода: " + (entity.getCodeAccuracy() != null ? entity.getCodeAccuracy() : 0) +
-                        " |⚙️ Оптимизация: " + (entity.getOptimization() != null ? entity.getOptimization() : 0);
-                break;
-            default:
-                statsLine = "|⚡️Энергия: " + entity.getEnergy();
-                break;
-        }
-
-        log.debug("MessageServiceRound2: Строка статов сформирована: {}", statsLine);
-        return statsLine;
-    }
-
-    private int safe(Integer value) {
-        return value != null ? value : 0;
-    }
-
 
     /**
      * 🏆 СООБЩЕНИЕ О ПОБЕДЕ В РАУНДЕ 2
-     * <p>
-     * Поздравление игрока с прохождением раунда 2.
      */
     public SendMessage createRound2VictoryMessage(Long chatId) {
         log.debug("MessageServiceRound2: Создание сообщения о победе в раунде 2 для chatId={}", chatId);
@@ -563,7 +355,7 @@ public class MessageServiceRound2 {
         UserEntity user = userService.getUserByTgId(chatId);
         String statsLine = "";
         if (user != null && user.getPersonage() != null) {
-            statsLine = "\n" + buildStatsLine(user.getPersonage());
+            statsLine = "\n" + statsDisplayService.buildStatsLine(user.getPersonage());
         }
 
         sendMessage.setText("""
@@ -582,5 +374,4 @@ public class MessageServiceRound2 {
 
         return sendMessage;
     }
-
 }

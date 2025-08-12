@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  *
  * Если хочешь добавить новую клавиатуру — делай отдельный метод здесь!
  *
- * Юмор: если добавишь клавиатуру в другом классе — Архитектор пришлёт тебе мем про SpaghettiCode.
+ * Юмор: если добавишь клавиатуру в другом классе — Иларион пришлёт тебе мем про SpaghettiCode.
  */
 @Service
 public class KeyboardService  {
@@ -166,7 +166,7 @@ public class KeyboardService  {
     // public static ReplyKeyboardMarkup getLinkedListKeyboard() { ... }
     // и вызывай его из нужного сервиса.
 
-    // Если добавишь клавиатуру без комментария — Архитектор лично напишет тебе в Telegram.
+    // Если добавишь клавиатуру без комментария — Иларион лично напишет тебе в Telegram.
 
 
 } 

@@ -19,7 +19,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
  *   @Bean
  *   TelegramBotsApi telegramBotsApi(Bot bot) { ... }
  *
- * Юмор: если начнёшь регистрировать бота вручную в main — Архитектор лично напишет тебе в Telegram.
+ * Юмор: если начнёшь регистрировать бота вручную в main — Иларион лично напишет тебе в Telegram.
  */
 @Configuration
 public class Config {
@@ -47,5 +47,5 @@ public class Config {
     // --- Советы по расширению ---
     // 1. Новый бин? Добавь новый @Bean-метод.
     // 2. Не пихай бизнес-логику — только конфигурация.
-    // 3. Если добавишь бин без комментария — Архитектор лично напишет тебе в Telegram.
+    // 3. Если добавишь бин без комментария — Иларион лично напишет тебе в Telegram.
 }

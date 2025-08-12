@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.service.UserService;
 import org.example.service.PersonageStatManager;
-import org.example.service.ArrayList.AudioService;
 import org.example.service.PhotoService.PhotoReam;
+import org.example.bot.KeyboardService.KeyboardReam;
+import org.example.service.ArrayList.StatService;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.polls.SendPoll;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 
 import org.telegram.telegrambots.meta.api.objects.polls.PollAnswer;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -37,7 +39,7 @@ import java.util.concurrent.TimeUnit;
  * - Используется в ArrayListStory для отправки викторин
  * - Используется в Bot для обработки ответов на викторины
  * <p>
- * Автор: Архитектор (который знает, что меньше кода = меньше багов)
+ * Автор: Иларион (который знает, что меньше кода = меньше багов)
  */
 @Slf4j
 @Service
@@ -48,6 +50,8 @@ public class QuizService {
     private final UserService userService;
     private final ArrayListTheoryService arrayListTheoryService;
     private final PersonageStatManager personageStatManager;
+    private final CasinoScenarioService casinoScenarioService;
+    private final Round2SequenceService round2SequenceService;
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     
     // 🗺️ MAP ДЛЯ ОТСЛЕЖИВАНИЯ ТИПОВ ВИКТОРИН: chatId -> тип последней викторины
@@ -235,31 +239,11 @@ public class QuizService {
                     log.info("QuizService: 🎰 Запуск сценария казино после кофе-викторины для chatId={}", chatId);
                     
                     // 1. Отправляем сообщение Итераториуса о казино (БЕЗ голосового!)
-                    // Создаем AudioService и MessageServiceRound2 для доступа к методу IteratoriysCasino
-                    AudioService audioService = new AudioService();
-                    MessageServiceRound2 messageServiceRound2 = new MessageServiceRound2(userService, arrayListTheoryService, personageStatManager, this, audioService);
-                    bot.execute(messageServiceRound2.IteratoriysCasino(chatId)); // вызов сообщения от Итераториуса о Казино
+                    // Используем CasinoScenarioService для запуска сценария казино
+                    SendMessage casinoMessage = casinoScenarioService.createIteratoriusCasinoMessage(chatId);
+                    casinoScenarioService.startCasinoScenario(bot, chatId, casinoMessage);
                     
-                    // 2. Через 3 секунды отправляем фото мешка с билетами
-                    scheduler.schedule(() -> {
-                        try {
-                            log.info("QuizService: 🎰 Запуск фото мешка после кофе-викторины для chatId={}", chatId);
-                            bot.execute(PhotoReam.casinoBag(chatId));
-                            
-                            // 3. Через 3 секунды отправляем финальное аудио (ЭТО ОСТАВЛЯЕМ!)
-                            scheduler.schedule(() -> {
-                                try {
-                                    log.info("QuizService: 🎰 Отправка финального аудио после кофе-викторины для chatId={}", chatId);
-                                    audioService.sendAudio(bot, chatId, "src/main/resources/audio/Ставки на код.mp3");
-                                } catch (Exception e) {
-                                    log.error("QuizService: ❌ Ошибка отправки финального аудио для chatId={}: {}", chatId, e.getMessage());
-                                }
-                            }, 3, TimeUnit.SECONDS);
-                            
-                        } catch (TelegramApiException e) {
-                            log.error("QuizService: ❌ Ошибка фото мешка для chatId={}: {}", chatId, e.getMessage());
-                        }
-                    }, 3, TimeUnit.SECONDS);
+
                     
                 } catch (Exception e) {
                     log.error("QuizService: ❌ Ошибка запуска казино для chatId={}: {}", chatId, e.getMessage());
@@ -292,10 +276,16 @@ public class QuizService {
                 try {
                     log.info("QuizService: Отправляем реплику Итераториуса о раунде 2 для chatId={}", chatId);
                     
-                    // Создаем AudioService для передачи в MessageServiceRound2
-                    AudioService audioService = new AudioService();
-                    MessageServiceRound2 messageServiceRound2 = new MessageServiceRound2(userService, arrayListTheoryService, personageStatManager, this, audioService);
-                    SendMessage round2IntroMessage = messageServiceRound2.createIteratoriusRound2Intro(chatId);
+                    // Создаем простое сообщение от Итераториуса о раунде 2
+                    SendMessage round2IntroMessage = new SendMessage();
+                    round2IntroMessage.setChatId(chatId);
+                    round2IntroMessage.setParseMode("Markdown");
+                    round2IntroMessage.setText("*Итераториус:*\n\n" +
+                            "_Неплохо справился с первым испытанием! Но это была лишь разминка..._\n\n" +
+                            "_Раунд 2 покажет, действительно ли ты понял принципы работы ArrayList._\n" +
+                            "_Противники стали хитрее, а ставки — выше._\n\n" +
+                            "_Помни: знание структуры данных — твое главное оружие!_\n\n" +
+                            "⚔️ **Приготовься к настоящему испытанию!**");
                     bot.execute(round2IntroMessage);
                     
                     log.info("QuizService: Реплика Итераториуса о раунде 2 отправлена для chatId={}", chatId);
@@ -370,9 +360,8 @@ public class QuizService {
     /**
      * 🚀 ЗАПУСК РАУНДА 2 ПОСЛЕ ВИКТОРИНЫ
      * 
-     * Простой способ перехода к раунду 2 после завершения викторины.
-     * Вызывается автоматически после ответа на викторину с задержкой 6 секунд
-     * (3 сек после результата викторины + 3 сек после реплики Итераториуса).
+     * Автоматически запускает раунд 2 через 6 секунд после завершения викторины.
+     * Созет все необходимые сообщения и запускает их через Round2SequenceService.
      * 
      * @param bot — TelegramLongPollingBot для отправки сообщений
      * @param chatId — ID чата пользователя
@@ -382,18 +371,45 @@ public class QuizService {
         
         scheduler.schedule(() -> {
             try {
-                log.info("QuizService: Запускаем ПОЛНУЮ ЦЕПОЧКУ раунда 2 для chatId={}", chatId);
+                log.info("QuizService: 🚀 Запускаем ПОЛНУЮ ЦЕПОЧКУ раунда 2 для chatId={}", chatId);
                 
-                // 🚀 ЗАПУСКАЕМ ПОЛНУЮ ЦЕПОЧКУ: фото + 3 сообщения с задержками
-                // Создаем AudioService для передачи в MessageServiceRound2
-                AudioService audioService = new AudioService();
-                MessageServiceRound2 messageServiceRound2 = new MessageServiceRound2(userService, arrayListTheoryService, personageStatManager, this, audioService);
-                messageServiceRound2.startRound2Sequence(bot, chatId);
+                // 🎯 СОЗДАЕМ ВСЕ НЕОБХОДИМЫЕ СООБЩЕНИЯ ДЛЯ РАУНДА 2
+                // 1. Фото с объявлением раунда 2
+                SendPhoto round2Photo = PhotoReam.createRound2PhotoMessage(chatId, "Раунд 2 - Настоящее испытание!");
                 
-                log.info("QuizService: ✅ Полная цепочка раунда 2 ЗАПЛАНИРОВАНА для chatId={}", chatId);
+                // 2. Текстовое сообщение об атмосфере
+                SendMessage textMessage = new SendMessage();
+                textMessage.setChatId(chatId);
+                textMessage.setParseMode("Markdown");
+                textMessage.setText("Атмосфера сгустилась. Аррейн дрожит, индексы плавают, память утекает как отпускные в июле.\n🔥 Его тело дергается — начинается беспорядочный .resize()");
+                
+                // 3. Сообщение от Аррейна
+                SendMessage arreyonMessage = new SendMessage();
+                arreyonMessage.setChatId(chatId);
+                arreyonMessage.setParseMode("Markdown");
+                arreyonMessage.setText("*Аррейн*\nТы реально ломаешь меня… Не думал, что кто-то пойдёт так далеко… \nНадеюсь, у тебя есть план \"Б\" — и психолог.");
+                
+                // 4. Финальное сообщение Итераториуса с кнопками
+                SendMessage iteratoriusMessage = new SendMessage();
+                iteratoriusMessage.setChatId(chatId);
+                iteratoriusMessage.setParseMode("Markdown");
+                iteratoriusMessage.setText("*Итераториус* \n" +
+                        "Он готов рухнуть! Ударь, пока GC не пришёл и не начал собирать остатки твоей мотивации!\n\n" +
+                        "\uD83C\uDFAE Твои действия?\n\n" +
+                        "☠\uFE0F Добить — повторить ад!\n\n" +
+                        "\uD83E\uDDE0 .ensureCapacity() — взломать изнутри\n\n" +
+                        "☕ Кофе пауза — восстановить энергию(или нет)");
+                
+                // Добавляем клавиатуру для действий раунда 2
+                iteratoriusMessage.setReplyMarkup(KeyboardReam.BattlArreynRound2(chatId));
+                
+                // 🎮 ЗАПУСКАЕМ ЦЕПОЧКУ ЧЕРЕЗ Round2SequenceService
+                round2SequenceService.startRound2Sequence(bot, chatId, round2Photo, textMessage, arreyonMessage, iteratoriusMessage);
+                
+                log.info("QuizService: ✅ Полная цепочка раунда 2 ЗАПУЩЕНА для chatId={}", chatId);
                 
             } catch (Exception e) {
-                log.error("QuizService: Неожиданная ошибка при запуске раунда 2 для chatId={}", chatId, e);
+                log.error("QuizService: ❌ Ошибка запуска раунда 2 для chatId={}: {}", chatId, e.getMessage(), e);
             }
         }, 6, TimeUnit.SECONDS);
     }

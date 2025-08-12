@@ -4,14 +4,53 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="Сделали свое перво голосовое, все стабильно работает, правда нужно где то изменить имя Аррейна, порой ошибки возникают, так же добавили класс аудио, классы">
+    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="Сделал рефакторинг кода">
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/CasinoScenarioService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/Round2SequenceService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/StatsDisplayService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ARRAYLIST_COMPLETE_GUIDE.md" beforeDir="false" afterPath="$PROJECT_DIR$/ARRAYLIST_COMPLETE_GUIDE.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ARRAYLIST_REFACTORING_REPORT.md" beforeDir="false" afterPath="$PROJECT_DIR$/ARRAYLIST_REFACTORING_REPORT.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DIALOG_GUIDE.md" beforeDir="false" afterPath="$PROJECT_DIR$/DIALOG_GUIDE.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PERSONAGE_MANUAL.md" beforeDir="false" afterPath="$PROJECT_DIR$/PERSONAGE_MANUAL.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PROJECT_KEYBOARD_MANUAL.md" beforeDir="false" afterPath="$PROJECT_DIR$/PROJECT_KEYBOARD_MANUAL.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PROJECT_MANUAL.md" beforeDir="false" afterPath="$PROJECT_DIR$/PROJECT_MANUAL.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PROJECT_USER_MANUAL.md" beforeDir="false" afterPath="$PROJECT_DIR$/PROJECT_USER_MANUAL.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QUIZ_CREATION_MANUAL.md" beforeDir="false" afterPath="$PROJECT_DIR$/QUIZ_CREATION_MANUAL.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SCHEDULER_USAGE_GUIDE.md" beforeDir="false" afterPath="$PROJECT_DIR$/SCHEDULER_USAGE_GUIDE.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/STORY_DIAGRAMS.md" beforeDir="false" afterPath="$PROJECT_DIR$/STORY_DIAGRAMS.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/STORY_MANUAL.md" beforeDir="false" afterPath="$PROJECT_DIR$/STORY_MANUAL.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/App.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Config.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/MarkdownUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/MarkdownUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Service.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/AudioService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/AudioService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/KeyboardService/KeyboardReam.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/KeyboardService/KeyboardReam.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/KeyboardService/KeyboardService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/KeyboardService/KeyboardService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/MessageHandlerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/MessageHandlerService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/model/entity/PersonageEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/model/entity/PersonageEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/model/entity/UserEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/model/entity/UserEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/model/personage/Personage1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/model/personage/Personage1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/model/personage/Personage2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/model/personage/Personage2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/model/personage/Personage3.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/model/personage/Personage3.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/model/personage/PersonageBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/model/personage/PersonageBase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/repository/PersonageRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/repository/PersonageRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/repository/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListSchedulerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListSchedulerService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListStory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListStory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListTheoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListTheoryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/MessageServiceRound1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/MessageServiceRound1.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/MessageServiceRound2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/MessageServiceRound2.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/QuizConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/QuizConstants.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/QuizService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/QuizService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/StatService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/StatService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayListStoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayListStoryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/PersonageCreationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/PersonageCreationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/PersonageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/PersonageService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/PhotoService/PhotoReam.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/PhotoService/PhotoReam.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/PhotoService/PhotoStart.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/PhotoService/PhotoStart.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/StoryStartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/StoryStartService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -147,7 +186,7 @@
       <workItem from="1754290085657" duration="21171000" />
       <workItem from="1754585264819" duration="12916000" />
       <workItem from="1754893961991" duration="2020000" />
-      <workItem from="1754942182209" duration="15453000" />
+      <workItem from="1754942182209" duration="18831000" />
     </task>
     <task id="LOCAL-00001" summary="по идеи всеработает как нужн, на команде старт отправляется фото с текстом, затем отправялется сообщение с кнопкой (создать персонажа) кнопка кликабельна, после кнопки отправляется персонаж с характеристиками и фото. все соеденяется с БД2">
       <option name="closed" value="true" />
@@ -453,15 +492,21 @@
       <option name="project" value="LOCAL" />
       <updated>1755000913278</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="Сделали что после всех ответов после раунда 2 идет отправка сопутсвующих событий - это отправка фото с мешком, затем голосове на все 3 кнпоки(добить,🧠 .ensureCapacity(), кофе пауза) все работает, в дальнейшем планируется делать рефакторинг пора уже...">
+      <option name="closed" value="true" />
+      <created>1755027451437</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1755027451437</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Все работает, нужно до делать конечные кнопки для персонажа в доспехах." />
-    <MESSAGE value=" 1." />
     <MESSAGE value="все рабоатет, теперь когда пользователь нажимает принять доспехи ему выпадает персонаж в доспехах, с обновленными статами а так-же идет сохранения в БД" />
     <MESSAGE value="работает" />
     <MESSAGE value="вроде вссе как положено" />
@@ -485,6 +530,8 @@
     <MESSAGE value="сделали ответ на кнопки во 2 раунде, реализовали полностью раунд 2, буду думать над 3 раундом." />
     <MESSAGE value="Сделали свое перво голосовое, все стабильно работает, правда нужно где то изменить имя Аррейна, порой ошибки возникают." />
     <MESSAGE value="Сделали свое перво голосовое, все стабильно работает, правда нужно где то изменить имя Аррейна, порой ошибки возникают, так же добавили класс аудио, классы" />
-    <option name="LAST_COMMIT_MESSAGE" value="Сделали свое перво голосовое, все стабильно работает, правда нужно где то изменить имя Аррейна, порой ошибки возникают, так же добавили класс аудио, классы" />
+    <MESSAGE value="Сделали что после всех ответов после раунда 2 идет отправка сопутсвующих событий - это отправка фото с мешком, затем голосове на все 3 кнпоки(добить, .ensureCapacity(), кофе пауза) все работает, в дальнейшем планируется делать рефакторинг пора уже..." />
+    <MESSAGE value="Сделал рефакторинг кода" />
+    <option name="LAST_COMMIT_MESSAGE" value="Сделал рефакторинг кода" />
   </component>
 </project>

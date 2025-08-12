@@ -49,7 +49,7 @@ import java.util.function.BiConsumer;
  * storyStartService.handleCreatePersonage(bot, chatId, userId);
  * storyStartService.handleCharacterNameInput(bot, chatId, userId, "Вася");
  * <p>
- * Если забудешь добавить логику сюда — Архитектор придёт ночью и перепишет твой код на Brainfuck.
+ * Если забудешь добавить логику сюда — Иларион придёт ночью и перепишет твой код на Brainfuck.
  */
 @Service
 @RequiredArgsConstructor
