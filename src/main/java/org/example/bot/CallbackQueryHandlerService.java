@@ -2,11 +2,11 @@ package org.example.bot;
 
 import lombok.RequiredArgsConstructor;
 import org.example.bot.KeyboardService.KeyboardReam;
-import org.example.bot.KeyboardService.KeyboardService;
+
 import org.example.model.entity.UserEntity;
 
 import org.example.service.PhotoService.PhotoReam;
-import org.example.service.PhotoService.PhotoStart;
+
 import org.example.service.UserService;
 import org.example.service.StoryStartService;
 import org.example.service.PersonageService;
@@ -41,7 +41,7 @@ import org.example.model.personage.Personage3;
 public class CallbackQueryHandlerService {
     private static final Logger log = LoggerFactory.getLogger(CallbackQueryHandlerService.class);
     private final UserService userService;
-    private final PhotoStart photoStart;
+
 
     private final StoryStartService storyStartService;
     private final PersonageService personageService;

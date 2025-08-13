@@ -6,7 +6,7 @@ import org.example.service.UserService;
 import org.example.service.PersonageStatManager;
 import org.example.service.PhotoService.PhotoReam;
 import org.example.bot.KeyboardService.KeyboardReam;
-import org.example.service.ArrayList.StatService;
+
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.polls.SendPoll;

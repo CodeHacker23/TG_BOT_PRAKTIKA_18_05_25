@@ -11,8 +11,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -24,7 +23,7 @@ import org.example.model.personage.PersonageBase;
 import org.example.model.personage.Personage1;
 import org.example.model.personage.Personage2;
 import org.example.model.personage.Personage3;
-import org.example.service.PersonageService;
+
 import org.example.service.StoryStartService;
 import org.example.service.ArrayList.ArrayListStory;
 
@@ -44,13 +43,8 @@ import org.example.service.ArrayList.ArrayListStory;
 @RequiredArgsConstructor
 public class MessageHandlerService {
     private static final Logger log = LoggerFactory.getLogger(MessageHandlerService.class);
-    private final org.example.Service service;
-    private final ArrayListStoryService arrayListStoryService;
     public final UserService userService;
-    private final PersonageCreationService personageCreationService;
-    private final Map<Long, Boolean> theorySent = new ConcurrentHashMap<>();
     private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-    private final PersonageService personageService;
     private final StoryStartService storyStartService;
     private final ArrayListStory arrayListStory;
     private final AudioService audioService;
