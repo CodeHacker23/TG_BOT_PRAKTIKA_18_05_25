@@ -7,7 +7,7 @@ import org.example.model.entity.PersonageEntity;
 import org.example.model.entity.UserEntity;
 import org.example.service.UserService;
 import org.example.service.PhotoService.PhotoReam;
-import org.example.service.ArrayList.QuizService;
+
 import org.example.service.PersonageStatManager;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -37,7 +37,6 @@ public class MessageServiceRound2 {
     
     // Основные сервисы
     private final UserService userService;
-    private final ArrayListTheoryService arrayListTheoryService;
     private final PersonageStatManager statManager;
     private final QuizService quizService;
     
@@ -225,7 +224,7 @@ public class MessageServiceRound2 {
             round2SequenceService.startEnsureCapacitySequence(bot, chatId, mainMessage, arreyonResponse, iteratoriusResponse);
 
         } catch (Exception e) {
-            log.error("MessageServiceRound2: ❌ Критическая ошибка ensureCapacity для chatId={}: {}", chatId, e.getMessage(), e);
+            log.error("MessageServiceRound2: ❌ Критическая ошибка ensureCapacity для chatId={}: {}", chatId, e.getMessage());
         }
     }
 
@@ -307,20 +306,8 @@ public class MessageServiceRound2 {
         log.info("MessageServiceRound2: ✅ Ответ Итераториуса создан для chatId={}, награды: +{} очков, +{} денег",
                 chatId, result.getExpReward(), result.getCashReward());
 
-        // 🎰 ЗАПУСКАЕМ СЦЕНАРИЙ КАЗИНО ЧЕРЕЗ CasinoScenarioService
-        // Через 3 секунды после ответа Итераториуса запускаем казино
-        new java.util.Timer().schedule(new java.util.TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    log.info("MessageServiceRound2: 🎰 Запуск сценария казино после ответа Итераториуса для chatId={}", chatId);
-                    SendMessage casinoMessage = casinoScenarioService.createIteratoriusCasinoMessage(chatId);
-                    casinoScenarioService.startCasinoScenario(bot, chatId, casinoMessage);
-                } catch (Exception e) {
-                    log.error("MessageServiceRound2: ❌ Ошибка запуска казино для chatId={}: {}", chatId, e.getMessage());
-                }
-            }
-        }, 3000);
+        // 🎰 КАЗИНО-СЦЕНАРИЙ ЗАПУСКАЕТСЯ В Round2SequenceService ПОСЛЕ СООБЩЕНИЯ ПРО УДАЧУ
+        // Теперь не нужно запускать его здесь, так как последовательность контролируется в Round2SequenceService
 
         return sendMessage;
     }

@@ -28,4 +28,4 @@ public interface PersonageRepository extends JpaRepository<PersonageEntity, Long
      */
     Optional<PersonageEntity> findByUser(UserEntity user);
     // Если потребуется сложная логика — создай кастомный репозиторий и реализуй там с логами.
-} 
+}

@@ -1,6 +1,6 @@
 package org.example.model.personage;
 
-import org.example.model.entity.PersonageEntity;
+
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 

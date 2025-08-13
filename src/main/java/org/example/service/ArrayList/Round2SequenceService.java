@@ -2,7 +2,7 @@ package org.example.service.ArrayList;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.service.PhotoService.PhotoReam;
+
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 public class Round2SequenceService {
     
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    private final CasinoScenarioService casinoScenarioService;
     
     /**
      * 🚀 ЗАПУСКАЕТ ПОЛНУЮ ЦЕПОЧКУ РАУНДА 2
@@ -99,16 +100,17 @@ public class Round2SequenceService {
     /**
      * 🧠 ЗАПУСКАЕТ ЦЕПОЧКУ ENSURE CAPACITY
      * 
-     * ПОСЛЕДОВАТЕЛЬНОСТЬ:
-     * 1. Сразу → основное сообщение ensureCapacity
+     * ПРАВИЛЬНАЯ ПОСЛЕДОВАТЕЛЬНОСТЬ:
+     * 1. Сразу → основное сообщение ensureCapacity (ответ на кнопку)
      * 2. Через 5 сек → ответ Аррейна
-     * 3. Через 8 сек → ответ Итераториуса
+     * 3. Через 8 сек → ответ Итераториуса про понимание методов + навыки
+     * 4. Через 11 сек → сообщение Итераториуса про удачу
      * 
      * @param bot — Telegram бот для отправки
      * @param chatId — ID чата пользователя
-     * @param mainMessage — основное сообщение ensureCapacity
+     * @param mainMessage — основное сообщение ensureCapacity (ответ на кнопку)
      * @param arreyonResponse — ответ Аррейна
-     * @param iteratoriusResponse — ответ Итераториуса
+     * @param iteratoriusResponse — ответ Итераториуса про понимание методов + навыки
      */
     public void startEnsureCapacitySequence(TelegramLongPollingBot bot, Long chatId,
                                           SendMessage mainMessage, SendMessage arreyonResponse, 
@@ -116,9 +118,9 @@ public class Round2SequenceService {
         log.info("Round2SequenceService: 🧠 Запуск цепочки ensureCapacity для chatId={}", chatId);
         
         try {
-            // 1. СРАЗУ: Отправляем основное сообщение
+            // 1. СРАЗУ: Отправляем основное сообщение (ответ на кнопку)
             bot.execute(mainMessage);
-            log.info("Round2SequenceService: ✅ Основное сообщение ensureCapacity отправлено для chatId={}", chatId);
+            log.info("Round2SequenceService: ✅ Основное сообщение ensureCapacity (ответ на кнопку) отправлено для chatId={}", chatId);
             
             // 2. ЧЕРЕЗ 5 СЕК: Ответ Аррейна
             scheduler.schedule(() -> {
@@ -126,24 +128,53 @@ public class Round2SequenceService {
                     bot.execute(arreyonResponse);
                     log.info("Round2SequenceService: ✅ Ответ Аррейна отправлен для chatId={}", chatId);
                 } catch (Exception e) {
-                    log.error("Round2SequenceService: ❌ Ошибка отправки ответа Аррейна для chatId={}: {}", chatId, e.getMessage(), e);
+                    log.error("Round2SequenceService: ❌ Ошибка отправки ответа Аррейна для chatId={}: {}", chatId, e.getMessage());
                 }
             }, 5, TimeUnit.SECONDS);
             
-            // 3. ЧЕРЕЗ 8 СЕК: Ответ Итераториуса
+            // 3. ЧЕРЕЗ 8 СЕК: Ответ Итераториуса про понимание методов + навыки
             scheduler.schedule(() -> {
                 try {
                     bot.execute(iteratoriusResponse);
-                    log.info("Round2SequenceService: ✅ Ответ Итераториуса отправлен для chatId={}", chatId);
+                    log.info("Round2SequenceService: ✅ Ответ Итераториуса про понимание методов отправлен для chatId={}", chatId);
                 } catch (Exception e) {
-                    log.error("Round2SequenceService: ❌ Ошибка отправки ответа Итераториуса для chatId={}: {}", chatId, e.getMessage(), e);
+                    log.error("Round2SequenceService: ❌ Ошибка отправки ответа Итераториуса для chatId={}: {}", chatId, e.getMessage());
                 }
             }, 8, TimeUnit.SECONDS);
+            
+            // 4. ЧЕРЕЗ 11 СЕК: Сообщение Итераториуса про удачу
+            scheduler.schedule(() -> {
+                try {
+                    SendMessage luckMessage = new SendMessage();
+                    luckMessage.setChatId(chatId);
+                    luckMessage.setParseMode("Markdown");
+                    luckMessage.setText("*Итераториус*\n" +
+                            "Малец, ты прошёл бои и викторины...\n" +
+                            "Но ArrayList — это не только логика, это ещё и УДАЧА!");
+                    
+                    bot.execute(luckMessage);
+                    log.info("Round2SequenceService: ✅ Сообщение Итераториуса про удачу отправлено для chatId={}", chatId);
+                    
+                    // 🎰 ЗАПУСКАЕМ КАЗИНО-СЦЕНАРИЙ ПОСЛЕ СООБЩЕНИЯ ПРО УДАЧУ
+                    // Через 4 секунды после сообщения про удачу запускаем казино
+                    scheduler.schedule(() -> {
+                        try {
+                            log.info("Round2SequenceService: 🎰 Запуск казино-сценария после сообщения про удачу для chatId={}", chatId);
+                            casinoScenarioService.startCasinoScenario(bot, chatId, null);
+                        } catch (Exception e) {
+                            log.error("Round2SequenceService: ❌ Ошибка запуска казино для chatId={}: {}", chatId, e.getMessage());
+                        }
+                    }, 4, TimeUnit.SECONDS);
+                    
+                } catch (Exception e) {
+                    log.error("Round2SequenceService: ❌ Ошибка отправки сообщения про удачу для chatId={}: {}", chatId, e.getMessage());
+                }
+            }, 11, TimeUnit.SECONDS);
             
             log.info("Round2SequenceService: 🎯 Цепочка ensureCapacity запланирована для chatId={}", chatId);
             
         } catch (TelegramApiException e) {
-            log.error("Round2SequenceService: ❌ Критическая ошибка ensureCapacity для chatId={}: {}", chatId, e.getMessage(), e);
+            log.error("Round2SequenceService: ❌ Критическая ошибка ensureCapacity для chatId={}: {}", chatId, e.getMessage());
         }
     }
 }

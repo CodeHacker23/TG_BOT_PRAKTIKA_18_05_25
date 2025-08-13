@@ -29,7 +29,7 @@ import java.util.HashMap;
  * <p>
  * Поддерживаемые статы:
  * - achievement_points — очки достижения
- * - currency/money — деньги персонажа
+ * - currency — деньги персонажа
  * - analytics — аналитика (для Personage1)
  * - communication — коммуникация (для Personage2)
  * - code_accuracy — точность кода (для Personage3)

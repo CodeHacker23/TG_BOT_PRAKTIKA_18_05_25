@@ -38,49 +38,37 @@ public class CasinoScenarioService {
      * 🎰 ЗАПУСКАЕТ СТАНДАРТНЫЙ СЦЕНАРИЙ КАЗИНО
      * 
      * ПОСЛЕДОВАТЕЛЬНОСТЬ:
-     * 1. Через 4 сек → сообщение Итераториуса о казино
-     * 2. Через 7 сек → фото мешка с билетами  
-     * 3. Через 10 сек → аудио "Ставки на код"
+     * 1. Через 4 сек → фото мешка с билетами  
+     * 2. Через 7 сек → аудио "Ставки на код"
      * 
      * @param bot — Telegram бот для отправки
      * @param chatId — ID чата пользователя
-     * @param iteratoriusMessage — сообщение от Итераториуса о казино
+     * @param iteratoriusMessage — сообщение от Итераториуса о казино (больше не используется)
      */
     public void startCasinoScenario(TelegramLongPollingBot bot, Long chatId, SendMessage iteratoriusMessage) {
         log.info("CasinoScenarioService: 🎰 Запуск стандартного сценария казино для chatId={}", chatId);
         
-        // 1. Через 4 секунды отправляем сообщение Итераториуса о казино
+        // 1. Через 4 секунды отправляем фото мешка с билетами
         scheduler.schedule(() -> {
             try {
-                log.info("CasinoScenarioService: 🎰 Отправка сообщения Итераториуса о казино для chatId={}", chatId);
-                bot.execute(iteratoriusMessage);
-                
-                                        // 2. Через 3 секунды отправляем фото мешка с билетами
-                        scheduler.schedule(() -> {
-                            try {
-                                log.info("CasinoScenarioService: 🎰 Отправка фото мешка для chatId={}", chatId);
-                                // Отправляем фото мешка с правильным описанием
-                                SendPhoto bagPhoto = PhotoReam.casinoBag(chatId);
-                                bagPhoto.setCaption("🎯 В этом волшебном мешке лежат 10 билетов.\nКаждый содержит своё исключение, свой сюрприз...\nИ только ОДИН из них — ДЖЕКПОТ!");
-                                bot.execute(bagPhoto);
-                        
-                        // 3. Через 3 секунды отправляем финальное аудио
-                        scheduler.schedule(() -> {
-                            try {
-                                log.info("CasinoScenarioService: 🎰 Отправка финального аудио для chatId={}", chatId);
-                                audioService.sendAudio(bot, chatId, "src/main/resources/audio/Ставки на код.mp3");
-                            } catch (Exception e) {
-                                log.error("CasinoScenarioService: ❌ Ошибка отправки финального аудио для chatId={}: {}", chatId, e.getMessage());
-                            }
-                        }, 3, TimeUnit.SECONDS);
-                        
-                    } catch (TelegramApiException e) {
-                        log.error("CasinoScenarioService: ❌ Ошибка фото мешка для chatId={}: {}", chatId, e.getMessage());
+                log.info("CasinoScenarioService: 🎰 Отправка фото мешка для chatId={}", chatId);
+                // Отправляем фото мешка с правильным описанием
+                SendPhoto bagPhoto = PhotoReam.casinoBag(chatId);
+                bagPhoto.setCaption("🎯 В этом волшебном мешке лежат 10 билетов.\nКаждый содержит своё исключение, свой сюрприз...\nИ только ОДИН из них — ДЖЕКПОТ!");
+                bot.execute(bagPhoto);
+        
+                // 2. Через 3 секунды отправляем финальное аудио
+                scheduler.schedule(() -> {
+                    try {
+                        log.info("CasinoScenarioService: 🎰 Отправка финального аудио для chatId={}", chatId);
+                        audioService.sendAudio(bot, chatId, "src/main/resources/audio/Ставки на код.mp3");
+                    } catch (Exception e) {
+                        log.error("CasinoScenarioService: ❌ Ошибка отправки финального аудио для chatId={}: {}", chatId, e.getMessage());
                     }
                 }, 3, TimeUnit.SECONDS);
                 
-            } catch (Exception e) {
-                log.error("CasinoScenarioService: ❌ Ошибка запуска казино для chatId={}: {}", chatId, e.getMessage());
+            } catch (TelegramApiException e) {
+                log.error("CasinoScenarioService: ❌ Ошибка фото мешка для chatId={}: {}", chatId, e.getMessage());
             }
         }, 4, TimeUnit.SECONDS);
     }
