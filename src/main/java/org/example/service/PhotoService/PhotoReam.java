@@ -113,7 +113,7 @@ public class PhotoReam {
                 .parseMode("Markdown")
                 .photo(new InputFile("https://ltdfoto.ru/image/vwNxFZ"))
                 .caption("*Раунд 2 — 'На грани слома'*\n\n" +
-                        "📊 Статы Аррейна: \uD83D\uDFE5\uD83D\uDFE5\uD83D\uDFE9\n" +
+                        "📊 Статы Аррейна: 🟥🟥🟩\n" +
                         "🛡️ HP - 100 (Было 150)\n\n" +
                         "⚡ *Будь осторожен! Он изучил твою тактику из раунда 1!*\n\n" +
                         "Твои статы:\n" +

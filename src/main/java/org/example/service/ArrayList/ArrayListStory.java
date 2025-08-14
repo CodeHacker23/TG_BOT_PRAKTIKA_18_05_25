@@ -6,6 +6,7 @@ import org.example.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.polls.SendPoll;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -58,6 +59,7 @@ import java.util.function.BiConsumer;
  */
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class ArrayListStory {
     private static final Logger log = LoggerFactory.getLogger(ArrayListStory.class);
 

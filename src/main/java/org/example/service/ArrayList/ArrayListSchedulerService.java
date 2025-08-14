@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.service.PhotoService.PhotoReam;
 import org.example.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
@@ -64,6 +65,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ArrayListSchedulerService {
 
     private final UserService userService;

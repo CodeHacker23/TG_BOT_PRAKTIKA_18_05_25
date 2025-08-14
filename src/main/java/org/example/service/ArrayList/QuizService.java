@@ -6,8 +6,10 @@ import org.example.service.UserService;
 import org.example.service.PersonageStatManager;
 import org.example.service.PhotoService.PhotoReam;
 import org.example.bot.KeyboardService.KeyboardReam;
+import org.example.service.ArrayList.MessageServiceRound2;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.polls.SendPoll;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -44,6 +46,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class QuizService {
 
     private final StatService statService;
@@ -52,6 +55,7 @@ public class QuizService {
     private final PersonageStatManager personageStatManager;
     private final CasinoScenarioService casinoScenarioService;
     private final Round2SequenceService round2SequenceService;
+    private final MessageServiceRound2 messageServiceRound2;
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     
     // 🗺️ MAP ДЛЯ ОТСЛЕЖИВАНИЯ ТИПОВ ВИКТОРИН: chatId -> тип последней викторины
@@ -374,8 +378,8 @@ public class QuizService {
                 log.info("QuizService: 🚀 Запускаем ПОЛНУЮ ЦЕПОЧКУ раунда 2 для chatId={}", chatId);
                 
                 // 🎯 СОЗДАЕМ ВСЕ НЕОБХОДИМЫЕ СООБЩЕНИЯ ДЛЯ РАУНДА 2
-                // 1. Фото с объявлением раунда 2
-                SendPhoto round2Photo = PhotoReam.createRound2PhotoMessage(chatId, "Раунд 2 - Настоящее испытание!");
+                // 1. Фото с объявлением раунда 2 (используем MessageServiceRound2 для правильного получения статов)
+                SendPhoto round2Photo = messageServiceRound2.createRound2Message(chatId);
                 
                 // 2. Текстовое сообщение об атмосфере
                 SendMessage textMessage = new SendMessage();

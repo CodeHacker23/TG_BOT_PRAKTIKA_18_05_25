@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.model.entity.PersonageEntity;
 import org.example.repository.PersonageRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import java.util.Random;
 
@@ -15,6 +16,7 @@ import java.util.Random;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class PersonageService {
     private final PersonageRepository personageRepository;
     private final Random random = new Random();

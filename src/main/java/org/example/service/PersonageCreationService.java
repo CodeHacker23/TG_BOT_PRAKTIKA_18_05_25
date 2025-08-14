@@ -3,6 +3,7 @@ package org.example.service;
 import org.example.model.entity.UserEntity;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * PersonageCreationService — фабрика по созданию персонажей и надзиратель за их уникальностью.
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
  * Если забудешь добавить комментарий — Иларион создаст тебе персонажа с именем "Баг".
  */
 @Service
+@Transactional
 public class PersonageCreationService {
     private final UserService userService;
 

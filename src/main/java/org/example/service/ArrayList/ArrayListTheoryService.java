@@ -7,6 +7,7 @@ import org.example.model.entity.PersonageEntity;
 import org.example.model.entity.UserEntity;
 import org.example.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 /**
@@ -39,6 +40,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ArrayListTheoryService {
     
     private final UserService userService;
