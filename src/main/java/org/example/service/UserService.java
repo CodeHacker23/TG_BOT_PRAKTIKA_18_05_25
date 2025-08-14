@@ -5,6 +5,7 @@ import org.example.model.entity.UserEntity;
 import org.example.repository.UserRepository;
 import org.example.model.personage.PersonageBase;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 /**
@@ -22,6 +23,7 @@ import java.util.Optional;
  */
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserService {
     // Тут мы уже работаем с нашим репозиторием и вызываем его методы (у репозитория много разных методов, сохранения удаление и получение пользователей и т.д)
     private final UserRepository userRepository;

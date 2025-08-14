@@ -10,6 +10,7 @@ import org.example.repository.PersonageRepository;
 import org.example.service.ArrayList.ArrayListStory;
 import org.example.service.PhotoService.PhotoStart;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -53,6 +54,7 @@ import java.util.function.BiConsumer;
  */
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class StoryStartService {
     private static final Logger log = LoggerFactory.getLogger(StoryStartService.class);
     // Сервис с методами для отправки фото и теории (название "Service" — это боль, не повторяй так)
@@ -60,7 +62,7 @@ public class StoryStartService {
     // Сервис для централизованной логики создания персонажа
     private final PersonageCreationService personageCreationService;
     // Сервис для работы с пользователями
-    public final UserService userService;
+    private final UserService userService;
     public final PhotoStart photoStart;
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private final PersonageRepository personageRepository;
@@ -646,7 +648,14 @@ public class StoryStartService {
 
 
     // Если добавишь новый метод без комментария — Доктор БайтФордж лично напишет тебе в Telegram.
+    
+    /**
+     * Геттер для UserService.
+     * Нужен для доступа из Bot.determineMessageType()
+     * 
+     * @return UserService — сервис для работы с пользователями
+     */
+    public UserService getUserService() {
+        return userService;
+    }
 }
-
-
-

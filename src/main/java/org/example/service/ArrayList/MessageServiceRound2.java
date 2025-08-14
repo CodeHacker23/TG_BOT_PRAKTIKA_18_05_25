@@ -7,6 +7,7 @@ import org.example.model.entity.PersonageEntity;
 import org.example.model.entity.UserEntity;
 import org.example.service.UserService;
 import org.example.service.PhotoService.PhotoReam;
+import org.springframework.transaction.annotation.Transactional;
 
 import org.example.service.PersonageStatManager;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.polls.SendPoll;
+import org.telegram.telegrambots.meta.api.objects.polls.PollAnswer;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 /**
@@ -33,12 +35,12 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Slf4j
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class MessageServiceRound2 {
     
     // Основные сервисы
     private final UserService userService;
     private final PersonageStatManager statManager;
-    private final QuizService quizService;
     
     // Новые специализированные сервисы
     private final StatsDisplayService statsDisplayService;
@@ -61,7 +63,13 @@ public class MessageServiceRound2 {
         }
 
         PersonageEntity entity = user.getPersonage();
+        
+        // Логируем детали пользователя и персонажа для отладки
+        log.debug("MessageServiceRound2: Пользователь найден: tgId={}, персонаж: type={}, name={}", 
+                user.getTgId(), entity.getCharacterType(), entity.getName());
+        
         String statsLine = statsDisplayService.buildStatsLine(entity);
+        log.debug("MessageServiceRound2: Строка статов получена: {}", statsLine);
 
         log.debug("MessageServiceRound2: Фото-сообщение о раунде 2 создано");
         return PhotoReam.createRound2PhotoMessage(chatId, statsLine);
@@ -247,7 +255,16 @@ public class MessageServiceRound2 {
                 @Override
                 public void run() {
                     try {
-                        SendPoll coffeeQuiz = quizService.createCoffeeQuiz(chatId);
+                        // Создаем кофе-викторину напрямую, чтобы избежать циклической зависимости
+                        SendPoll coffeeQuiz = new SendPoll();
+                        coffeeQuiz.setIsAnonymous(false);
+                        coffeeQuiz.setChatId(chatId);
+                        coffeeQuiz.setQuestion(QuizConstants.COFFEE_QUIZ_QUESTION);
+                        coffeeQuiz.setOptions(QuizConstants.COFFEE_QUIZ_OPTIONS);
+                        coffeeQuiz.setCorrectOptionId(QuizConstants.COFFEE_CORRECT_ANSWER);
+                        coffeeQuiz.setType("quiz");
+                        coffeeQuiz.setExplanation("ArrayList может хранить null значения!");
+                        
                         bot.execute(coffeeQuiz);
                         log.info("MessageServiceRound2: ☕ Кофе-викторина отправлена для chatId={}", chatId);
                     } catch (TelegramApiException e) {

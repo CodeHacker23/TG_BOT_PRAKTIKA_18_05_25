@@ -7,6 +7,7 @@ import org.example.model.entity.PersonageEntity;
 import org.example.model.entity.UserEntity;
 import org.example.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.util.Map;
@@ -58,6 +59,7 @@ import java.util.Map;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MessageServiceRound1 {
 
     private final UserService userService;
@@ -290,6 +292,4 @@ public class MessageServiceRound1 {
         log.debug("MessageService: Сообщение о завершении раунда 1 создано для chatId={}", chatId);
         return sendMessage;
     }
-
-
 }

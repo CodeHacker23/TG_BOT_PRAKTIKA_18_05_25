@@ -9,6 +9,7 @@ import org.example.model.entity.UserEntity;
 import org.example.repository.PersonageRepository;
 import org.example.service.ArrayList.StatService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 /**
@@ -34,6 +35,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PersonageStatManager {
     
     private final UserService userService;
@@ -78,6 +80,7 @@ public class PersonageStatManager {
      * @param cashMax - максимальная награда денег
      * @return StatUpdateResult - результат обновления
      */
+    @Transactional
     public StatUpdateResult updateRandomRewards(Long chatId, int expMin, int expMax, int cashMin, int cashMax) {
         log.debug("PersonageStatManager: Обновление статов для chatId={}", chatId);
 
@@ -91,12 +94,25 @@ public class PersonageStatManager {
         int expReward = statService.generateRandomReward(expMin, expMax);
         int cashReward = statService.generateRandomReward(cashMin, cashMax);
 
-        // 3. Обновление статов
+        // 3. Обновление статов с логированием ДО изменений
+        log.debug("PersonageStatManager: Статы ДО изменений для {}: опыт={}, деньги={}", 
+                personage.getName(), personage.getAchievementPoints(), personage.getCurrency());
+        
         personage.setAchievementPoints(personage.getAchievementPoints() + expReward);
         personage.setCurrency(personage.getCurrency() + cashReward);
 
         // 4. Сохранение в БД
-        personageRepository.save(personage);
+        try {
+            personageRepository.save(personage);
+            log.debug("PersonageStatManager: Статы успешно сохранены в БД для {}", personage.getName());
+        } catch (Exception e) {
+            log.error("PersonageStatManager: ❌ Ошибка сохранения в БД для {}: {}", personage.getName(), e.getMessage(), e);
+            return StatUpdateResult.error("Ошибка сохранения в БД: " + e.getMessage());
+        }
+
+        // 5. Проверяем, что статы действительно обновились
+        log.debug("PersonageStatManager: Статы ПОСЛЕ изменений для {}: опыт={}, деньги={}", 
+                personage.getName(), personage.getAchievementPoints(), personage.getCurrency());
 
         log.info("PersonageStatManager: Обновлены статы для {}: +{} опыта, +{} денег", 
                 personage.getName(), expReward, cashReward);
@@ -113,6 +129,7 @@ public class PersonageStatManager {
      * @param chatId - ID чата
      * @return PersonageEntity или null если ошибка
      */
+    @Transactional(readOnly = true)
     private PersonageEntity validateAndGetPersonage(Long chatId) {
         UserEntity user = userService.getUserByTgId(chatId);
         
@@ -152,6 +169,7 @@ public class PersonageStatManager {
      * @param chatId - ID чата
      * @return StatUpdateResult - результат
      */
+    @Transactional
     public StatUpdateResult updateStandardRewards(Long chatId) {
         return updateRandomRewards(chatId, 30, 60, 200, 400);
     }

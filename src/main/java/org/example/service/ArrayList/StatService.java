@@ -6,6 +6,7 @@ import org.example.model.entity.PersonageEntity;
 import org.example.model.entity.UserEntity;
 import org.example.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -62,6 +63,7 @@ import java.util.HashMap;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class StatService {
 
     private final UserService userService;

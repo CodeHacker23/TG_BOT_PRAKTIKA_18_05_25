@@ -150,7 +150,7 @@ public class Bot extends TelegramLongPollingBot { // класс бота
             return MessageType.START_COMMAND;
         }
         
-        UserEntity user = storyStartService.userService.getUserByTgId(userId);
+        UserEntity user = storyStartService.getUserService().getUserByTgId(userId);
         if (user != null && "AWAITING_CHARACTER_NAME".equals(user.getState())) {
             return MessageType.CHARACTER_NAME_INPUT;
         }

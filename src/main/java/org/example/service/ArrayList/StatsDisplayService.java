@@ -3,6 +3,7 @@ package org.example.service.ArrayList;
 import lombok.extern.slf4j.Slf4j;
 import org.example.model.entity.PersonageEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * StatsDisplayService — универсальный сервис для отображения статистики персонажей.
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 public class StatsDisplayService {
     
     /**
@@ -37,6 +39,20 @@ public class StatsDisplayService {
      */
     public String buildStatsLine(PersonageEntity entity) {
         log.debug("StatsDisplayService: Формирование строки статов для персонажа типа: {}", entity.getCharacterType());
+        
+        // Логируем все статы для отладки
+        log.debug("StatsDisplayService: Детальные статы персонажа {}: level={}, energy={}, achievementPoints={}, currency={}, analytics={}, communication={}, codeAccuracy={}, optimization={}, humor={}, deadlineResistance={}", 
+                entity.getName(),
+                entity.getLevel(),
+                entity.getEnergy(),
+                entity.getAchievementPoints(),
+                entity.getCurrency(),
+                entity.getAnalytics(),
+                entity.getCommunication(),
+                entity.getCodeAccuracy(),
+                entity.getOptimization(),
+                entity.getHumor(),
+                entity.getDeadlineResistance());
         
         String type = entity.getCharacterType();
         String money = String.valueOf(entity.getCurrency());
