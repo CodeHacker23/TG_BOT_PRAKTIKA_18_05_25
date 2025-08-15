@@ -130,7 +130,7 @@ public class PersonageStatManager {
      * @return PersonageEntity или null если ошибка
      */
     @Transactional(readOnly = true)
-    private PersonageEntity validateAndGetPersonage(Long chatId) {
+    protected PersonageEntity validateAndGetPersonage(Long chatId) {
         UserEntity user = userService.getUserByTgId(chatId);
         
         if (user == null) {

@@ -40,17 +40,19 @@ public class CasinoScenarioService {
      * 🎰 ЗАПУСКАЕТ СТАНДАРТНЫЙ СЦЕНАРИЙ КАЗИНО
      * 
      * ПОСЛЕДОВАТЕЛЬНОСТЬ:
-     * 1. Через 4 сек → фото мешка с билетами  
-     * 2. Через 7 сек → аудио "Ставки на код"
+     * 1. Через 3 сек → фото мешка с билетами  
+     * 2. Через 6 сек → аудио "Ставки на код"
      * 
      * @param bot — Telegram бот для отправки
      * @param chatId — ID чата пользователя
      * @param iteratoriusMessage — сообщение от Итераториуса о казино (больше не используется)
      */
-    public void startCasinoScenario(TelegramLongPollingBot bot, Long chatId, SendMessage iteratoriusMessage) {
+    public void startCasinoScenario(TelegramLongPollingBot bot, Long chatId, SendMessage iteratoriusMessage) throws TelegramApiException {
         log.info("CasinoScenarioService: 🎰 Запуск стандартного сценария казино для chatId={}", chatId);
-        
-        // 1. Через 4 секунды отправляем фото мешка с билетами
+
+        log.info("Round2SequenceService: ✅ Сообщение Итераториуса про удачу отправлено для chatId={}", chatId);
+
+        // 1. Через 3 секунды отправляем фото мешка с билетами  
         scheduler.schedule(() -> {
             try {
                 log.info("CasinoScenarioService: 🎰 Отправка фото мешка для chatId={}", chatId);
@@ -72,7 +74,7 @@ public class CasinoScenarioService {
             } catch (TelegramApiException e) {
                 log.error("CasinoScenarioService: ❌ Ошибка фото мешка для chatId={}: {}", chatId, e.getMessage());
             }
-        }, 4, TimeUnit.SECONDS);
+        }, 3, TimeUnit.SECONDS);
     }
     
     /**

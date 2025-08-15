@@ -1,6 +1,7 @@
 package org.example.service.ArrayList;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.bot.KeyboardService.KeyboardReam;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendVoice;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
@@ -49,7 +50,8 @@ public class AudioService {
             sendVoice.setVoice(inputFile);
 
             
-            // Отправляем голосовое сообщение
+            // Отправляем голосовое сообщение с клавиатурой
+            sendVoice.setReplyMarkup(KeyboardReam.casinoRound2(chatId));
             bot.execute(sendVoice);
             
             log.info("AudioService: Голосовое сообщение успешно отправлено в чат {}", chatId);

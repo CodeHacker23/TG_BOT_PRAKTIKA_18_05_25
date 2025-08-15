@@ -4,27 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="Сделал рефакторинг кода">
+    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="Добавлена анотация транзит, так-же исправлен маленький не дочет, увидел что при объявлении раунда 2 не выходят статы персонажа">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/repository/PersonageRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/repository/PersonageRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/repository/UserRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListSchedulerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListSchedulerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListStory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListStory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListTheoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/ArrayListTheoryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/KeyboardService/KeyboardReam.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/KeyboardService/KeyboardReam.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/AudioService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/AudioService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/CasinoScenarioService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/CasinoScenarioService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/MessageServiceRound1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/MessageServiceRound1.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/MessageServiceRound2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/MessageServiceRound2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/QuizConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/QuizConstants.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/QuizService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/QuizService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/Round2SequenceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/Round2SequenceService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/StatService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/StatService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/StatsDisplayService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/StatsDisplayService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/PersonageCreationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/PersonageCreationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/PersonageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/PersonageService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/PersonageStatManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/PersonageStatManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/PhotoService/PhotoReam.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/PhotoService/PhotoReam.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/StoryStartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/StoryStartService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -160,7 +151,8 @@
       <workItem from="1754290085657" duration="21171000" />
       <workItem from="1754585264819" duration="12916000" />
       <workItem from="1754893961991" duration="2020000" />
-      <workItem from="1754942182209" duration="32721000" />
+      <workItem from="1754942182209" duration="43597000" />
+      <workItem from="1755288921091" duration="463000" />
     </task>
     <task id="LOCAL-00001" summary="по идеи всеработает как нужн, на команде старт отправляется фото с текстом, затем отправялется сообщение с кнопкой (создать персонажа) кнопка кликабельна, после кнопки отправляется персонаж с характеристиками и фото. все соеденяется с БД2">
       <option name="closed" value="true" />
@@ -490,14 +482,21 @@
       <option name="project" value="LOCAL" />
       <updated>1755101917567</updated>
     </task>
-    <option name="localTasksCounter" value="42" />
+    <task id="LOCAL-00042" summary="Добавлена анотация транзит, так-же исправлен маленький не дочет, увидел что при объявлении раунда 2 не выходят статы персонажа">
+      <option name="closed" value="true" />
+      <created>1755204021467</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1755204021467</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="все рабоатет, теперь когда пользователь нажимает принять доспехи ему выпадает персонаж в доспехах, с обновленными статами а так-же идет сохранения в БД" />
     <MESSAGE value="работает" />
     <MESSAGE value="вроде вссе как положено" />
     <MESSAGE value="Началась реализация сюжетной ветки Array, разгрузил класс MessageHandlerService, в осоенности кейсы разгрузил, далее планируется расширение сюжетной ветки и оптимизация кода" />
@@ -522,6 +521,7 @@
     <MESSAGE value="Сделали свое перво голосовое, все стабильно работает, правда нужно где то изменить имя Аррейна, порой ошибки возникают, так же добавили класс аудио, классы" />
     <MESSAGE value="Сделали что после всех ответов после раунда 2 идет отправка сопутсвующих событий - это отправка фото с мешком, затем голосове на все 3 кнпоки(добить, .ensureCapacity(), кофе пауза) все работает, в дальнейшем планируется делать рефакторинг пора уже..." />
     <MESSAGE value="Сделал рефакторинг кода" />
-    <option name="LAST_COMMIT_MESSAGE" value="Сделал рефакторинг кода" />
+    <MESSAGE value="Добавлена анотация транзит, так-же исправлен маленький не дочет, увидел что при объявлении раунда 2 не выходят статы персонажа" />
+    <option name="LAST_COMMIT_MESSAGE" value="Добавлена анотация транзит, так-же исправлен маленький не дочет, увидел что при объявлении раунда 2 не выходят статы персонажа" />
   </component>
 </project>
