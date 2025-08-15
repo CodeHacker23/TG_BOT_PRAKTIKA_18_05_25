@@ -138,6 +138,14 @@ public class QuizService {
         
         log.info("QuizService: Получен ответ на викторину для chatId={}, тип викторины: {}", chatId, quizType);
         
+        // 🔍 ДОПОЛНИТЕЛЬНАЯ ПРОВЕРКА: если тип не определен, определяем по логике
+        if (quizType == null || "".equals(quizType.trim())) {
+            // Если тип не определен, это скорее всего кофе-викторина из MessageServiceRound2
+            // Обычные викторины всегда создаются через createQuiz() и имеют тип "normal"
+            quizType = "coffee";
+            log.info("QuizService: Тип не определен в lastQuizType, предполагаем 'coffee' для chatId={}", chatId);
+        }
+        
         if ("coffee".equals(quizType)) {
             // ☕ Это кофе-викторина - используем специальный обработчик (БЕЗ запуска раунда 2)
             log.info("QuizService: Обрабатываем ответ на КОФЕ-викторину для chatId={}", chatId);
@@ -155,6 +163,8 @@ public class QuizService {
         // 🧹 Очищаем тип викторины после обработки
         lastQuizType.remove(chatId);
     }
+    
+
 
     /**
      * Обрабатывает ответ пользователя на викторину.
@@ -183,7 +193,8 @@ public class QuizService {
         // Отправляем персонализированное сообщение
         sendQuizResult(bot, chatId, isCorrect);
         
-        // После викторины запускаем раунд 2 через 5 секунд
+        // После обычной викторины запускаем раунд 2 через 6 секунд
+        // НЕ запускаем для кофе-викторины - там свой сценарий!
         startRound2AfterQuiz(bot, chatId);
     }
 
@@ -234,25 +245,25 @@ public class QuizService {
             log.info("QuizService: Результат КОФЕ-викторины отправлен для chatId={}, результат: {}, очки: {}", chatId, result, points);
             // 🎰 ЗАПУСКАЕМ ЦЕПОЧКУ КАЗИНО ПОСЛЕ КОФЕ-ВИКТОРИНЫ
             // 
-            // ПОСЛЕДОВАТЕЛЬНОСТЬ:
-            // 1. Через 4 сек → сообщение Итераториуса о казино (БЕЗ голосового!)
-            // 2. Через 7 сек → фото мешка с билетами
-            // 3. Через 10 сек → аудио "Ставки на код" (завершение)
+            // ПРАВИЛЬНАЯ ПОСЛЕДОВАТЕЛЬНОСТЬ:
+            // 1. Через 3 сек → сообщение Итераториуса о казино  
+            // 2. Через 6 сек → фото мешка с билетами
+            // 3. Через 9 сек → аудио "Ставки на код" (завершение)
             scheduler.schedule(() -> {
                 try {
-                    log.info("QuizService: 🎰 Запуск сценария казино после кофе-викторины для chatId={}", chatId);
+                    log.info("QuizService: 🎰 Отправка сообщения Итераториуса о казино для chatId={}", chatId);
                     
-                    // 1. Отправляем сообщение Итераториуса о казино (БЕЗ голосового!)
-                    // Используем CasinoScenarioService для запуска сценария казино
+                    // 1. СНАЧАЛА отправляем сообщение Итераториуса о казино
                     SendMessage casinoMessage = casinoScenarioService.createIteratoriusCasinoMessage(chatId);
-                    casinoScenarioService.startCasinoScenario(bot, chatId, casinoMessage);
+                    bot.execute(casinoMessage);
                     
-
+                    // 2. ЗАТЕМ запускаем сценарий казино (фото + аудио) через 3 секунды
+                    casinoScenarioService.startCasinoScenario(bot, chatId, casinoMessage);
                     
                 } catch (Exception e) {
                     log.error("QuizService: ❌ Ошибка запуска казино для chatId={}: {}", chatId, e.getMessage());
                 }
-            }, 4, TimeUnit.SECONDS);
+            }, 3, TimeUnit.SECONDS);
             
         } catch (TelegramApiException e) {
             log.error("QuizService: Ошибка отправки результата кофе-викторины для chatId={}", chatId, e);

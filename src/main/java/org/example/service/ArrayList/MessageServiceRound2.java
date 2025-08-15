@@ -256,15 +256,7 @@ public class MessageServiceRound2 {
                 public void run() {
                     try {
                         // Создаем кофе-викторину напрямую, чтобы избежать циклической зависимости
-                        SendPoll coffeeQuiz = new SendPoll();
-                        coffeeQuiz.setIsAnonymous(false);
-                        coffeeQuiz.setChatId(chatId);
-                        coffeeQuiz.setQuestion(QuizConstants.COFFEE_QUIZ_QUESTION);
-                        coffeeQuiz.setOptions(QuizConstants.COFFEE_QUIZ_OPTIONS);
-                        coffeeQuiz.setCorrectOptionId(QuizConstants.COFFEE_CORRECT_ANSWER);
-                        coffeeQuiz.setType("quiz");
-                        coffeeQuiz.setExplanation("ArrayList может хранить null значения!");
-                        
+                        SendPoll coffeeQuiz = createCoffeeQuizDirect(chatId);
                         bot.execute(coffeeQuiz);
                         log.info("MessageServiceRound2: ☕ Кофе-викторина отправлена для chatId={}", chatId);
                     } catch (TelegramApiException e) {
@@ -377,5 +369,35 @@ public class MessageServiceRound2 {
                 """.formatted(statsLine));
 
         return sendMessage;
+    }
+    
+    /**
+     * ☕ СОЗДАЕТ КОФЕ-ВИКТОРИНУ НАПРЯМУЮ
+     * 
+     * Создает кофе-викторину без зависимости от QuizService, чтобы избежать циклической зависимости.
+     * Использует те же константы, что и QuizService.
+     * 
+     * @param chatId — ID чата пользователя
+     * @return SendPoll — объект кофе-викторины
+     */
+    private static SendPoll createCoffeeQuizDirect(Long chatId) {
+        SendPoll poll = new SendPoll();
+        poll.setIsAnonymous(false);
+        poll.setChatId(chatId);
+        poll.setQuestion("☕Кофе остыл, а вопрос горячий!\n\n🤔Что выведется?");
+        
+        // Используем те же варианты ответов, что и в QuizConstants
+        poll.setOptions(java.util.Arrays.asList(
+            "Программа упадёт с NullPointerException",
+            "Выведет 2, null спокойно добавится",
+            "Выведет 1, null будет проигнорирован",
+            "Null заменится на строку \"undefined\""
+        ));
+        
+        poll.setCorrectOptionId(1); // "Выведет 2, null спокойно добавится"
+        poll.setType("quiz");
+        poll.setExplanation("ArrayList может хранить null значения!");
+        
+        return poll;
     }
 }

@@ -3,6 +3,7 @@ package org.example.bot.KeyboardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
@@ -140,4 +141,31 @@ public class KeyboardReam {
 
     }
 
+    /**
+     * Создает клавиатуру с 10 кнопками для казино-раунда 2
+     * @param chatId — ID чата
+     * @return ReplyKeyboardMarkup — клавиатура с кнопками 1-10
+     */
+    public static ReplyKeyboardMarkup casinoRound2(Long chatId){
+        log.info("casinoRound2() - создание кнопок 1-10 для chatId = {}", chatId);
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
+
+        // Создаем 10 кнопок в одном ряду
+        KeyboardRow row = new KeyboardRow();
+        row.add(new KeyboardButton("1⃣"));
+        row.add(new KeyboardButton("2⃣"));
+        row.add(new KeyboardButton("3⃣"));
+        row.add(new KeyboardButton("4⃣"));
+        row.add(new KeyboardButton("5⃣"));
+        row.add(new KeyboardButton("6⃣"));
+        row.add(new KeyboardButton("7⃣"));
+        row.add(new KeyboardButton("8⃣"));
+        row.add(new KeyboardButton("9⃣"));
+        row.add(new KeyboardButton("🔟"));
+
+        replyKeyboardMarkup.setKeyboard(List.of(row));
+        return replyKeyboardMarkup;
+    }
 }

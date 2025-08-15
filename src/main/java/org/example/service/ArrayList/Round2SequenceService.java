@@ -3,11 +3,13 @@ package org.example.service.ArrayList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.example.bot.KeyboardService.KeyboardReam;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.concurrent.Executors;
@@ -163,6 +165,7 @@ public class Round2SequenceService {
                         try {
                             log.info("Round2SequenceService: 🎰 Запуск казино-сценария после сообщения про удачу для chatId={}", chatId);
                             casinoScenarioService.startCasinoScenario(bot, chatId, null);
+
                         } catch (Exception e) {
                             log.error("Round2SequenceService: ❌ Ошибка запуска казино для chatId={}: {}", chatId, e.getMessage());
                         }

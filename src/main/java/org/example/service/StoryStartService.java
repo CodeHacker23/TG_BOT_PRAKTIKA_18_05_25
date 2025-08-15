@@ -432,7 +432,7 @@ public class StoryStartService {
                     } catch (TelegramApiException e) {
                         log.error("StoryStartService: Ошибка отправки фото с кнопками для chatId={}: {}", chatId, e.getMessage());
                     }
-                }, 4, TimeUnit.SECONDS);
+                }, 7, TimeUnit.SECONDS);
             }
 
             case Personage2 personage2 -> {
@@ -446,7 +446,7 @@ public class StoryStartService {
                     } catch (TelegramApiException e) {
                         log.error("StoryStartService: Ошибка отправки фото с кнопками для chatId={}: {}", chatId, e.getMessage());
                     }
-                }, 4, TimeUnit.SECONDS);
+                }, 7, TimeUnit.SECONDS);
             }
             case Personage3 personage3 -> {
                 photo = personage3.PhotoTheoryGeks(chatId);
@@ -459,7 +459,7 @@ public class StoryStartService {
                     } catch (TelegramApiException e) {
                         log.error("StoryStartService: Ошибка отправки фото с кнопками для chatId={}: {}", chatId, e.getMessage());
                     }
-                }, 4, TimeUnit.SECONDS);
+                }, 7, TimeUnit.SECONDS);
             }
             default -> {
             }
