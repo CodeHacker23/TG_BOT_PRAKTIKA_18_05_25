@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.example.service.*;
 import org.example.service.ArrayList.AudioService;
+import org.example.service.ArrayList.CasinoTicketService;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -48,7 +49,7 @@ public class MessageHandlerService {
     private final StoryStartService storyStartService;
     private final ArrayListStory arrayListStory;
     private final AudioService audioService;
-
+private final CasinoTicketService casinoTicketService;
 
     /**
      * Проверяет, есть ли у пользователя персонаж
@@ -144,7 +145,21 @@ public class MessageHandlerService {
             log.warn("MessageHandlerService: ArrayListStory не может обработать команду '{}'", text);
         }
 
-        // 3. Остальные команды (например, processCommand)
+        // 3. 🎰 КНОПКИ КАЗИНО (билеты 1⃣-🔟)
+        if (isCasinoTicket(text)) {
+            log.info("MessageHandlerService: обрабатываем кнопку казино '{}'", text);
+            try {
+                SendMessage response = casinoTicketService.handleTicketSelection(chatId, text);
+                bot.execute(response);
+                log.info("MessageHandlerService: билет '{}' успешно обработан для chatId={}", text, chatId);
+            } catch (Exception e) {
+                log.error("MessageHandlerService: ошибка обработки билета '{}' для chatId={}: {}", text, chatId, e.getMessage());
+                bot.execute(new SendMessage(chatId.toString(), "❌ Ошибка обработки билета!"));
+            }
+            return;
+        }
+
+        // 4. Остальные команды (например, processCommand)
         // Удалить метод processCommand полностью
         
         log.info("MessageHandlerService.handleMessage() — ВЫХОД ИЗ МЕТОДА");
@@ -152,6 +167,19 @@ public class MessageHandlerService {
 
 
 
+
+    /**
+     * 🎰 Проверяет, является ли текст кнопкой казино-билета
+     * 
+     * @param text — текст сообщения пользователя
+     * @return true если это кнопка казино (1⃣-🔟)
+     */
+    private boolean isCasinoTicket(String text) {
+        return "1⃣".equals(text) || "2⃣".equals(text) || "3⃣".equals(text) || 
+               "4⃣".equals(text) || "5⃣".equals(text) || "6⃣".equals(text) || 
+               "7⃣".equals(text) || "8⃣".equals(text) || "9⃣".equals(text) || 
+               "🔟".equals(text);
+    }
 
     // --- Советы по расширению ---
     // 1. Для новых сценариев (LinkedList, Set и т.д.) делай отдельные StoryService и вызывай их отсюда.
