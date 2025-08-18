@@ -92,7 +92,6 @@ public class CasinoScenarioService {
         sendMessage.setText("*Итераториус*\n" +
                 "Малец, ты прошёл бои и викторины...\n" +
                 "Но ArrayList — это не только логика, это ещё и УДАЧА!");
-        
         return sendMessage;
     }
 }
