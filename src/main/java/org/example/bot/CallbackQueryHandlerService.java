@@ -10,6 +10,7 @@ import org.example.service.PhotoService.PhotoReam;
 import org.example.service.UserService;
 import org.example.service.StoryStartService;
 import org.example.service.PersonageService;
+import org.example.service.ArrayList.EpicQuizTimerService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,10 +42,9 @@ import org.example.model.personage.Personage3;
 public class CallbackQueryHandlerService {
     private static final Logger log = LoggerFactory.getLogger(CallbackQueryHandlerService.class);
     private final UserService userService;
-
-
     private final StoryStartService storyStartService;
     private final PersonageService personageService;
+    private final EpicQuizTimerService epicQuizTimerService;
 
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private final PhotoReam photoReam;
@@ -63,8 +63,15 @@ public class CallbackQueryHandlerService {
             case "create_personage" -> storyStartService.
                     handleCreatePersonage(bot, chatId, userId);
             case "accept_armor" -> handleAcceptArmor(bot, chatId, userId);
-            // Добавляй новые кейсы для других кнопок!
-            default -> log.info("Неизвестный callbackData: {} (chatId={}, userId={})", data, chatId, userId);
+            
+            // 🎮 ОБРАБОТКА ОТВЕТОВ ВИКТОРИНЫ
+            default -> {
+                if (data.startsWith("quiz_answer_")) {
+                    handleQuizAnswer(bot, data, chatId, userId, messageId);
+                } else {
+                    log.info("Неизвестный callbackData: {} (chatId={}, userId={})", data, chatId, userId);
+                }
+            }
         }
     }
 
@@ -165,6 +172,43 @@ public class CallbackQueryHandlerService {
             try {
                 bot.execute(new SendMessage(chatId.toString(), "Ошибка: неизвестный тип персонажа!"));
             } catch (Exception ignored) {}
+        }
+    }
+
+    /**
+     * 🎮 ОБРАБОТКА ОТВЕТОВ НА ВИКТОРИНУ
+     * 
+     * Когда пользователь нажимает кнопку с ответом, этот метод:
+     * 1. Останавливает таймер
+     * 2. Проверяет правильность ответа  
+     * 3. Применяет награды/штрафы
+     * 4. Отправляет результат
+     *
+     * @param bot - объект бота
+     * @param data - callbackData вида "quiz_answer_0", "quiz_answer_1"...  
+     * @param chatId - ID чата
+     * @param userId - ID пользователя
+     * @param messageId - ID сообщения с викториной
+     */
+    private void handleQuizAnswer(Bot bot, String data, Long chatId, Long userId, Integer messageId) {
+        log.info("CallbackQueryHandlerService: Обработка ответа викторины '{}' для chatId={}", data, chatId);
+        
+        try {
+            // Извлекаем номер ответа из callbackData: "quiz_answer_2" -> 2
+            String answerIndexStr = data.replace("quiz_answer_", "");
+            int answerIndex = Integer.parseInt(answerIndexStr);
+            
+            // Делегируем обработку в EpicQuizTimerService
+            epicQuizTimerService.handleQuizAnswer(bot, chatId, answerIndex, messageId);
+            
+            log.info("CallbackQueryHandlerService: ✅ Ответ викторины успешно обработан для chatId={}", chatId);
+            
+        } catch (NumberFormatException e) {
+            log.error("CallbackQueryHandlerService: ❌ Некорректный формат callbackData '{}' для chatId={}: {}", 
+                      data, chatId, e.getMessage());
+        } catch (Exception e) {
+            log.error("CallbackQueryHandlerService: ❌ Ошибка обработки ответа викторины '{}' для chatId={}: {}", 
+                      data, chatId, e.getMessage());
         }
     }
 } 

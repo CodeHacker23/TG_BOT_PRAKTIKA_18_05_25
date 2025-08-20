@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.send.SendSticker;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -165,7 +167,6 @@ public class Round2SequenceService {
                         try {
                             log.info("Round2SequenceService: 🎰 Запуск казино-сценария после сообщения про удачу для chatId={}", chatId);
                             casinoScenarioService.startCasinoScenario(bot, chatId, null);
-
                         } catch (Exception e) {
                             log.error("Round2SequenceService: ❌ Ошибка запуска казино для chatId={}: {}", chatId, e.getMessage());
                         }

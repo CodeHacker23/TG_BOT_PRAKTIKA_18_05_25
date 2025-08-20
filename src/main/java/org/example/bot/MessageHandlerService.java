@@ -149,7 +149,7 @@ private final CasinoTicketService casinoTicketService;
         if (isCasinoTicket(text)) {
             log.info("MessageHandlerService: обрабатываем кнопку казино '{}'", text);
             try {
-                SendMessage response = casinoTicketService.handleTicketSelection(chatId, text);
+                SendMessage response = casinoTicketService.handleTicketSelection(bot, chatId, text);
                 bot.execute(response);
                 log.info("MessageHandlerService: билет '{}' успешно обработан для chatId={}", text, chatId);
             } catch (Exception e) {
