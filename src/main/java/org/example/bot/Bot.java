@@ -250,5 +250,6 @@ public class Bot extends TelegramLongPollingBot { // класс бота
     public String getBotToken() { //
         return "";
     }
+    // ыввымывм
 }
 
