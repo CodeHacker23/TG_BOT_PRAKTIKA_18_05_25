@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="добавили в мастер ветку с ин_пакет">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment=" 1" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -503,8 +501,18 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value=" началась реализация сюжетной ветки, теория о Array выходит но пока что не удаляется" />
     <MESSAGE value=" и так мы добились того что бы теория удалилась после отправки, вышли кнопки (да\нет\ я изучаю пайтон) вроде чуток востановили поток, нужно будет доработать сюжетную линию по ArrayListStory" />
     <MESSAGE value=" сделали далее сюжет по Array, вышел наш протвинки, подошел к сюжетке 1 раунду, кнопки пока что не обработаны, но все же успех есть, все работает и запускается, все тип топ" />
     <MESSAGE value=" Добавлена дальнейшая сюжетная линия Array, в дальнейшем нужно будет разгрузить класс ArrayListStory,он слишком большой. так-же сделалаи вывод статы пероснажа, ссылаясь на бд." />
@@ -529,7 +537,8 @@
     <MESSAGE value="Сделал ответы 8 шт на казино, а так-же добавлены мануалы" />
     <MESSAGE value="3" />
     <MESSAGE value="добавили в мастер ветку с ин_пакет" />
-    <option name="LAST_COMMIT_MESSAGE" value="добавили в мастер ветку с ин_пакет" />
+    <MESSAGE value=" 1" />
+    <option name="LAST_COMMIT_MESSAGE" value=" 1" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
