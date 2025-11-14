@@ -4,16 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="Сделал ответы 8 шт на казино, а так-же добавлены мануалы">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/EpicQuizTimerService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/SimpleQuizTimer.java" afterDir="false" />
+    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="добавили в мастер ветку с ин_пакет">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EPIC_TIMER_COMPLETE_MANUAL.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/CallbackQueryHandlerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/CallbackQueryHandlerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/MessageHandlerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/MessageHandlerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/CasinoTicketService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/CasinoTicketService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/Round2SequenceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/Round2SequenceService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -151,6 +143,7 @@
       <workItem from="1754893961991" duration="2020000" />
       <workItem from="1754942182209" duration="43597000" />
       <workItem from="1755288921091" duration="463000" />
+      <workItem from="1763140687920" duration="296000" />
     </task>
     <task id="LOCAL-00001" summary="по идеи всеработает как нужн, на команде старт отправляется фото с текстом, затем отправялется сообщение с кнопкой (создать персонажа) кнопка кликабельна, после кнопки отправляется персонаж с характеристиками и фото. все соеденяется с БД2">
       <option name="closed" value="true" />
@@ -496,15 +489,21 @@
       <option name="project" value="LOCAL" />
       <updated>1755532237334</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="добавили в мастер ветку с ин_пакет">
+      <option name="closed" value="true" />
+      <created>1762979238338</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1762979238338</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="вроде вссе как положено" />
-    <MESSAGE value="Началась реализация сюжетной ветки Array, разгрузил класс MessageHandlerService, в осоенности кейсы разгрузил, далее планируется расширение сюжетной ветки и оптимизация кода" />
     <MESSAGE value=" началась реализация сюжетной ветки, теория о Array выходит но пока что не удаляется" />
     <MESSAGE value=" и так мы добились того что бы теория удалилась после отправки, вышли кнопки (да\нет\ я изучаю пайтон) вроде чуток востановили поток, нужно будет доработать сюжетную линию по ArrayListStory" />
     <MESSAGE value=" сделали далее сюжет по Array, вышел наш протвинки, подошел к сюжетке 1 раунду, кнопки пока что не обработаны, но все же успех есть, все работает и запускается, все тип топ" />
@@ -528,6 +527,12 @@
     <MESSAGE value="Сделал рефакторинг кода" />
     <MESSAGE value="Добавлена анотация транзит, так-же исправлен маленький не дочет, увидел что при объявлении раунда 2 не выходят статы персонажа" />
     <MESSAGE value="Сделал ответы 8 шт на казино, а так-же добавлены мануалы" />
-    <option name="LAST_COMMIT_MESSAGE" value="Сделал ответы 8 шт на казино, а так-же добавлены мануалы" />
+    <MESSAGE value="3" />
+    <MESSAGE value="добавили в мастер ветку с ин_пакет" />
+    <option name="LAST_COMMIT_MESSAGE" value="добавили в мастер ветку с ин_пакет" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>
