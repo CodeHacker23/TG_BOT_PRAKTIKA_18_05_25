@@ -50,8 +50,6 @@ import java.util.concurrent.TimeUnit;
 public class QuizService {
 
     private final StatService statService;
-    private final UserService userService;
-    private final ArrayListTheoryService arrayListTheoryService;
     private final PersonageStatManager personageStatManager;
     private final CasinoScenarioService casinoScenarioService;
     private final Round2SequenceService round2SequenceService;
