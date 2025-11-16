@@ -246,7 +246,7 @@ public class Bot extends TelegramLongPollingBot { // класс бота
      * Никогда не выкладывай токен в открытый доступ, иначе твой бот быстро станет чужим!
      * гав
      */
-    //токен здесь
+    //токен здесь всв
     @Override
     public String getBotToken() { //
         return "";
