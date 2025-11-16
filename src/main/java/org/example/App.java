@@ -1,15 +1,27 @@
 package org.example;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+/**
+ * App — точка входа в приложение (main-класс).
+ * Здесь запускается Spring Boot и вся магия DI, конфигов и автосканирования.
+ *
+ * Как расширять:
+ *   - Не пихай сюда бизнес-логику — только запуск!
+ *   - Если нужно что-то выполнить при старте — используй @PostConstruct или ApplicationRunner.
+ *
+ * Пример запуска:
+ *   public static void main(String[] args) {
+ *       SpringApplication.run(App.class, args);
+ *   }
+ *
+ * Юмор: если начнёшь писать логику в main — Иларион лично напишет тебе в Telegram.
+ */
 @SpringBootApplication
 public class App {
     public static void main(String[] args ) {
         SpringApplication.run(App.class, args);
+        System.out.println("[App] Приложение успешно запущено! Если что-то не работает — смотри логи.");
     }
 }

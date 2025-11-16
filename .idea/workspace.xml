@@ -1,0 +1,573 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment=" 1">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/EpicQuizTimerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/EpicQuizTimerService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/QuizService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/QuizService.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="in_package_Round3" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;CodeHacker23&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/CodeHacker23/TG_BOT_PRAKTIKA_18_05_25&quot;,
+    &quot;accountId&quot;: &quot;e201121e-3640-45bc-a7b3-2fa1d23486fe&quot;
+  }
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="jar://$MAVEN_REPOSITORY$/org/telegram/telegrambots-meta/6.9.7.1/telegrambots-meta-6.9.7.1-sources.jar!/org/telegram/telegrambots/meta/api/methods/send/SendPhoto.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$MAVEN_REPOSITORY$/org/telegram/telegrambots-meta/6.9.7.1/telegrambots-meta-6.9.7.1.jar!/org/telegram/telegrambots/meta/api/methods/send/SendPhoto.class" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="2z2ASJvPNf5xK6cHKuXvoJNYq2u" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "Spring Boot.App.executor": "Debug",
+    "git-widget-placeholder": "in__package",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/ilari/IdeaProjects/SpringWazhno_05_07_25",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "redis",
+      "postgresql"
+    ]
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\ilari\IdeaProjects\TG_BOT_PRAKTIKA_18_05_25\src\main\resources\Photo" />
+      <recent name="C:\Users\ilari\IdeaProjects\TG_BOT_PRAKTIKA_18_05_25\src\main\resources\audio" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="App" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="TG_BOT_PRAKTIKA_18_05_25" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.App" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Spring Boot.App" />
+        <item itemvalue="Spring Boot.App" />
+        <item itemvalue="Spring Boot.App" />
+        <item itemvalue="Spring Boot.App" />
+        <item itemvalue="Spring Boot.App" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fdfe4dae3a2d-intellij.indexing.shared.core-IU-243.22562.145" />
+        <option value="bundled-js-predefined-d6986cc7102b-deb605915726-JavaScript-IU-243.22562.145" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="по идеи всеработает как нужн, на команде старт отправляется фото с текстом, затем отправялется сообщение с кнопкой (создать персонажа) кнопка кликабельна, после кнопки отправляется персонаж с характеристиками и фото. все соеденяется с БД2" />
+      <created>1750918794956</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1750918794956</updated>
+      <workItem from="1751885543093" duration="32545000" />
+      <workItem from="1752166735781" duration="21949000" />
+      <workItem from="1752316819013" duration="30471000" />
+      <workItem from="1752515868494" duration="29257000" />
+      <workItem from="1752688642599" duration="3328000" />
+      <workItem from="1752729749021" duration="13921000" />
+      <workItem from="1753082241027" duration="323000" />
+      <workItem from="1753307326154" duration="99279000" />
+      <workItem from="1753816923341" duration="11753000" />
+      <workItem from="1753937593536" duration="19024000" />
+      <workItem from="1753985845431" duration="1060000" />
+      <workItem from="1754290085657" duration="21171000" />
+      <workItem from="1754585264819" duration="12916000" />
+      <workItem from="1754893961991" duration="2020000" />
+      <workItem from="1754942182209" duration="43597000" />
+      <workItem from="1755288921091" duration="463000" />
+      <workItem from="1763140687920" duration="992000" />
+      <workItem from="1763197014056" duration="437000" />
+      <workItem from="1763222284559" duration="4628000" />
+      <workItem from="1763309055597" duration="632000" />
+    </task>
+    <task id="LOCAL-00001" summary="по идеи всеработает как нужн, на команде старт отправляется фото с текстом, затем отправялется сообщение с кнопкой (создать персонажа) кнопка кликабельна, после кнопки отправляется персонаж с характеристиками и фото. все соеденяется с БД2">
+      <option name="closed" value="true" />
+      <created>1751544201293</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1751544201293</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Сделал, что бы пользователь задавал имя своему персонажа, так-же сохраняется  все в БД, прикручено было состояние пользователя, что бы бот понимал что он ждет имя от пользоавтеля а не абы чего">
+      <option name="closed" value="true" />
+      <created>1751970712630</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1751970712630</updated>
+    </task>
+    <task id="LOCAL-00003" summary=" Сделал так что бы пользователь когда ввел имя, ему выпадал рандомно персонаж, либо Флоу(это красный) либо синий это Кодыч, будет еще третий персонаж, и с регистриацией закончено, можно отвести душеньку чуть чуть выпить водочки стопок 10 и пойти делать сюжетную линию по Linked">
+      <option name="closed" value="true" />
+      <created>1751973470908</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1751973470908</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Сделал так что бы кнопка создать персонажа была кликабельна только один раз, прикрутил создание персонажа к id пользователя телеграм а не к БД, Так удобней искать в таблице пользователя, теперь когда пользователь создает имя персонажу отправляется рандомный персонаж из коллекции, так-же обнуляется состояние пользователя, что бы не было проблем с обработкой на проверку персонажа у пользователя, после того если пользователь захочет нажать на кнопку создать персонажа то ему выйдет сообщение (у вас уже есть персонаж с Именем *от пользователя* Создать нового нельзя.">
+      <option name="closed" value="true" />
+      <created>1752060121712</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1752060121712</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Сделал так что бы кнопка создать персонажа была кликабельна только один раз, прикрутил создание персонажа к id пользователя телеграм а не к БД, Так удобней искать в таблице пользователя, теперь когда пользователь создает имя персонажу отправляется рандомный персонаж из коллекции, так-же обнуляется состояние пользователя, что бы не было проблем с обработкой на проверку персонажа у пользователя, после того если пользователь захочет нажать на кнопку создать персонажа то ему выйдет сообщение (у вас уже есть персонаж с Именем *от пользователя* Создать нового нельзя.">
+      <option name="closed" value="true" />
+      <created>1752060146912</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1752060146912</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Чуть модифицировали код">
+      <option name="closed" value="true" />
+      <created>1752231090881</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1752231090881</updated>
+    </task>
+    <task id="LOCAL-00007" summary=" И так мы добавили тотальную документацию кода, тотально все расписано, есть схемы взаимодействия кода между классами, куда ссылается что делает, зачем берет, все работает, выводятся на каждой команде логирование, запущен такой-то метод, и т.д выглядит пушка.">
+      <option name="closed" value="true" />
+      <created>1752317778270</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1752317778270</updated>
+    </task>
+    <task id="LOCAL-00008" summary=" И так мы добавили тотальную документацию кода, тотально все расписано, есть схемы взаимодействия кода между классами, куда ссылается что делает, зачем берет, все работает, выводятся на каждой команде логирование, запущен такой-то метод, и т.д выглядит пушка.">
+      <option name="closed" value="true" />
+      <created>1752317922996</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1752317922996</updated>
+    </task>
+    <task id="LOCAL-00009" summary=" добавили кнопку к сообщению к фото вертолету,сюжетная линия 1 сделана. Все исправно, и улучшено.">
+      <option name="closed" value="true" />
+      <created>1752516343378</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1752516343378</updated>
+    </task>
+    <task id="LOCAL-00010" summary="добавил кнопку к сюжету, и почти закончил первую сюжетную линию">
+      <option name="closed" value="true" />
+      <created>1752648119915</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1752648119915</updated>
+    </task>
+    <task id="LOCAL-00011" summary="проект запускается не реализованы некоторые кнопки, все сбилось откатываюсь до пуша">
+      <option name="closed" value="true" />
+      <created>1752827225117</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1752827225117</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Все работает, нужно до делать конечные кнопки для персонажа в доспехах.">
+      <option name="closed" value="true" />
+      <created>1752835156009</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1752835156009</updated>
+    </task>
+    <task id="LOCAL-00013" summary=" 1.">
+      <option name="closed" value="true" />
+      <created>1753083332006</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1753083332006</updated>
+    </task>
+    <task id="LOCAL-00014" summary=" 1.">
+      <option name="closed" value="true" />
+      <created>1753083375069</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1753083375069</updated>
+    </task>
+    <task id="LOCAL-00015" summary="все рабоатет, теперь когда пользователь нажимает принять доспехи ему выпадает персонаж в доспехах, с обновленными статами а так-же идет сохранения в БД">
+      <option name="closed" value="true" />
+      <created>1753096862841</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1753096862841</updated>
+    </task>
+    <task id="LOCAL-00016" summary="работает">
+      <option name="closed" value="true" />
+      <created>1753112710448</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1753112710448</updated>
+    </task>
+    <task id="LOCAL-00017" summary="работает">
+      <option name="closed" value="true" />
+      <created>1753122297370</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1753122297370</updated>
+    </task>
+    <task id="LOCAL-00018" summary="вроде вссе как положено">
+      <option name="closed" value="true" />
+      <created>1753208881385</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1753208881385</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Началась реализация сюжетной ветки Array, разгрузил класс MessageHandlerService, в осоенности кейсы разгрузил, далее планируется расширение сюжетной ветки и оптимизация кода">
+      <option name="closed" value="true" />
+      <created>1753261228294</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1753261228294</updated>
+    </task>
+    <task id="LOCAL-00020" summary=" началась реализация сюжетной ветки, теория о Array выходит но пока что не удаляется">
+      <option name="closed" value="true" />
+      <created>1753271381935</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1753271381935</updated>
+    </task>
+    <task id="LOCAL-00021" summary=" и так мы добились того что бы теория удалилась после отправки, вышли кнопки (да\нет\ я изучаю пайтон) вроде чуток востановили поток, нужно будет доработать сюжетную линию по ArrayListStory">
+      <option name="closed" value="true" />
+      <created>1753275503763</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1753275503763</updated>
+    </task>
+    <task id="LOCAL-00022" summary=" сделали далее сюжет по Array, вышел наш протвинки, подошел к сюжетке 1 раунду, кнопки пока что не обработаны, но все же успех есть, все работает и запускается, все тип топ">
+      <option name="closed" value="true" />
+      <created>1753356657925</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1753356657925</updated>
+    </task>
+    <task id="LOCAL-00023" summary=" Добавлена дальнейшая сюжетная линия Array, в дальнейшем нужно будет разгрузить класс ArrayListStory,он слишком большой. так-же сделалаи вывод статы пероснажа, ссылаясь на бд.">
+      <option name="closed" value="true" />
+      <created>1753471062240</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1753471062240</updated>
+    </task>
+    <task id="LOCAL-00024" summary=" Добавлена дальнейшая сюжетная линия Array, в дальнейшем нужно будет разгрузить класс ArrayListStory,он слишком большой. так-же сделалаи вывод статы пероснажа, ссылаясь на бд. чуток добавили эстетичности что бы к этому потом не возвращаться">
+      <option name="closed" value="true" />
+      <created>1753471545883</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1753471545883</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Сделали рефакторинг класса ArrayListStory, ранее у меня в классе было слишком многов сего, сейчас это все разбито по классам и в одной только папке что очень удобно.">
+      <option name="closed" value="true" />
+      <created>1753622797735</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1753622797735</updated>
+    </task>
+    <task id="LOCAL-00026" summary=" создан мануал по сюжетке">
+      <option name="closed" value="true" />
+      <created>1753632672863</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1753632672863</updated>
+    </task>
+    <task id="LOCAL-00027" summary="сделали обработку кнопки анализировать">
+      <option name="closed" value="true" />
+      <created>1753650570545</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1753650570545</updated>
+    </task>
+    <task id="LOCAL-00028" summary="сделали обработку кнопки  вставка в начало">
+      <option name="closed" value="true" />
+      <created>1753696811630</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1753696811630</updated>
+    </task>
+    <task id="LOCAL-00029" summary="мануалы от рефакторины">
+      <option name="closed" value="true" />
+      <created>1753698450974</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1753698450974</updated>
+    </task>
+    <task id="LOCAL-00030" summary="комиит крч рефакторинг">
+      <option name="closed" value="true" />
+      <created>1753717802428</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1753717802428</updated>
+    </task>
+    <task id="LOCAL-00031" summary="комиит крч рефакторинг">
+      <option name="closed" value="true" />
+      <created>1753777802709</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1753777802709</updated>
+    </task>
+    <task id="LOCAL-00032" summary="сделал завершение раунда 1, так-же сообщение от Итераториуса, а затем викторина, далее будет переход к 2 раунду">
+      <option name="closed" value="true" />
+      <created>1753793741406</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1753793741406</updated>
+    </task>
+    <task id="LOCAL-00033" summary="сделал рефакторинг класса викторин, и класса Bot, так-же добавлен мануал по виктроинам, код стал читаемым и короче, нет говнокода.">
+      <option name="closed" value="true" />
+      <created>1753875498494</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1753875498494</updated>
+    </task>
+    <task id="LOCAL-00034" summary="Добавлены, маленькие изменения в сообщении от Аррейна, при атаке, теперь показывается код на Jаva а не просто абстрактно, что Аррейн бросил в тебя индекс 0, сложно представить новичку что это, поэтому я сделал визуальность что бы было комфортабельно.">
+      <option name="closed" value="true" />
+      <created>1753877896966</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1753877896966</updated>
+    </task>
+    <task id="LOCAL-00035" summary="нужно сохранить мануал, из за этого коммит">
+      <option name="closed" value="true" />
+      <created>1753946273817</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1753946273817</updated>
+    </task>
+    <task id="LOCAL-00036" summary="сделали, начало раунда 2, отправка смс после викторины, затем отправляется фото противника помятого, после этого оптравляются статы противника и статы пользователя.">
+      <option name="closed" value="true" />
+      <created>1753967028142</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1753967028142</updated>
+    </task>
+    <task id="LOCAL-00037" summary="сделали ответ на кнопки во 2 раунде, реализовали полностью раунд 2, буду думать над 3 раундом.">
+      <option name="closed" value="true" />
+      <created>1754311883231</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1754311883231</updated>
+    </task>
+    <task id="LOCAL-00038" summary="Сделали свое перво голосовое, все стабильно работает, правда нужно где то изменить имя Аррейна, порой ошибки возникают, так же добавили класс аудио, классы">
+      <option name="closed" value="true" />
+      <created>1755000913278</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1755000913278</updated>
+    </task>
+    <task id="LOCAL-00039" summary="Сделали что после всех ответов после раунда 2 идет отправка сопутсвующих событий - это отправка фото с мешком, затем голосове на все 3 кнпоки(добить,🧠 .ensureCapacity(), кофе пауза) все работает, в дальнейшем планируется делать рефакторинг пора уже...">
+      <option name="closed" value="true" />
+      <created>1755027451437</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1755027451437</updated>
+    </task>
+    <task id="LOCAL-00040" summary="Сделал рефакторинг кода">
+      <option name="closed" value="true" />
+      <created>1755031982840</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1755031982840</updated>
+    </task>
+    <task id="LOCAL-00041" summary="Сделал рефакторинг кода">
+      <option name="closed" value="true" />
+      <created>1755101917567</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1755101917567</updated>
+    </task>
+    <task id="LOCAL-00042" summary="Добавлена анотация транзит, так-же исправлен маленький не дочет, увидел что при объявлении раунда 2 не выходят статы персонажа">
+      <option name="closed" value="true" />
+      <created>1755204021467</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1755204021467</updated>
+    </task>
+    <task id="LOCAL-00043" summary="Сделал ответы 8 шт на казино, а так-же добавлены мануалы">
+      <option name="closed" value="true" />
+      <created>1755532237334</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1755532237334</updated>
+    </task>
+    <task id="LOCAL-00044" summary="добавили в мастер ветку с ин_пакет">
+      <option name="closed" value="true" />
+      <created>1762979238338</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1762979238338</updated>
+    </task>
+    <task id="LOCAL-00045" summary=" 1">
+      <option name="closed" value="true" />
+      <created>1763141031648</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1763141031648</updated>
+    </task>
+    <task id="LOCAL-00046" summary=" 1">
+      <option name="closed" value="true" />
+      <created>1763141189234</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1763141189234</updated>
+    </task>
+    <option name="localTasksCounter" value="47" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value=" и так мы добились того что бы теория удалилась после отправки, вышли кнопки (да\нет\ я изучаю пайтон) вроде чуток востановили поток, нужно будет доработать сюжетную линию по ArrayListStory" />
+    <MESSAGE value=" сделали далее сюжет по Array, вышел наш протвинки, подошел к сюжетке 1 раунду, кнопки пока что не обработаны, но все же успех есть, все работает и запускается, все тип топ" />
+    <MESSAGE value=" Добавлена дальнейшая сюжетная линия Array, в дальнейшем нужно будет разгрузить класс ArrayListStory,он слишком большой. так-же сделалаи вывод статы пероснажа, ссылаясь на бд." />
+    <MESSAGE value=" Добавлена дальнейшая сюжетная линия Array, в дальнейшем нужно будет разгрузить класс ArrayListStory,он слишком большой. так-же сделалаи вывод статы пероснажа, ссылаясь на бд. чуток добавили эстетичности что бы к этому потом не возвращаться" />
+    <MESSAGE value="Сделали рефакторинг класса ArrayListStory, ранее у меня в классе было слишком многов сего, сейчас это все разбито по классам и в одной только папке что очень удобно." />
+    <MESSAGE value=" создан мануал по сюжетке" />
+    <MESSAGE value="сделали обработку кнопки анализировать" />
+    <MESSAGE value="сделали обработку кнопки  вставка в начало" />
+    <MESSAGE value="мануалы от рефакторины" />
+    <MESSAGE value="комиит крч рефакторинг" />
+    <MESSAGE value="сделал завершение раунда 1, так-же сообщение от Итераториуса, а затем викторина, далее будет переход к 2 раунду" />
+    <MESSAGE value="сделал рефакторинг класса викторин, и класса Bot, так-же добавлен мануал по виктроинам, код стал читаемым и короче, нет говнокода." />
+    <MESSAGE value="Добавлены, маленькие изменения в сообщении от Аррейна, при атаке, теперь показывается код на Jаva а не просто абстрактно, что Аррейн бросил в тебя индекс 0, сложно представить новичку что это, поэтому я сделал визуальность что бы было комфортабельно." />
+    <MESSAGE value="нужно сохранить мануал, из за этого коммит" />
+    <MESSAGE value="сделали, начало раунда 2, отправка смс после викторины, затем отправляется фото противника помятого, после этого оптравляются статы противника и статы пользователя." />
+    <MESSAGE value="сделали ответ на кнопки во 2 раунде, реализовали полностью раунд 2, буду думать над 3 раундом." />
+    <MESSAGE value="Сделали свое перво голосовое, все стабильно работает, правда нужно где то изменить имя Аррейна, порой ошибки возникают." />
+    <MESSAGE value="Сделали свое перво голосовое, все стабильно работает, правда нужно где то изменить имя Аррейна, порой ошибки возникают, так же добавили класс аудио, классы" />
+    <MESSAGE value="Сделали что после всех ответов после раунда 2 идет отправка сопутсвующих событий - это отправка фото с мешком, затем голосове на все 3 кнпоки(добить, .ensureCapacity(), кофе пауза) все работает, в дальнейшем планируется делать рефакторинг пора уже..." />
+    <MESSAGE value="Сделал рефакторинг кода" />
+    <MESSAGE value="Добавлена анотация транзит, так-же исправлен маленький не дочет, увидел что при объявлении раунда 2 не выходят статы персонажа" />
+    <MESSAGE value="Сделал ответы 8 шт на казино, а так-же добавлены мануалы" />
+    <MESSAGE value="3" />
+    <MESSAGE value="добавили в мастер ветку с ин_пакет" />
+    <MESSAGE value=" 1" />
+    <option name="LAST_COMMIT_MESSAGE" value=" 1" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
