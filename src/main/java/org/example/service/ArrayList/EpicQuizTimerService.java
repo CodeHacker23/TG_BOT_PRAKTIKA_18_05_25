@@ -840,26 +840,55 @@ public class EpicQuizTimerService {
         log.info("EpicQuizTimer: Выбранный ответ: '{}', правильный: '{}', остаток времени: {}с", 
                  selectedAnswer, session.getCorrectAnswer(), timeRemaining);
         
-        // 5. Применяем награды/штрафы через StatService (УЧИТЫВАЕМ ЭКСПЕРТНОСТЬ)
+        // 5. Применяем награды/штрафы через StatService (УЧИТЫВАЕМ СКОРОСТЬ ОТВЕТА!)
+        // ⚡ ЧЕМ БЫСТРЕЕ ОТВЕТИЛ (больше timeRemaining) - ТЕМ БОЛЬШЕ НАГРАДА!
+        // 🐌 ЧЕМ МЕДЛЕННЕЕ ОТВЕТИЛ (меньше timeRemaining) - ТЕМ МЕНЬШЕ НАГРАДА!
+        int currencyReward = 0;
+        int achievementReward = 0;
+        
         if (isCorrect) {
             if (session.isJackpot()) {
-                // 🏆 ЭКСПЕРТНАЯ ПРАВИЛЬНЫЙ ОТВЕТ: +1000 денег, +500 очков опыта (пользователь не знает сколько!)
-                statService.applyStatChanges(chatId, Map.of(
-                        "currency", 800,
-                        "achievement_points", 500
-                ));
-                log.info("EpicQuizTimer: 🏆 Применены ЭКСПЕРТНЫЕ награды за правильный ответ для chatId={}", chatId);
+                // 🏆 ЭКСПЕРТНАЯ ВИКТОРИНА (билет 10): награды зависят от скорости
+                if (timeRemaining > 20) {
+                    // ⚡ Молниеносный ответ: максимальная награда
+                    currencyReward = 800;
+                    achievementReward = 500;
+                    log.info("EpicQuizTimer: 🏆⚡ Молниеносный ответ в экспертной викторине! chatId={}, timeRemaining={}", chatId, timeRemaining);
+                } else if (timeRemaining > 10) {
+                    // 👍 Быстрый ответ: средняя награда
+                    currencyReward = 600;
+                    achievementReward = 400;
+                    log.info("EpicQuizTimer: 🏆👍 Быстрый ответ в экспертной викторине! chatId={}, timeRemaining={}", chatId, timeRemaining);
+                } else {
+                    // 😅 Медленный ответ: минимальная награда
+                    currencyReward = 400;
+                    achievementReward = 300;
+                    log.info("EpicQuizTimer: 🏆😅 Медленный ответ в экспертной викторине! chatId={}, timeRemaining={}", chatId, timeRemaining);
+                }
             } else {
-                // ✅ ОБЫЧНЫЙ ПРАВИЛЬНЫЙ ОТВЕТ: +400 денег, +250 очков опыта
-                statService.applyStatChanges(chatId, Map.of(
-                        "currency", 250,
-                        "achievement_points", 250
-                ));
-                log.info("EpicQuizTimer: ✅ Применены награды за правильный ответ для chatId={}", chatId);
+                // ✅ ОБЫЧНАЯ ВИКТОРИНА (билет 9): награды зависят от скорости
+                if (timeRemaining > 10) {
+                    // ⚡ Ответил раньше последних 10 секунд: максимальная награда
+                    currencyReward = 600;
+                    achievementReward = 400;
+                    log.info("EpicQuizTimer: ✅⚡ Быстрый ответ в обычной викторине! chatId={}, timeRemaining={}", chatId, timeRemaining);
+                } else {
+                    // 😅 Ответил в последние 10 секунд: минимальная награда
+                    currencyReward = 200;
+                    achievementReward = 150;
+                    log.info("EpicQuizTimer: ✅😅 Медленный ответ в обычной викторине! chatId={}, timeRemaining={}", chatId, timeRemaining);
+                }
             }
+            
+            statService.applyStatChanges(chatId, Map.of(
+                    "currency", currencyReward,
+                    "achievement_points", achievementReward
+            ));
+            log.info("EpicQuizTimer: ✅ Применены награды за правильный ответ: +{}💲 +{}⭐ для chatId={}", currencyReward, achievementReward, chatId);
         } else {
+            // ❌ НЕПРАВИЛЬНЫЙ ОТВЕТ: штрафы фиксированные (не зависят от скорости)
             if (session.isJackpot()) {
-                // 💀 ЭКСПЕРТНАЯ НЕПРАВИЛЬНЫЙ ОТВЕТ: -500 денег, -250 очков опыта (пользователь не знает сколько!)
+                // 💀 ЭКСПЕРТНАЯ НЕПРАВИЛЬНЫЙ ОТВЕТ: -500 денег, -250 очков опыта
                 statService.applyStatChanges(chatId, Map.of(
                         "currency", -500,
                         "achievement_points", -250
@@ -875,20 +904,24 @@ public class EpicQuizTimerService {
             }
         }
         
-        // 6. Обновляем сообщение с результатом викторины
-        updateMessageWithResult(bot, chatId, messageId, session, selectedAnswer, isCorrect, timeRemaining);
+        // 6. Обновляем сообщение с результатом викторины (передаём реальные награды!)
+        updateMessageWithResult(bot, chatId, messageId, session, selectedAnswer, isCorrect, timeRemaining, currencyReward, achievementReward);
         
         // 7. Отправляем комментарий Итераториуса
-        sendResultComments(bot, chatId, isCorrect, timeRemaining);
+        sendResultComments(bot, chatId, isCorrect, timeRemaining, session.isJackpot());
         
         log.info("EpicQuizTimer: ✅ Викторина завершена для chatId={}", chatId);
     }
     
     /**
      * 📝 ОБНОВЛЯЕТ СООБЩЕНИЕ С РЕЗУЛЬТАТОМ ВИКТОРИНЫ
+     * 
+     * Показывает реальные награды/штрафы, которые зависят от скорости ответа.
+     * Чем быстрее ответил - тем больше награда, чем медленнее - тем меньше.
      */
     private void updateMessageWithResult(TelegramLongPollingBot bot, Long chatId, Integer messageId, 
-                                       QuizSession session, String selectedAnswer, boolean isCorrect, int timeRemaining) {
+                                       QuizSession session, String selectedAnswer, boolean isCorrect, 
+                                       int timeRemaining, int currencyReward, int achievementReward) {
         try {
             EditMessageText editMessage = new EditMessageText();
             editMessage.setChatId(chatId);
@@ -898,7 +931,19 @@ public class EpicQuizTimerService {
             // Формируем текст результата
             String resultEmoji = isCorrect ? "✅" : "❌";
             String resultText = isCorrect ? "*ПРАВИЛЬНО!*" : "*НЕПРАВИЛЬНО!*";
-            String rewardText = isCorrect ? "+400💲 +250⭐" : "-350💲 -150⭐";
+            
+            // Формируем строку с наградами/штрафами (реальные значения из логики наград!)
+            String rewardText;
+            if (isCorrect) {
+                rewardText = String.format("+%d💲 +%d⭐", currencyReward, achievementReward);
+            } else {
+                // Штрафы фиксированные (не зависят от скорости)
+                if (session.isJackpot()) {
+                    rewardText = "-500💲 -250⭐";
+                } else {
+                    rewardText = "-350💲 -150⭐";
+                }
+            }
             
             String resultMessage = String.format(
                 "🎯 *ВИКТОРИНА ЗАВЕРШЕНА* %s\n\n" +
@@ -926,22 +971,77 @@ public class EpicQuizTimerService {
     }
     
     /**
-     * 💬 ОТПРАВЛЯЕТ КОММЕНТАРИИ ИТЕРАТОРИУСА О РЕЗУЛЬТАТЕ
+     * 💬 ОТПРАВЛЯЕТ КОММЕНТАРИИ ИТЕРАТОРИУСА О РЕЗУЛЬТАТЕ ВИКТОРИНЫ
+     * 
+     * Итераториус комментирует результат викторины в зависимости от:
+     * - Правильности ответа (правильно/неправильно)
+     * - Скорости ответа (быстро/средне/медленно)
+     * - Типа викторины (обычная/экспертная)
+     * 
+     * Комментарии в стиле проекта: с сарказмом, мотивацией и черным юмором.
      */
-    private void sendResultComments(TelegramLongPollingBot bot, Long chatId, boolean isCorrect, int timeRemaining) {
+    private void sendResultComments(TelegramLongPollingBot bot, Long chatId, boolean isCorrect, int timeRemaining, boolean isJackpot) {
         try {
             String comment;
             
             if (isCorrect) {
-                if (timeRemaining > 20) {
-                    comment = "🔥 *Итераториус:*\n\nЧертовски быстро! Ты знаешь толк в ArrayList!\nТакие скорости только в дата-центрах видел!";
-                } else if (timeRemaining > 10) {
-                    comment = "👍 *Итераториус:*\n\nНеплохо, неплохо! Правильный ответ за разумное время.\nВидно что не первый день с кодом работаешь!";
+                // ✅ ПРАВИЛЬНЫЙ ОТВЕТ: комментарий зависит от скорости
+                if (timeRemaining > 10) {
+                    // ⚡ Быстрый ответ (раньше последних 10 секунд)
+                    if (isJackpot) {
+                        // Экспертная викторина: различаем очень быстрый (>20) и быстрый (10-20)
+                        if (timeRemaining > 20) {
+                            comment = "*Итераториус*\n\n" +
+                                    "_Черт, ты ответил быстрее чем компилятор Java обрабатывает аннотации._\n\n" +
+                                    "Экспертный вопрос, молниеносный ответ — это уже не удача, это мастерство.\n" +
+                                    "Такие скорости я видел только у тех, кто действительно понимает ArrayList изнутри.\n\n" +
+                                    "💡 *Запомни:* В проде такие знания спасают от дедлайнов.";
+                        } else {
+                            comment = "*Итераториус*\n\n" +
+                                    "_Неплохо, малец. Экспертный вопрос, разумное время._\n\n" +
+                                    "Видно, что ты не просто угадываешь — ты действительно понимаешь структуру данных.\n" +
+                                    "Такие знания в проде ценятся больше, чем умение гуглить Stack Overflow.\n\n" +
+                                    "💡 *Мысль дня:* Понимание > скорость, но скорость + понимание = победа.";
+                        }
+                    } else {
+                        // ✅ Обычная викторина: ответил раньше последних 10 секунд
+                        comment = "*Итераториус*\n\n" +
+                                "_Чертовски быстро! Ты знаешь толк в ArrayList._\n\n" +
+                                "Такие скорости только в дата-центрах видел. Видно, что не первый день с кодом работаешь.\n\n" +
+                                "💡 *Совет:* Держи этот темп — и следующий раунд пройдёшь на ура.";
+                    }
                 } else {
-                    comment = "😅 *Итераториус:*\n\nФуух! Еле успел, но правильно!\nВ следующий раз думай быстрее, время - деньги!";
+                    // 😅 Медленный ответ (в последние 10 секунд)
+                    if (isJackpot) {
+                        comment = "*Итераториус*\n\n" +
+                                "_Фуух! Еле успел, но правильно — это главное._\n\n" +
+                                "Экспертный вопрос требует времени, это нормально. Главное — ты справился.\n" +
+                                "В проде такие вопросы решаются не за секунды, а за минуты размышлений.\n\n" +
+                                "💡 *Совет:* В следующий раз читай вопрос внимательнее с самого начала — времени будет больше.";
+                    } else {
+                        // ✅ Обычная викторина: ответил в последние 10 секунд
+                        comment = "*Итераториус*\n\n" +
+                                "_Фуух! Еле успел, но правильно!_\n\n" +
+                                "В следующий раз думай быстрее — время это деньги, а в викторинах ещё и награды.\n" +
+                                "Но главное — ответ правильный. Это уже половина успеха.\n\n" +
+                                "💡 *Совет:* Тренируйся на скорость — чем быстрее ответишь (раньше последних 10 секунд), тем больше получишь.";
+                    }
                 }
             } else {
-                comment = "😤 *Итераториус:*\n\nЭх, молодежь... ArrayList.add(0) сдвигает ВСЕ элементы вправо!\nЭто O(n) операция, запомни раз и навсегда!\n\nПотренируйся еще, а то в проде такие вопросы задают!";
+                // ❌ НЕПРАВИЛЬНЫЙ ОТВЕТ
+                if (isJackpot) {
+                    comment = "*Итераториус*\n\n" +
+                            "_Эх, малец... Экспертный вопрос требует экспертных знаний._\n\n" +
+                            "Не расстраивайся — такие вопросы решают не все. Главное — ты попробовал.\n" +
+                            "Потренируйся ещё, почитай про внутреннее устройство ArrayList, и в следующий раз точно справишься.\n\n" +
+                            "💡 *Совет:* В проде такие вопросы задают на собеседованиях — готовься заранее.";
+                } else {
+                    comment = "*Итераториус*\n\n" +
+                            "_Эх, молодежь... ArrayList.add(0, element) сдвигает ВСЕ элементы вправо._\n\n" +
+                            "Это O(n) операция, запомни раз и навсегда. Не путай с add(element) — там O(1).\n" +
+                            "Потренируйся ещё, а то в проде такие вопросы задают, и там ошибка стоит дороже.\n\n" +
+                            "💡 *Совет:* Изучи внутреннее устройство ArrayList — тогда такие вопросы не вызовут проблем.";
+                }
             }
             
             SendMessage commentMessage = new SendMessage();
@@ -950,6 +1050,8 @@ public class EpicQuizTimerService {
             commentMessage.setText(comment);
             
             bot.execute(commentMessage);
+            log.info("EpicQuizTimer: ✅ Комментарий Итераториуса отправлен для chatId={}, правильный={}, время={}с", 
+                    chatId, isCorrect, timeRemaining);
             
         } catch (TelegramApiException e) {
             log.error("EpicQuizTimer: ❌ Ошибка отправки комментария Итераториуса для chatId={}: {}", chatId, e.getMessage());

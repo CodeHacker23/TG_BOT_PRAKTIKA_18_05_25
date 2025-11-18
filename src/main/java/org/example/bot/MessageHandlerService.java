@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.service.*;
 import org.example.service.ArrayList.AudioService;
 import org.example.service.ArrayList.CasinoTicketService;
+import org.example.service.ArrayList.CasinoTicketService.TicketResult;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -52,22 +53,35 @@ public class MessageHandlerService {
 private final CasinoTicketService casinoTicketService;
 
     /**
-     * Проверяет, есть ли у пользователя персонаж
+     * 🧬 Проверяет, есть ли у пользователя живой персонаж или он всё ещё ходит голым.
      *
-     * @param user — сущность пользователя
-     * @return true, если персонаж уже создан
+     * Как работает:
+     *  - Берём {@link UserEntity}, смотрим, есть ли у него {@code personage} и не пустой {@code characterType}.
+     *  - Если всё ок — возвращаем true и даём понять, что юзер уже прошёл часть сюжета.
+     *  - Если нет — значит, ему ещё предстоит пройти создание персонажа.
+     *
+     * @param user сущность пользователя из базы (может быть null, если человек впервые написал боту)
+     * @return {@code true}, если персонаж создан и у него есть тип; {@code false} иначе
      */
     private boolean hasCharacter(UserEntity user) {
         return user != null && user.getPersonage() != null && user.getPersonage().getCharacterType() != null && !user.getPersonage().getCharacterType().isEmpty();
     }
 
     /**
-     * Обрабатывает ввод имени персонажа пользователем
+     * ✍️ Обрабатывает ввод имени персонажа пользователем.
      *
-     * @param bot           — TelegramLongPollingBot
-     * @param chatId        — ID чата
-     * @param userId        — ID пользователя
-     * @param characterName — имя персонажа
+     * Когда новенький пишет своё имя, мы:
+     *  1. Достаём или создаём {@link UserEntity} по Telegram ID.
+     *  2. Проверяем, действительно ли он находится в состоянии ожидания имени (AWAITING_CHARACTER_NAME),
+     *     чтобы не позволять менять персонажа бесконечно.
+     *  3. Генерируем случайного наследника {@link PersonageBase}, присваиваем ему имя и стартовые статы.
+     *  4. Сохраняем пользователя и отправляем тематическое фото/карточку персонажа.
+     *
+     * @param bot           основной TelegramLongPollingBot для отправки фоток/сообщений
+     * @param chatId        ID чата, куда надо высылать ответы
+     * @param userId        Telegram ID пользователя (используется как ключ в БД)
+     * @param characterName имя, которое пользователь только что ввёл
+     * @throws TelegramApiException если при отправке фото случилась божественная кара от Telegram API
      */
     private void processCharacterNameInput(TelegramLongPollingBot bot, Long chatId, Long userId, String characterName) throws TelegramApiException {
         UserEntity user = userService.getUserByTgId(userId);
@@ -146,12 +160,25 @@ private final CasinoTicketService casinoTicketService;
         }
 
         // 3. 🎰 КНОПКИ КАЗИНО (билеты 1⃣-🔟)
+        // Схема такая: user жмёт билет → берём TicketResult → отправляем текст → сразу ставим Итераториуса в очередь.
+        // Благодаря этому код не превращается в кашу из switch'ей, а весь сценарий контролируется здесь.
         if (isCasinoTicket(text)) {
             log.info("MessageHandlerService: обрабатываем кнопку казино '{}'", text);
             try {
-                SendMessage response = casinoTicketService.handleTicketSelection(bot, chatId, text);
-                bot.execute(response);
-                log.info("MessageHandlerService: билет '{}' успешно обработан для chatId={}", text, chatId);
+                // TicketResult тащит и сам текст билета, и номер — нужен для реплик Итераториуса и дальнейших цепочек
+                TicketResult result = casinoTicketService.handleTicketSelection(bot, chatId, text);
+
+                bot.execute(result.message());
+                log.info("MessageHandlerService: билет '{}' успешно отправлен для chatId={}", text, chatId);
+
+                // Через 4 секунды Итераториус врывается с сарказмом. Без этого весь пафос казино теряется.
+                if (result.ticketNumber() > 0) {
+                    casinoTicketService.scheduleIteratoriusReply(bot, chatId, result.ticketNumber());
+                    log.info("MessageHandlerService: реплика Итераториуса поставлена в очередь (chatId={}, билет={})",
+                            chatId, result.ticketNumber());
+                } else {
+                    log.warn("MessageHandlerService: билет без номера, пропускаем реплику Итераториуса (chatId={})", chatId);
+                }
             } catch (Exception e) {
                 log.error("MessageHandlerService: ошибка обработки билета '{}' для chatId={}: {}", text, chatId, e.getMessage());
                 bot.execute(new SendMessage(chatId.toString(), "❌ Ошибка обработки билета!"));
@@ -169,10 +196,10 @@ private final CasinoTicketService casinoTicketService;
 
 
     /**
-     * 🎰 Проверяет, является ли текст кнопкой казино-билета
-     * 
-     * @param text — текст сообщения пользователя
-     * @return true если это кнопка казино (1⃣-🔟)
+     * 🎰 Проверяет, является ли текст кнопкой казино-билета.
+     *
+     * @param text текст сообщения пользователя (в том виде, как Telegram его прислал: эмодзи/строка)
+     * @return true, если юзер жмёт одну из наших казино-кнопок 1⃣-🔟, иначе false
      */
     private boolean isCasinoTicket(String text) {
         return "1⃣".equals(text) || "2⃣".equals(text) || "3⃣".equals(text) || 
