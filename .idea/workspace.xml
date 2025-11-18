@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="новая ветка про раунд 3">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/MessageServiceRound3.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/Bot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/bot/MessageHandlerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/bot/MessageHandlerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/CasinoTicketService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/CasinoTicketService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/EpicQuizTimerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/service/ArrayList/EpicQuizTimerService.java" afterDir="false" />
-    </list>
+    <list default="true" id="55a3834d-62ea-484b-a3ab-5fb3a16bb327" name="Changes" comment="и так мы доделали викторину, убрали кнопки после того как пользователь нажала на цифру билетика, добавили реплики Итераториуса, после билетика, теперь сюжет морально готов к 3 раунду, затвра продолжу. &#10;все работает четко." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -152,7 +145,7 @@
       <workItem from="1763140687920" duration="992000" />
       <workItem from="1763197014056" duration="437000" />
       <workItem from="1763222284559" duration="4628000" />
-      <workItem from="1763309055597" duration="22327000" />
+      <workItem from="1763309055597" duration="23038000" />
     </task>
     <task id="LOCAL-00001" summary="по идеи всеработает как нужн, на команде старт отправляется фото с текстом, затем отправялется сообщение с кнопкой (создать персонажа) кнопка кликабельна, после кнопки отправляется персонаж с характеристиками и фото. все соеденяется с БД2">
       <option name="closed" value="true" />
@@ -538,7 +531,15 @@
       <option name="project" value="LOCAL" />
       <updated>1763310106339</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="и так мы доделали викторину, убрали кнопки после того как пользователь нажала на цифру билетика, добавили реплики Итераториуса, после билетика, теперь сюжет морально готов к 3 раунду, затвра продолжу. &#10;все работает четко.">
+      <option name="closed" value="true" />
+      <created>1763499812284</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1763499812285</updated>
+    </task>
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -556,7 +557,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value=" Добавлена дальнейшая сюжетная линия Array, в дальнейшем нужно будет разгрузить класс ArrayListStory,он слишком большой. так-же сделалаи вывод статы пероснажа, ссылаясь на бд." />
     <MESSAGE value=" Добавлена дальнейшая сюжетная линия Array, в дальнейшем нужно будет разгрузить класс ArrayListStory,он слишком большой. так-же сделалаи вывод статы пероснажа, ссылаясь на бд. чуток добавили эстетичности что бы к этому потом не возвращаться" />
     <MESSAGE value="Сделали рефакторинг класса ArrayListStory, ранее у меня в классе было слишком многов сего, сейчас это все разбито по классам и в одной только папке что очень удобно." />
     <MESSAGE value=" создан мануал по сюжетке" />
@@ -581,7 +581,8 @@
     <MESSAGE value=" 1" />
     <MESSAGE value="новы" />
     <MESSAGE value="новая ветка про раунд 3" />
-    <option name="LAST_COMMIT_MESSAGE" value="новая ветка про раунд 3" />
+    <MESSAGE value="и так мы доделали викторину, убрали кнопки после того как пользователь нажала на цифру билетика, добавили реплики Итераториуса, после билетика, теперь сюжет морально готов к 3 раунду, затвра продолжу. &#10;все работает четко." />
+    <option name="LAST_COMMIT_MESSAGE" value="и так мы доделали викторину, убрали кнопки после того как пользователь нажала на цифру билетика, добавили реплики Итераториуса, после билетика, теперь сюжет морально готов к 3 раунду, затвра продолжу. &#10;все работает четко." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
